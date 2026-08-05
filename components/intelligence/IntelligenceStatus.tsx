@@ -2,42 +2,38 @@
 
 import { useEffect, useState } from "react";
 
-const stages = [
-  "Reading collection",
-  "Checking rotation",
-  "Comparing scent DNA",
-  "Evaluating collection gaps",
-  "Intelligence current",
-];
+import type {
+  NeuralCoreOutput,
+  NeuralCoreStatus,
+} from "@/lib/intelligence/intelligence-engine";
 
-export function IntelligenceStatus() {
-  const [stageIndex, setStageIndex] = useState(0);
-  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
+interface IntelligenceStatusProps {
+  intelligence: NeuralCoreOutput;
+}
+
+const statusLabels: Record<NeuralCoreStatus, string> = {
+  analyzing: "Analyzing collection",
+  current: "Intelligence current",
+  limited: "Limited intelligence",
+};
+
+export function IntelligenceStatus({
+  intelligence,
+}: IntelligenceStatusProps) {
+  const [displayTime, setDisplayTime] = useState("");
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setStageIndex((current) => {
-        if (current >= stages.length - 1) {
-          window.clearInterval(interval);
-          return current;
-        }
+    const generatedAt = new Date(intelligence.generatedAt);
 
-        return current + 1;
-      });
-    }, 650);
+    setDisplayTime(
+      generatedAt.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+      }),
+    );
+  }, [intelligence.generatedAt]);
 
-    const completeTimer = window.setTimeout(() => {
-      setUpdatedAt(new Date());
-    }, 650 * (stages.length - 1));
-
-    return () => {
-      window.clearInterval(interval);
-      window.clearTimeout(completeTimer);
-    };
-  }, []);
-
-  const progress = ((stageIndex + 1) / stages.length) * 100;
-  const complete = stageIndex === stages.length - 1;
+  const complete = intelligence.systemStatus === "current";
 
   return (
     <section className="mb-6 grid gap-5 rounded-2xl border border-[rgba(200,168,102,0.22)] bg-[linear-gradient(180deg,rgba(23,27,33,0.96),rgba(13,16,20,0.97))] p-5 shadow-[0_18px_55px_rgba(0,0,0,0.16)] lg:grid-cols-[minmax(230px,0.9fr)_minmax(260px,1.2fr)_auto] lg:items-center lg:gap-7">
@@ -52,39 +48,42 @@ export function IntelligenceStatus() {
 
         <div>
           <p className="m-0 text-[0.68rem] font-bold tracking-[0.15em] text-[var(--gold)]">
-            OLFACTUS INTELLIGENCE
+            NEURAL CORE
           </p>
 
           <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
-            {stages[stageIndex]}
+            {statusLabels[intelligence.systemStatus]}
           </p>
         </div>
       </div>
 
       <div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.065]">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-xs text-[var(--muted)]">
+            Analysis confidence
+          </span>
+
+          <strong className="text-sm text-[var(--foreground)]">
+            {intelligence.confidence}%
+          </strong>
+        </div>
+
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/[0.065]">
           <span
             className="block h-full rounded-full bg-[linear-gradient(90deg,var(--gold),#ead298)] transition-[width] duration-500 ease-out"
-            style={{ width: `${progress}%` }}
+            style={{ width: `${intelligence.confidence}%` }}
           />
         </div>
 
         <p className="mt-2 text-xs text-[var(--muted)]">
-          {complete
-            ? `Analysis current${
-                updatedAt
-                  ? ` · ${updatedAt.toLocaleTimeString([], {
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}`
-                  : ""
-              }`
-            : `${Math.round(progress)}% complete`}
+          {displayTime
+            ? `Analysis generated at ${displayTime}`
+            : "Preparing analysis timestamp"}
         </p>
       </div>
 
       <div className="flex flex-wrap gap-2 lg:justify-end">
-        {["Collection", "Rotation", "DNA", "Health"].map((source) => (
+        {intelligence.activeSources.map((source) => (
           <span
             key={source}
             className="rounded-full border border-[var(--border)] bg-white/[0.025] px-2.5 py-1.5 text-[0.7rem] text-[var(--muted)]"

@@ -31,7 +31,7 @@ export default function TodayPage() {
         description="The highest-value decisions from your live collection, summarized for today."
       />
 
-      <IntelligenceStatus />
+      <IntelligenceStatus intelligence={intelligence} />
 
       {!hydrated && (
         <p className="mb-4 text-sm text-[var(--muted)]">
