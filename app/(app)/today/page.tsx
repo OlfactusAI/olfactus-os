@@ -3,8 +3,7 @@
 import Link from "next/link";
 
 import { HealthDimensions } from "@/components/features/health-dimensions";
-import { PageHeader } from "@/components/features/page-header";
-import { IntelligenceStatus } from "@/components/intelligence/IntelligenceStatus";
+import { NeuralHeader } from "@/components/intelligence/NeuralHeader";
 import { useCollection } from "@/components/providers/collection-provider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,141 +20,152 @@ export default function TodayPage() {
   });
 
   const recommendation = intelligence.primaryRecommendation;
-  const topAction = intelligence.priorityAction;
+  const alternatives = intelligence.alternativeRecommendations;
   const collectionInsight =
     intelligence.collectionIntelligence.priorityInsight;
+  const rotation = intelligence.rotationIntelligence;
 
   return (
-    <>
-      <PageHeader
-        eyebrow="Daily intelligence briefing"
-        title="Good morning, Steve"
-        description="The highest-value decisions from your live collection, summarized for today."
-      />
-
-      <IntelligenceStatus intelligence={intelligence} />
+    <div className="space-y-6">
+      <NeuralHeader intelligence={intelligence} />
 
       {!hydrated && (
-        <p className="mb-4 text-sm text-[var(--muted)]">
+        <p className="text-sm text-[var(--muted)]">
           Loading your saved collection…
         </p>
       )}
 
       <section className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-        <Card className="relative min-h-[330px] overflow-hidden xl:col-span-8">
-          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(230,168,74,.17),transparent_65%)]" />
+        <Card className="relative min-h-[430px] overflow-hidden border-[rgba(200,168,102,.2)] xl:col-span-8">
+          <div className="pointer-events-none absolute -right-20 -top-28 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(224,169,72,.19),transparent_66%)]" />
 
-          <div className="relative flex items-start justify-between gap-4">
-            <Eyebrow>Today&apos;s recommendation</Eyebrow>
+          <div className="relative flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <Eyebrow>Today&apos;s decision</Eyebrow>
+              <p className="mt-3 text-sm text-[var(--muted)]">
+                Highest-value wear recommendation
+              </p>
+            </div>
 
             {recommendation && (
-              <span className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-xs text-[var(--gold)]">
-                {recommendation.confidence}% confidence
-              </span>
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 py-3 text-right">
+                <p className="text-[.63rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+                  Confidence
+                </p>
+                <p className="display-serif mt-1 text-3xl text-[var(--gold)]">
+                  {recommendation.confidence}%
+                </p>
+              </div>
             )}
           </div>
 
-          <h2 className="display-serif relative mt-7 text-4xl sm:text-5xl">
-            {recommendation?.fragranceName ?? "Build your collection"}
-          </h2>
-
-          <p className="relative mt-4 max-w-xl leading-7 text-[var(--muted)]">
-            {recommendation?.explanation ??
-              "Add your first fragrance to unlock daily wear intelligence."}
-          </p>
-
-          {recommendation && (
-            <p className="relative mt-4 text-sm">
-              <span className="text-[var(--muted)]">
-                Recommendation score{" "}
-              </span>
-
-              <strong className="text-[var(--foreground)]">
-                {recommendation.score}/100
-              </strong>
+          <div className="relative mt-12">
+            <p className="text-xs font-bold uppercase tracking-[.17em] text-[var(--muted)]">
+              Wear
             </p>
-          )}
 
-          <div className="relative mt-6 flex flex-wrap gap-3">
+            <h1 className="display-serif mt-4 max-w-3xl text-5xl leading-[1.05] sm:text-6xl">
+              {recommendation?.fragranceName ?? "Build your collection"}
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">
+              {recommendation?.explanation ??
+                "Add your first fragrance to unlock personalized daily intelligence."}
+            </p>
+
             {recommendation && (
-              <Button
-                variant="primary"
-                onClick={() => logWear(recommendation.fragranceId)}
-              >
-                Wear today
-              </Button>
+              <div className="mt-6 flex flex-wrap gap-8">
+                <MetricInline
+                  label="Recommendation score"
+                  value={`${recommendation.score}/100`}
+                />
+                <MetricInline
+                  label="Confidence"
+                  value={`${recommendation.confidence}%`}
+                />
+              </div>
             )}
 
-            <Link
-              href="/collection"
-              className="focus-ring inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-raised)] px-4 text-sm font-semibold text-[var(--foreground)] transition hover:-translate-y-0.5 hover:border-[rgba(200,168,102,.35)]"
-            >
-              Open collection
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {recommendation && (
+                <Button
+                  variant="primary"
+                  onClick={() => logWear(recommendation.fragranceId)}
+                >
+                  Wear today
+                </Button>
+              )}
+
+              <Link
+                href="/collection"
+                className="focus-ring inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-raised)] px-4 text-sm font-semibold text-[var(--foreground)] transition hover:-translate-y-0.5 hover:border-[rgba(200,168,102,.35)]"
+              >
+                Open collection
+              </Link>
+            </div>
           </div>
         </Card>
 
         <Card className="xl:col-span-4">
-          <Eyebrow>Collection health</Eyebrow>
+          <Eyebrow>Collection status</Eyebrow>
 
-          <p className="display-serif mt-5 text-7xl text-[var(--gold)]">
-            {intelligence.collectionHealth.score}
-          </p>
+          <div className="mt-7 grid grid-cols-2 gap-4">
+            <Metric label="Health" value={intelligence.collectionHealth.score} />
+            <Metric label="Rotation" value={rotation.healthScore} />
+            <Metric
+              label="Fragrances"
+              value={intelligence.collectionIntelligence.collectionSize}
+              suffix=""
+            />
+            <Metric
+              label="Total wears"
+              value={intelligence.collectionIntelligence.totalWears}
+              suffix=""
+            />
+          </div>
 
-          <h2 className="mt-2 text-xl font-semibold">
-            {intelligence.collectionHealth.status}
-          </h2>
-
-          <p className="mt-4 leading-7 text-[var(--muted)]">
-            {intelligence.collectionHealth.summary}
-          </p>
-
-          <div className="mt-6 flex items-center justify-between border-t border-[var(--border)] pt-4 text-sm">
-            <span className="text-[var(--muted)]">
-              Intelligence confidence
-            </span>
-
-            <strong>{intelligence.collectionIntelligence.confidence}%</strong>
+          <div className="mt-6 border-t border-[var(--border)] pt-5">
+            <p className="text-sm font-semibold">
+              {intelligence.collectionHealth.status}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+              {intelligence.collectionHealth.summary}
+            </p>
           </div>
         </Card>
 
         <Card className="xl:col-span-7">
-          <Eyebrow>Collection intelligence</Eyebrow>
+          <Eyebrow>Priority intelligence</Eyebrow>
 
           {collectionInsight ? (
             <>
-              <div className="mt-5 flex items-start justify-between gap-4">
-                <h2 className="display-serif text-3xl">
+              <div className="mt-6 flex items-start justify-between gap-5">
+                <h2 className="display-serif max-w-xl text-3xl leading-tight">
                   {collectionInsight.title}
                 </h2>
-
-                <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--gold)]">
+                <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[.62rem] font-bold uppercase tracking-[.14em] text-[var(--gold)]">
                   {collectionInsight.severity}
                 </span>
               </div>
 
-              <p className="mt-4 leading-7 text-[var(--muted)]">
+              <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">
                 {collectionInsight.explanation}
               </p>
 
               {collectionInsight.action && (
-                <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[var(--gold)]">
+                <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-5">
+                  <p className="text-[.63rem] font-bold uppercase tracking-[.14em] text-[var(--gold)]">
                     Recommended action
                   </p>
-
-                  <p className="mt-2 text-sm leading-6">
-                    {collectionInsight.action}
-                  </p>
+                  <p className="mt-2 leading-7">{collectionInsight.action}</p>
                 </div>
               )}
 
               {collectionInsight.projectedImpact !== undefined && (
                 <p className="mt-5 text-sm">
                   <span className="text-[var(--muted)]">
-                    Projected health impact{" "}
+                    Projected Collection Health impact{" "}
                   </span>
-
                   <strong className="text-[var(--success)]">
                     +{collectionInsight.projectedImpact}
                   </strong>
@@ -170,49 +180,191 @@ export default function TodayPage() {
         </Card>
 
         <Card className="xl:col-span-5">
-          <Eyebrow>Best next move</Eyebrow>
+          <div className="flex items-start justify-between gap-4">
+            <Eyebrow>Rotation intelligence</Eyebrow>
+            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-[.68rem] text-[var(--gold)]">
+              {rotation.status}
+            </span>
+          </div>
 
-          <h2 className="display-serif mt-5 text-3xl">
-            {topAction?.title ?? "Add fragrances to begin"}
-          </h2>
-
-          <p className="mt-4 leading-7 text-[var(--muted)]">
-            {topAction?.reason ??
-              "OLFACTUS needs a collection before it can generate a strategic action."}
+          <p className="display-serif mt-6 text-6xl text-[var(--gold)]">
+            {rotation.healthScore}
           </p>
+          <p className="mt-2 text-sm text-[var(--muted)]">Rotation Health</p>
 
-          {topAction && (
-            <p className="mt-6 text-sm">
-              <span className="text-[var(--muted)]">
-                Projected health impact{" "}
-              </span>
+          <div className="mt-6 grid gap-3">
+            <StatusRow
+              label="Active rotation"
+              value={`${rotation.activeRotationSize} fragrances`}
+            />
+            <StatusRow label="Neglected" value={`${rotation.neglected.length}`} />
+            <StatusRow label="Overused" value={`${rotation.overused.length}`} />
+            <StatusRow label="Confidence" value={`${rotation.confidence}%`} />
+          </div>
 
-              <strong className="text-[var(--success)]">
-                +{topAction.projectedImpact}
-              </strong>
-            </p>
+          {intelligence.rotationAlert && (
+            <div className="mt-6 rounded-2xl border border-[rgba(200,168,102,.18)] bg-[rgba(200,168,102,.05)] p-4">
+              <p className="text-[.63rem] font-bold uppercase tracking-[.14em] text-[var(--gold)]">
+                Rotation alert
+              </p>
+              <p className="mt-2 font-semibold">
+                {intelligence.rotationAlert.fragranceName}
+              </p>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                Not worn in {intelligence.rotationAlert.daysSinceLastWear} days
+              </p>
+            </div>
           )}
         </Card>
 
-        <Card className="xl:col-span-12">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <Eyebrow>Health dimensions</Eyebrow>
+        <Card className="xl:col-span-7">
+          <Eyebrow>Alternative decisions</Eyebrow>
 
+          <div className="mt-6 grid gap-3">
+            {alternatives.length > 0 ? (
+              alternatives.map((alternative, index) => (
+                <div
+                  key={alternative.fragranceId}
+                  className="flex items-center justify-between gap-5 rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"
+                >
+                  <div className="flex min-w-0 items-center gap-4">
+                    <span className="display-serif text-2xl text-[var(--gold)]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <div className="min-w-0">
+                      <p className="truncate font-semibold">
+                        {alternative.fragranceName}
+                      </p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--muted)]">
+                        {alternative.explanation}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 text-right">
+                    <strong className="text-sm">
+                      {alternative.score}/100
+                    </strong>
+                    <p className="mt-1 text-xs text-[var(--muted)]">
+                      {alternative.confidence}% confidence
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-[var(--muted)]">
+                More owned fragrances are needed to generate alternatives.
+              </p>
+            )}
+          </div>
+        </Card>
+
+        <Card className="xl:col-span-5">
+          <Eyebrow>Engine status</Eyebrow>
+
+          <div className="mt-6 grid gap-3">
+            {[
+              "Recommendation Engine",
+              "Rotation Intelligence",
+              "Collection Intelligence",
+              "Collection Health",
+              "Knowledge Graph",
+            ].map((engine) => (
+              <div
+                key={engine}
+                className="flex items-center justify-between border-b border-[var(--border)] pb-3 last:border-0"
+              >
+                <span className="text-sm text-[var(--muted)]">{engine}</span>
+                <span className="flex items-center gap-2 text-xs font-semibold text-[var(--success)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
+                  ACTIVE
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 border-t border-[var(--border)] pt-5">
+            <StatusRow
+              label="Neural confidence"
+              value={`${intelligence.confidence}%`}
+            />
+            <StatusRow
+              label="Connected sources"
+              value={`${intelligence.activeSources.length}`}
+            />
+          </div>
+        </Card>
+
+        <Card className="xl:col-span-12">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <Eyebrow>Collection dimensions</Eyebrow>
             <p className="text-xs text-[var(--muted)]">
-              {
-                intelligence.collectionIntelligence
-                  .collectionSize
-              }{" "}
-              fragrances ·{" "}
-              {intelligence.collectionIntelligence.totalWears} total wears
+              Neural confidence {intelligence.confidence}%
             </p>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-7">
             <HealthDimensions analysis={analysis} />
           </div>
         </Card>
       </section>
-    </>
+    </div>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  suffix = "/100",
+}: {
+  label: string;
+  value: number;
+  suffix?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+      <p className="text-[.62rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+        {label}
+      </p>
+      <p className="display-serif mt-2 text-3xl">
+        {value}
+        {suffix && (
+          <span className="ml-1 text-xs text-[var(--muted)]">{suffix}</span>
+        )}
+      </p>
+    </div>
+  );
+}
+
+function MetricInline({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div>
+      <p className="text-[.63rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+        {label}
+      </p>
+      <p className="display-serif mt-1 text-3xl">{value}</p>
+    </div>
+  );
+}
+
+function StatusRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center justify-between border-b border-[var(--border)] pb-3 last:border-0">
+      <span className="text-sm text-[var(--muted)]">{label}</span>
+      <strong className="text-sm">{value}</strong>
+    </div>
   );
 }

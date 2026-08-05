@@ -1,0 +1,25 @@
+OLFACTUS CLEAN REPLACEMENT
+
+This is a complete application replacement, not a partial patch.
+It restores app, components, lib, tests, docs, and configuration files.
+The installer preserves:
+- .git and GitHub history
+- node_modules
+- .env.local
+
+INSTALL
+1. Unzip olfactus-os-clean-replacement.zip in Downloads.
+2. Open Terminal.
+3. Run:
+
+   bash ~/Downloads/olfactus-os-clean-replacement/install-into-existing.sh
+
+4. Then run:
+
+   cd ~/Downloads/olfactus-os
+   npm run build
+   npm run dev
+
+5. Open http://localhost:3000
+
+A complete safety backup of the old project is automatically created in Downloads.

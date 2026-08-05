@@ -11,19 +11,8 @@ export const roles = [
 ] as const;
 
 export type FragranceRole = (typeof roles)[number];
-
 export type Season = "spring" | "summer" | "fall" | "winter";
-
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
-
-export type ClimateCondition =
-  | "high-heat"
-  | "warm"
-  | "mild"
-  | "cold"
-  | "humid"
-  | "dry";
-
 export type IntelligenceStatus = "draft" | "calibration" | "validated";
 
 export type DnaDimension =
@@ -45,11 +34,6 @@ export interface FragranceNotes {
 export interface FragrancePerformance {
   projection: number;
   longevity: number;
-
-  /**
-   * Optional until each calibration record is fully modeled.
-   * All intelligence scores use a 0–100 scale.
-   */
   sillage?: number;
   consistency?: number;
   drydownQuality?: number;
@@ -78,56 +62,25 @@ export interface FragranceIntelligenceMetadata {
 }
 
 export interface FragranceRecord {
-  /**
-   * Stable canonical identity.
-   */
   id: string;
   brand: string;
   name: string;
   concentration: string;
-
-  /**
-   * Identity and provenance.
-   */
   releaseYear?: number;
   perfumers?: string[];
   countryOfOrigin?: string;
-
-  /**
-   * Composition.
-   */
   family: string;
   subfamily?: string;
   accords?: string[];
   notes?: FragranceNotes;
-
-  /**
-   * Functional intelligence.
-   */
   roles: FragranceRole[];
   seasons: Record<Season, number>;
   timesOfDay?: Record<TimeOfDay, number>;
   climate?: FragranceClimateProfile;
-
-  /**
-   * OLFACTUS multidimensional scent profile.
-   */
   dna: Record<DnaDimension, number>;
   moods: string[];
-
-  /**
-   * Performance intelligence.
-   */
   performance: FragrancePerformance;
-
-  /**
-   * Commercial context.
-   */
   market?: FragranceMarketProfile;
-
-  /**
-   * Data quality and publishing status.
-   */
   intelligenceStatus: IntelligenceStatus;
   intelligence?: FragranceIntelligenceMetadata;
 }
