@@ -1,3 +1,6 @@
+import type { FragranceRecord } from "@/lib/domain/fragrance";
+import { generateWearRecommendations } from "@/lib/intelligence/recommendation-engine";
+
 export type NeuralCoreStatus = "analyzing" | "current" | "limited";
 
 export interface NeuralCoreFinding {
@@ -22,14 +25,8 @@ export interface NeuralCoreHealthAnalysis {
 }
 
 export interface NeuralCoreOwnedFragrance {
-  fragrance: {
-    id: string;
-    brand: string;
-    name: string;
-    seasons: {
-      summer: number;
-    };
-  };
+  fragrance: FragranceRecord;
+
   item: {
     wearCount?: number;
     daysSinceLastWear: number;
@@ -60,7 +57,16 @@ export interface NeuralCoreOutput {
     fragranceName: string;
     explanation: string;
     confidence: number;
+    score: number;
   } | null;
+
+  alternativeRecommendations: {
+    fragranceId: string;
+    fragranceName: string;
+    explanation: string;
+    confidence: number;
+    score: number;
+  }[];
 
   priorityFinding: NeuralCoreFinding | null;
   priorityAction: NeuralCoreRecommendation | null;
@@ -78,15 +84,18 @@ export function runNeuralCore({
   hydrated,
   now = new Date(),
 }: NeuralCoreInput): NeuralCoreOutput {
-  const wearableCandidates = [...owned]
-    .filter(({ item }) => item.daysSinceLastWear >= 7)
-    .sort(
-      (a, b) =>
-        b.fragrance.seasons.summer - a.fragrance.seasons.summer ||
-        b.item.daysSinceLastWear - a.item.daysSinceLastWear,
-    );
+  const wearRecommendations = generateWearRecommendations({
+    owned,
+    context: {
+      season: "summer",
+      temperatureF: 94,
+      humidity: 72,
+      desiredRole: "office",
+    },
+    now,
+  });
 
-  const recommendedWear = wearableCandidates[0] ?? owned[0] ?? null;
+  const recommendedWear = wearRecommendations.primary;
 
   const rotationCandidate =
     [...owned]
@@ -96,7 +105,11 @@ export function runNeuralCore({
       )[0] ?? null;
 
   const healthConfidence = analysis.confidence ?? 85;
-  const dataConfidence = hydrated ? Math.min(100, 70 + owned.length * 4) : 45;
+
+  const dataConfidence = hydrated
+    ? Math.min(100, 70 + owned.length * 4)
+    : 45;
+
   const confidence = Math.round(
     healthConfidence * 0.65 + dataConfidence * 0.35,
   );
@@ -109,6 +122,7 @@ export function runNeuralCore({
         : "current",
 
     confidence,
+
     generatedAt: now.toISOString(),
 
     activeSources: [
@@ -116,6 +130,7 @@ export function runNeuralCore({
       "Rotation",
       "DNA",
       "Collection Health",
+      "Recommendation",
     ],
 
     collectionHealth: {
@@ -126,27 +141,33 @@ export function runNeuralCore({
 
     primaryRecommendation: recommendedWear
       ? {
-          fragranceId: recommendedWear.fragrance.id,
-          fragranceName: `${recommendedWear.fragrance.brand} ${recommendedWear.fragrance.name}`,
-          explanation: `Strong warm-weather suitability and ${recommendedWear.item.daysSinceLastWear} days since its last wear.`,
-          confidence: Math.min(
-            98,
-            Math.round(
-              recommendedWear.fragrance.seasons.summer * 0.7 +
-                Math.min(recommendedWear.item.daysSinceLastWear, 30),
-            ),
-          ),
+          fragranceId: recommendedWear.fragranceId,
+          fragranceName: recommendedWear.fragranceName,
+          explanation: recommendedWear.summary,
+          confidence: recommendedWear.confidence,
+          score: recommendedWear.score,
         }
       : null,
 
+    alternativeRecommendations:
+      wearRecommendations.alternatives.map((recommendation) => ({
+        fragranceId: recommendation.fragranceId,
+        fragranceName: recommendation.fragranceName,
+        explanation: recommendation.summary,
+        confidence: recommendation.confidence,
+        score: recommendation.score,
+      })),
+
     priorityFinding: analysis.findings[0] ?? null,
+
     priorityAction: analysis.recommendations[0] ?? null,
 
     rotationAlert: rotationCandidate
       ? {
           fragranceId: rotationCandidate.fragrance.id,
           fragranceName: `${rotationCandidate.fragrance.brand} ${rotationCandidate.fragrance.name}`,
-          daysSinceLastWear: rotationCandidate.item.daysSinceLastWear,
+          daysSinceLastWear:
+            rotationCandidate.item.daysSinceLastWear,
         }
       : null,
   };
