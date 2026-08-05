@@ -1,4 +1,8 @@
 import type { FragranceRecord } from "@/lib/domain/fragrance";
+import {
+  analyzeCollectionIntelligence,
+  type CollectionIntelligenceOutput,
+} from "@/lib/intelligence/collection-intelligence";
 import { generateWearRecommendations } from "@/lib/intelligence/recommendation-engine";
 
 export type NeuralCoreStatus = "analyzing" | "current" | "limited";
@@ -52,6 +56,8 @@ export interface NeuralCoreOutput {
     summary: string;
   };
 
+  collectionIntelligence: CollectionIntelligenceOutput;
+
   primaryRecommendation: {
     fragranceId: string;
     fragranceName: string;
@@ -95,13 +101,25 @@ export function runNeuralCore({
     now,
   });
 
+  const collectionIntelligence = analyzeCollectionIntelligence({
+    owned,
+    health: {
+      score: analysis.score,
+      status: analysis.status,
+      summary: analysis.summary,
+      confidence: analysis.confidence,
+    },
+    now,
+  });
+
   const recommendedWear = wearRecommendations.primary;
 
   const rotationCandidate =
     [...owned]
       .filter(({ item }) => item.daysSinceLastWear >= 30)
       .sort(
-        (a, b) => b.item.daysSinceLastWear - a.item.daysSinceLastWear,
+        (a, b) =>
+          b.item.daysSinceLastWear - a.item.daysSinceLastWear,
       )[0] ?? null;
 
   const healthConfidence = analysis.confidence ?? 85;
@@ -110,8 +128,18 @@ export function runNeuralCore({
     ? Math.min(100, 70 + owned.length * 4)
     : 45;
 
+  const combinedEngineConfidence = Math.round(
+    wearRecommendations.primary
+      ? (wearRecommendations.primary.confidence +
+          collectionIntelligence.confidence) /
+          2
+      : collectionIntelligence.confidence,
+  );
+
   const confidence = Math.round(
-    healthConfidence * 0.65 + dataConfidence * 0.35,
+    healthConfidence * 0.4 +
+      dataConfidence * 0.25 +
+      combinedEngineConfidence * 0.35,
   );
 
   return {
@@ -131,6 +159,7 @@ export function runNeuralCore({
       "DNA",
       "Collection Health",
       "Recommendation",
+      "Collection Intelligence",
     ],
 
     collectionHealth: {
@@ -138,6 +167,8 @@ export function runNeuralCore({
       status: analysis.status,
       summary: analysis.summary,
     },
+
+    collectionIntelligence,
 
     primaryRecommendation: recommendedWear
       ? {

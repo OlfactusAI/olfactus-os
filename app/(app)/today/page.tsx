@@ -22,6 +22,8 @@ export default function TodayPage() {
 
   const recommendation = intelligence.primaryRecommendation;
   const topAction = intelligence.priorityAction;
+  const collectionInsight =
+    intelligence.collectionIntelligence.priorityInsight;
 
   return (
     <>
@@ -43,7 +45,15 @@ export default function TodayPage() {
         <Card className="relative min-h-[330px] overflow-hidden xl:col-span-8">
           <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(230,168,74,.17),transparent_65%)]" />
 
-          <Eyebrow>Today&apos;s recommendation</Eyebrow>
+          <div className="relative flex items-start justify-between gap-4">
+            <Eyebrow>Today&apos;s recommendation</Eyebrow>
+
+            {recommendation && (
+              <span className="rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-xs text-[var(--gold)]">
+                {recommendation.confidence}% confidence
+              </span>
+            )}
+          </div>
 
           <h2 className="display-serif relative mt-7 text-4xl sm:text-5xl">
             {recommendation?.fragranceName ?? "Build your collection"}
@@ -53,6 +63,18 @@ export default function TodayPage() {
             {recommendation?.explanation ??
               "Add your first fragrance to unlock daily wear intelligence."}
           </p>
+
+          {recommendation && (
+            <p className="relative mt-4 text-sm">
+              <span className="text-[var(--muted)]">
+                Recommendation score{" "}
+              </span>
+
+              <strong className="text-[var(--foreground)]">
+                {recommendation.score}/100
+              </strong>
+            </p>
+          )}
 
           <div className="relative mt-6 flex flex-wrap gap-3">
             {recommendation && (
@@ -87,31 +109,64 @@ export default function TodayPage() {
           <p className="mt-4 leading-7 text-[var(--muted)]">
             {intelligence.collectionHealth.summary}
           </p>
+
+          <div className="mt-6 flex items-center justify-between border-t border-[var(--border)] pt-4 text-sm">
+            <span className="text-[var(--muted)]">
+              Intelligence confidence
+            </span>
+
+            <strong>{intelligence.collectionIntelligence.confidence}%</strong>
+          </div>
         </Card>
 
         <Card className="xl:col-span-7">
-          <Eyebrow>Collection diagnosis</Eyebrow>
+          <Eyebrow>Collection intelligence</Eyebrow>
 
-          <div className="mt-5 grid gap-3">
-            {analysis.findings.slice(0, 3).map((finding) => (
-              <div
-                key={finding.title}
-                className="rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <strong>{finding.title}</strong>
+          {collectionInsight ? (
+            <>
+              <div className="mt-5 flex items-start justify-between gap-4">
+                <h2 className="display-serif text-3xl">
+                  {collectionInsight.title}
+                </h2>
 
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--gold)]">
-                    {finding.severity}
-                  </span>
-                </div>
-
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  {finding.explanation}
-                </p>
+                <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--gold)]">
+                  {collectionInsight.severity}
+                </span>
               </div>
-            ))}
-          </div>
+
+              <p className="mt-4 leading-7 text-[var(--muted)]">
+                {collectionInsight.explanation}
+              </p>
+
+              {collectionInsight.action && (
+                <div className="mt-5 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[var(--gold)]">
+                    Recommended action
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6">
+                    {collectionInsight.action}
+                  </p>
+                </div>
+              )}
+
+              {collectionInsight.projectedImpact !== undefined && (
+                <p className="mt-5 text-sm">
+                  <span className="text-[var(--muted)]">
+                    Projected health impact{" "}
+                  </span>
+
+                  <strong className="text-[var(--success)]">
+                    +{collectionInsight.projectedImpact}
+                  </strong>
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="mt-5 text-[var(--muted)]">
+              Add more collection data to generate strategic insights.
+            </p>
+          )}
         </Card>
 
         <Card className="xl:col-span-5">
@@ -140,7 +195,18 @@ export default function TodayPage() {
         </Card>
 
         <Card className="xl:col-span-12">
-          <Eyebrow>Health dimensions</Eyebrow>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Eyebrow>Health dimensions</Eyebrow>
+
+            <p className="text-xs text-[var(--muted)]">
+              {
+                intelligence.collectionIntelligence
+                  .collectionSize
+              }{" "}
+              fragrances ·{" "}
+              {intelligence.collectionIntelligence.totalWears} total wears
+            </p>
+          </div>
 
           <div className="mt-6">
             <HealthDimensions analysis={analysis} />
