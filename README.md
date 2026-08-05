@@ -50,3 +50,10 @@ npm run build
 ## Engineering rule
 
 Every sprint modifies this repository. No disconnected prototypes or report-derived application layouts.
+
+
+## Implemented sprints
+
+- Sprint 001: permanent application shell and Collection Health Engine
+- Sprint 002: persistent Collection Management
+- Sprint 003: explainable Buy Decision Engine
