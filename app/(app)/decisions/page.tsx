@@ -1,0 +1,5 @@
+import { PageHeader } from "@/components/features/page-header";
+import { Card } from "@/components/ui/card";
+import { Eyebrow } from "@/components/ui/eyebrow";
+const decisions=[{title:"Wear",question:"What should I wear today?",status:"Imagination · 97% match"},{title:"Buy",question:"Does this candidate improve my collection?",status:"Un Air de Bretagne · strong addition"},{title:"Rotate",question:"Which bottle deserves attention?",status:"Ganymede · 31 days"},{title:"Avoid",question:"What should I skip next?",status:"Another dense sweet amber"}];
+export default function DecisionsPage(){return <><PageHeader eyebrow="Actionable intelligence" title="Decisions" description="The engines remain underneath. You receive clear actions, explanations, and confidence."/><section className="grid grid-cols-1 gap-5 md:grid-cols-2">{decisions.map(item=><Card key={item.title}><Eyebrow>{item.title}</Eyebrow><h2 className="display-serif mt-5 text-3xl">{item.question}</h2><p className="mt-5 text-[var(--gold)]">{item.status}</p></Card>)}</section></>}

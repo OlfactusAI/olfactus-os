@@ -1,0 +1,2 @@
+import { Eyebrow } from "@/components/ui/eyebrow";
+export function PageHeader({eyebrow,title,description}:{eyebrow:string;title:string;description?:string}){return <header className="mb-8"><Eyebrow>{eyebrow}</Eyebrow><h1 className="display-serif mt-2 text-4xl leading-tight sm:text-5xl">{title}</h1>{description?<p className="mt-3 max-w-3xl leading-7 text-[var(--muted)]">{description}</p>:null}</header>}
