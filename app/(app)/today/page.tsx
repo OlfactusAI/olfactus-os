@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { HealthDimensions } from "@/components/features/health-dimensions";
 import { PageHeader } from "@/components/features/page-header";
+import { IntelligenceStatus } from "@/components/intelligence/IntelligenceStatus";
 import { useCollection } from "@/components/providers/collection-provider";
 
 export default function TodayPage() {
@@ -18,6 +19,7 @@ export default function TodayPage() {
   return (
     <>
       <PageHeader eyebrow="Daily intelligence briefing" title="Good morning, Steve" description="The highest-value decisions from your live collection, summarized for today." />
+      <IntelligenceStatus />
       {!hydrated && <p className="mb-4 text-sm text-[var(--muted)]">Loading your saved collection…</p>}
       <section className="grid grid-cols-1 gap-5 xl:grid-cols-12">
         <Card className="relative min-h-[330px] overflow-hidden xl:col-span-8">
