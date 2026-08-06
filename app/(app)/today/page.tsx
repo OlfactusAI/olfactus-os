@@ -1,41 +1,662 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowRight,
+  Check,
+  CloudSun,
+  Command,
+  Droplets,
+  Gauge,
+  Orbit,
+  RotateCcw,
+  Sparkles,
+  Waves,
+} from "lucide-react";
+
 import { HealthDimensions } from "@/components/features/health-dimensions";
-import { NeuralHeader } from "@/components/intelligence/NeuralHeader";
 import { useCollection } from "@/components/providers/collection-provider";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Eyebrow } from "@/components/ui/eyebrow";
 import { runNeuralCore } from "@/lib/intelligence/intelligence-engine";
 
-export default function TodayPage(){
- const {analysis,owned,logWear,hydrated}=useCollection();
- const intelligence=runNeuralCore({analysis,owned,hydrated});
- const recommendation=intelligence.primaryRecommendation;
- const alternatives=intelligence.alternativeRecommendations;
- const insight=intelligence.collectionIntelligence.priorityInsight;
- const rotation=intelligence.rotationIntelligence;
- const signals=recommendation?.signals.filter(s=>s.id!=="data-quality").slice(0,5)??[];
- return <div className="space-y-6 pb-10">
-  <NeuralHeader intelligence={intelligence}/>
-  {!hydrated&&<p className="text-sm text-[var(--muted)]">Loading your saved collection…</p>}
-  <section className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-   <article className="decision-hero relative min-h-[520px] overflow-hidden rounded-[30px] border border-[rgba(214,180,108,.24)] p-6 sm:p-9 xl:col-span-8">
-    <div className="pointer-events-none absolute -right-12 -top-20 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(230,168,74,.2),transparent_65%)]"/>
-    <div className="relative flex flex-wrap items-start justify-between gap-5"><div><Eyebrow>Today&apos;s decision</Eyebrow><p className="mt-3 text-sm text-[var(--muted)]">Highest-value wear for a 94°F, humid office day</p></div>{recommendation&&<ScoreRing score={recommendation.confidence}/>}</div>
-    <div className="relative mt-14 max-w-3xl"><p className="text-[.66rem] font-bold uppercase tracking-[.2em] text-[var(--gold)]">Neural recommendation</p><h2 className="display-serif mt-4 text-5xl leading-[1.02] sm:text-7xl">{recommendation?.fragranceName??"Build your collection"}</h2><p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">{recommendation?.explanation??"Add your first fragrance to unlock personalized daily intelligence."}</p>{recommendation&&<div className="mt-8 flex flex-wrap gap-8"><MetricInline label="Decision score" value={`${recommendation.score}/100`}/><MetricInline label="Role" value={intelligence.context.desiredRole}/><MetricInline label="Conditions" value={`${intelligence.context.temperatureF}°F · ${intelligence.context.humidity}%`}/></div>}<div className="mt-9 flex flex-wrap gap-3">{recommendation&&<Button variant="primary" onClick={()=>logWear(recommendation.fragranceId)}>Confirm wear</Button>}<Link href="/collection" className="focus-ring inline-flex min-h-12 items-center justify-center rounded-2xl border border-[var(--border)] bg-white/[.035] px-5 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-[rgba(232,200,127,.32)]">Open collection</Link></div></div>
-   </article>
-   <Card className="xl:col-span-4"><div className="flex items-center justify-between"><Eyebrow>Collection pulse</Eyebrow><span className="rounded-full border border-[var(--border)] px-3 py-1 text-[.64rem] text-[var(--success)]">LIVE</span></div><div className="mt-7 grid grid-cols-2 gap-3"><Metric label="Health" value={intelligence.collectionHealth.score}/><Metric label="Rotation" value={rotation.healthScore}/><Metric label="Fragrances" value={intelligence.collectionIntelligence.collectionSize} suffix=""/><Metric label="Total wears" value={intelligence.collectionIntelligence.totalWears} suffix=""/></div><div className="mt-6 rounded-2xl border border-[var(--border)] bg-black/10 p-4"><p className="font-semibold">{intelligence.collectionHealth.status}</p><p className="mt-2 text-sm leading-6 text-[var(--muted)]">{intelligence.collectionHealth.summary}</p></div></Card>
-   <Card className="xl:col-span-8"><div className="flex flex-wrap items-center justify-between gap-4"><div><Eyebrow>Why OLFACTUS chose it</Eyebrow><h3 className="display-serif mt-3 text-3xl">Explainable recommendation signals</h3></div><span className="text-xs text-[var(--muted)]">RE-2.0.0 weighted analysis</span></div><div className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">{signals.map(signal=><div key={signal.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><div className="flex items-center justify-between"><p className="text-[.65rem] font-bold uppercase tracking-[.12em] text-[var(--muted)]">{signal.label}</p><strong className="text-sm text-[var(--gold-bright)]">{signal.score}</strong></div><div className="mt-3 h-1 overflow-hidden rounded-full bg-white/[.06]"><span className="block h-full rounded-full bg-[var(--gold)]" style={{width:`${signal.score}%`}}/></div><p className="mt-3 text-xs leading-5 text-[var(--muted)]">{signal.explanation}</p></div>)}</div></Card>
-   <Card className="xl:col-span-4"><div className="flex items-start justify-between"><Eyebrow>Rotation monitor</Eyebrow><span className="rounded-full border border-[var(--border)] px-3 py-1 text-[.65rem] uppercase text-[var(--gold)]">{rotation.status}</span></div><div className="mt-6 flex items-end justify-between"><div><p className="display-serif text-6xl text-[var(--gold-bright)]">{rotation.healthScore}</p><p className="mt-1 text-sm text-[var(--muted)]">Rotation health</p></div><p className="text-right text-xs leading-5 text-[var(--muted)]">{rotation.activeRotationSize} active<br/>{rotation.neglected.length} neglected</p></div>{intelligence.rotationAlert&&<div className="mt-6 rounded-2xl border border-[rgba(213,154,69,.24)] bg-[rgba(213,154,69,.06)] p-4"><p className="text-[.64rem] font-bold uppercase tracking-[.14em] text-[var(--warning)]">Priority alert</p><p className="mt-2 font-semibold">{intelligence.rotationAlert.fragranceName}</p><p className="mt-1 text-sm text-[var(--muted)]">Idle for {intelligence.rotationAlert.daysSinceLastWear} days</p></div>}</Card>
-   <Card className="xl:col-span-7"><Eyebrow>Priority intelligence</Eyebrow>{insight?<><div className="mt-6 flex items-start justify-between gap-5"><h3 className="display-serif max-w-xl text-4xl leading-tight">{insight.title}</h3><span className="rounded-full border border-[var(--border)] px-3 py-1 text-[.62rem] font-bold uppercase tracking-[.14em] text-[var(--gold)]">{insight.severity}</span></div><p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">{insight.explanation}</p>{insight.action&&<div className="mt-6 rounded-2xl border border-[rgba(200,168,102,.2)] bg-[rgba(200,168,102,.045)] p-5"><p className="text-[.63rem] font-bold uppercase tracking-[.14em] text-[var(--gold)]">Strategic action</p><p className="mt-2 leading-7">{insight.action}</p></div>}</>:<p className="mt-5 text-[var(--muted)]">Add more collection data to generate strategic insights.</p>}</Card>
-   <Card className="xl:col-span-5"><Eyebrow>Alternative decisions</Eyebrow><div className="mt-6 grid gap-3">{alternatives.map((alt,index)=><div key={alt.fragranceId} className="flex items-center justify-between gap-5 rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><div className="flex min-w-0 items-center gap-4"><span className="display-serif text-2xl text-[var(--gold)]">{String(index+1).padStart(2,"0")}</span><div className="min-w-0"><p className="truncate font-semibold">{alt.fragranceName}</p><p className="mt-1 text-xs text-[var(--muted)]">{alt.confidence}% confidence</p></div></div><strong className="text-sm">{alt.score}/100</strong></div>)}</div></Card>
-   <Card className="xl:col-span-5"><Eyebrow>Engine status</Eyebrow><div className="mt-6 grid gap-3">{[["Recommendation Engine",intelligence.engineVersions.recommendation],["Collection Intelligence",intelligence.engineVersions.collection],["Rotation Intelligence",intelligence.engineVersions.rotation],["Neural Core",intelligence.engineVersions.neuralCore],["Knowledge Graph","CONNECTED"]].map(([engine,version])=><div key={engine} className="flex items-center justify-between border-b border-[var(--border)] pb-3 last:border-0"><div><p className="text-sm text-[var(--muted)]">{engine}</p><p className="mt-1 text-[.62rem] text-[var(--gold)]">{version}</p></div><span className="flex items-center gap-2 text-xs font-semibold text-[var(--success)]"><span className="h-1.5 w-1.5 rounded-full bg-[var(--success)] shadow-[0_0_8px_rgba(79,166,122,.6)]"/>ACTIVE</span></div>)}</div></Card>
-   <Card className="xl:col-span-7"><div className="flex flex-wrap items-center justify-between gap-4"><div><Eyebrow>Collection dimensions</Eyebrow><h3 className="display-serif mt-3 text-3xl">Intelligence health map</h3></div><span className="text-xs text-[var(--muted)]">{intelligence.collectionIntelligence.confidence}% data confidence</span></div><div className="mt-7"><HealthDimensions analysis={analysis}/></div></Card>
-  </section>
- </div>
+export default function TodayPage() {
+  const { analysis, owned, logWear, hydrated } = useCollection();
+  const intelligence = runNeuralCore({ analysis, owned, hydrated });
+
+  const recommendation = intelligence.primaryRecommendation;
+  const alternatives = intelligence.alternativeRecommendations;
+  const insight = intelligence.collectionIntelligence.priorityInsight;
+  const rotation = intelligence.rotationIntelligence;
+  const signals =
+    recommendation?.signals
+      .filter((signal) => signal.id !== "data-quality")
+      .slice(0, 5) ?? [];
+
+  const [confirmedFragranceId, setConfirmedFragranceId] = useState<string | null>(
+    null,
+  );
+  const [confirmedAt, setConfirmedAt] = useState<string | null>(null);
+
+  const confirmationKey = recommendation
+    ? `olfactus.daily-wear.${new Date().toISOString().slice(0, 10)}.${recommendation.fragranceId}`
+    : null;
+
+  useEffect(() => {
+    if (!confirmationKey) {
+      setConfirmedFragranceId(null);
+      setConfirmedAt(null);
+      return;
+    }
+
+    const saved = window.localStorage.getItem(confirmationKey);
+
+    if (saved) {
+      setConfirmedFragranceId(recommendation?.fragranceId ?? null);
+      setConfirmedAt(saved);
+    } else {
+      setConfirmedFragranceId(null);
+      setConfirmedAt(null);
+    }
+  }, [confirmationKey, recommendation?.fragranceId]);
+
+  const wearConfirmed =
+    Boolean(recommendation) &&
+    confirmedFragranceId === recommendation?.fragranceId;
+
+  function confirmWear() {
+    if (!recommendation || wearConfirmed || !confirmationKey) return;
+
+    const timestamp = new Date().toISOString();
+    logWear(recommendation.fragranceId);
+    window.localStorage.setItem(confirmationKey, timestamp);
+    setConfirmedFragranceId(recommendation.fragranceId);
+    setConfirmedAt(timestamp);
+  }
+
+  const currentHour = new Date().getHours();
+  const greeting =
+    currentHour < 12
+      ? "Good morning"
+      : currentHour < 18
+        ? "Good afternoon"
+        : "Good evening";
+
+  const analystBriefing = useMemo(() => {
+    const strongestSignal = [...signals].sort((a, b) => b.score - a.score)[0];
+    const weakestSignal = [...signals].sort((a, b) => a.score - b.score)[0];
+    const recommendationName =
+      recommendation?.fragranceName ?? "your highest-value fragrance";
+
+    const weatherSentence =
+      intelligence.context.humidity >= 65
+        ? `Humidity is elevated at ${intelligence.context.humidity}%, favoring fresher structures with cleaner lift.`
+        : `Conditions are relatively dry, allowing richer structures to remain controlled.`;
+
+    const rotationSentence =
+      rotation.healthScore >= 85
+        ? "Your rotation is healthy, so today’s choice can prioritize contextual fit."
+        : "Rotation imbalance is influencing today’s decision and increases the value of a less-used bottle.";
+
+    const strengthSentence = strongestSignal
+      ? `${strongestSignal.label} is the strongest decision signal at ${strongestSignal.score}%.`
+      : "The available intelligence signals remain balanced.";
+
+    const growthSentence =
+      insight?.action ??
+      (weakestSignal
+        ? `${weakestSignal.label} is the main opportunity for future collection growth.`
+        : "Continue logging wears to improve long-term precision.");
+
+    return `${weatherSentence} ${rotationSentence} ${recommendationName} currently provides the best total outcome. ${strengthSentence} ${growthSentence}`;
+  }, [
+    insight?.action,
+    intelligence.context.humidity,
+    recommendation?.fragranceName,
+    rotation.healthScore,
+    signals,
+  ]);
+
+  const bottleIdentity = getBottleIdentity(
+    recommendation?.fragranceId,
+    recommendation?.fragranceName,
+  );
+
+  const pulseMetrics = [
+    {
+      label: "Collection Health",
+      value: intelligence.collectionHealth.score,
+      note: intelligence.collectionHealth.status,
+    },
+    {
+      label: "DNA Diversity",
+      value: analysis.dimensions.dnaDiversity,
+      note: getMetricStatus(analysis.dimensions.dnaDiversity),
+    },
+    {
+      label: "Season Coverage",
+      value: analysis.dimensions.seasonCoverage,
+      note: getMetricStatus(analysis.dimensions.seasonCoverage),
+    },
+    {
+      label: "Rotation",
+      value: rotation.healthScore,
+      note: rotation.status,
+    },
+  ];
+
+  return (
+    <div className="command-page command-evolution pb-12">
+      <section className="evolution-hero relative min-h-[820px] overflow-hidden rounded-[38px] border border-[rgba(232,200,127,.24)]">
+        <div className="command-grid pointer-events-none absolute inset-0" />
+        <div className="evolution-ambient pointer-events-none absolute inset-0" />
+        <div className="evolution-data-stream pointer-events-none absolute inset-y-0 left-[54%] hidden w-px xl:block" />
+
+        <div className="relative flex min-h-[820px] flex-col p-6 sm:p-10 xl:p-14">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="command-mark grid h-11 w-11 place-items-center rounded-full">
+                <Command size={18} />
+              </span>
+              <div>
+                <p className="text-[.62rem] font-bold uppercase tracking-[.24em] text-[var(--gold-bright)]">
+                  OLFACTUS Neural Command
+                </p>
+                <p className="mt-1 text-xs text-[var(--muted)]">
+                  Live recommendation synthesis
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="command-status">
+                <span className="h-2 w-2 rounded-full bg-[var(--success)] shadow-[0_0_12px_rgba(85,173,129,.72)]" />
+                Neural Core Online
+              </span>
+              <span className="command-status">
+                NC {intelligence.engineVersions.neuralCore}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid flex-1 items-center gap-12 py-10 xl:grid-cols-[.92fr_1.08fr] xl:py-12">
+            <div className="relative z-10">
+              <p className="text-sm text-[var(--muted)]">
+                {greeting}, Steve.
+              </p>
+
+              <h1 className="display-serif mt-4 max-w-3xl text-[clamp(3.4rem,6.2vw,6.8rem)] leading-[.9] tracking-[-.055em]">
+                Presented by
+                <span className="block text-[var(--gold-bright)]">
+                  neural intelligence.
+                </span>
+              </h1>
+
+              <div className="mt-11">
+                <p className="text-[.65rem] font-bold uppercase tracking-[.24em] text-[var(--muted)]">
+                  Today&apos;s recommendation
+                </p>
+
+                <p className="mt-5 text-xs font-bold uppercase tracking-[.24em] text-[var(--gold)]">
+                  {bottleIdentity.brand}
+                </p>
+
+                <h2 className="display-serif mt-2 max-w-3xl text-[clamp(2.5rem,4.6vw,5.2rem)] leading-[.94]">
+                  {bottleIdentity.name}
+                </h2>
+
+                <p className="mt-6 max-w-xl text-base leading-8 text-[var(--muted)]">
+                  {recommendation?.explanation ??
+                    "Add your first fragrance to unlock personalized daily intelligence."}
+                </p>
+              </div>
+
+              {recommendation ? (
+                <div className="mt-9 flex flex-wrap gap-3">
+                  <Button
+                    variant={wearConfirmed ? "secondary" : "primary"}
+                    onClick={confirmWear}
+                    disabled={wearConfirmed}
+                    className={wearConfirmed ? "wear-confirmed-button" : ""}
+                  >
+                    {wearConfirmed ? (
+                      <>
+                        <Check size={16} />
+                        Wear confirmed
+                      </>
+                    ) : (
+                      "Confirm today’s wear"
+                    )}
+                  </Button>
+
+                  <Link
+                    href={{ pathname: "/collection" }}
+                    className="focus-ring inline-flex min-h-12 items-center gap-2 rounded-2xl border border-[var(--border)] bg-white/[.035] px-5 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-[rgba(232,200,127,.34)]"
+                  >
+                    Open collection
+                    <ArrowRight size={15} />
+                  </Link>
+                </div>
+              ) : null}
+
+              {wearConfirmed && confirmedAt ? (
+                <div className="wear-confirmation mt-5 flex items-center gap-3">
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-[rgba(85,173,129,.12)] text-[var(--success)]">
+                    <Check size={15} />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--success)]">
+                      Added to today&apos;s rotation
+                    </p>
+                    <p className="mt-1 text-xs text-[var(--muted)]">
+                      Logged at{" "}
+                      {new Date(confirmedAt).toLocaleTimeString([], {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="relative min-h-[500px] xl:min-h-[620px]">
+              <div className="bottle-stage absolute inset-0 grid place-items-center">
+                <div className="orbit-system absolute h-[430px] w-[430px] sm:h-[530px] sm:w-[530px]">
+                  <span className="orbit-ring orbit-ring-one" />
+                  <span className="orbit-ring orbit-ring-two" />
+                  <span className="orbit-ring orbit-ring-three" />
+                  <span className="orbit-node orbit-node-one" />
+                  <span className="orbit-node orbit-node-two" />
+                  <span className="orbit-node orbit-node-three" />
+                  <span className="orbit-pulse" />
+                </div>
+
+                <div className="neural-line neural-line-left" />
+                <div className="neural-line neural-line-right" />
+
+                <div className="museum-object relative z-10">
+                  <div className="museum-spotlight pointer-events-none absolute" />
+                  <div className={`fragrance-bottle ${bottleIdentity.variant}`}>
+                    <div className="fragrance-cap" />
+                    <div className="fragrance-neck" />
+                    <div className="fragrance-glass">
+                      <div className="fragrance-reflection" />
+                      <div className="fragrance-liquid" />
+                      <div className="fragrance-label">
+                        <span>{bottleIdentity.brand}</span>
+                        <strong>{bottleIdentity.shortName}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="museum-pedestal">
+                    <div className="pedestal-top" />
+                    <div className="pedestal-face">
+                      <span>OLFACTUS</span>
+                      <small>NEURAL SELECTION</small>
+                    </div>
+                  </div>
+                  <div className="pedestal-reflection" />
+                </div>
+
+                <div className="confidence-core absolute bottom-2 right-0 sm:right-4">
+                  <div className="confidence-core-ring">
+                    <div>
+                      <p className="display-serif text-5xl leading-none text-[var(--gold-bright)]">
+                        {intelligence.confidence}
+                      </p>
+                      <p className="mt-1 text-[.58rem] font-bold uppercase tracking-[.16em] text-[var(--muted)]">
+                        Confidence
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="data-chip data-chip-weather">
+                  <CloudSun size={14} />
+                  {intelligence.context.temperatureF}°F
+                </div>
+                <div className="data-chip data-chip-humidity">
+                  <Droplets size={14} />
+                  {intelligence.context.humidity}%
+                </div>
+                <div className="data-chip data-chip-role">
+                  <Orbit size={14} />
+                  {intelligence.context.desiredRole}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="diagnostic-strip grid gap-4 border-t border-[var(--border)] pt-6 sm:grid-cols-2 xl:grid-cols-5">
+            {signals.map((signal, index) => (
+              <div key={signal.id} className="diagnostic-item">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-[.61rem] font-bold uppercase tracking-[.15em] text-[var(--muted)]">
+                    {String(index + 1).padStart(2, "0")} · {signal.label}
+                  </p>
+                  <strong className="text-sm text-[var(--gold-bright)]">
+                    {signal.score}%
+                  </strong>
+                </div>
+                <div className="diagnostic-track mt-3">
+                  <span style={{ width: `${signal.score}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {!hydrated ? (
+        <p className="mt-5 text-sm text-[var(--muted)]">
+          Loading your saved collection…
+        </p>
+      ) : null}
+
+      <section className="mt-8 grid gap-6 xl:grid-cols-[1.18fr_.82fr]">
+        <article className="analyst-panel rounded-[32px] border border-[var(--border)] p-7 sm:p-10">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Sparkles size={17} className="text-[var(--gold-bright)]" />
+              <p className="text-[.64rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                Neural analyst briefing
+              </p>
+            </div>
+            <span className="command-status">Generated live</span>
+          </div>
+
+          <blockquote className="display-serif mt-7 max-w-4xl text-3xl leading-[1.25] text-[var(--foreground)] sm:text-4xl">
+            “{analystBriefing}”
+          </blockquote>
+
+          <div className="mt-8 grid gap-4 border-t border-[var(--border)] pt-6 sm:grid-cols-3">
+            <AnalystFact
+              icon={<CloudSun size={16} />}
+              label="Environment"
+              value={`${intelligence.context.temperatureF}°F · ${intelligence.context.humidity}% humidity`}
+            />
+            <AnalystFact
+              icon={<RotateCcw size={16} />}
+              label="Rotation state"
+              value={`${rotation.healthScore}/100 · ${rotation.status}`}
+            />
+            <AnalystFact
+              icon={<Waves size={16} />}
+              label="Priority"
+              value={insight?.title ?? "Continue calibration"}
+            />
+          </div>
+        </article>
+
+        <article className="collection-pulse-evolved rounded-[32px] border border-[var(--border)] p-7 sm:p-9">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[.64rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                Collection pulse
+              </p>
+              <h3 className="display-serif mt-3 text-4xl">
+                Live health profile.
+              </h3>
+            </div>
+            <Gauge size={46} strokeWidth={1} className="text-[var(--gold)] opacity-70" />
+          </div>
+
+          <div className="mt-8 space-y-6">
+            {pulseMetrics.map((metric) => (
+              <PulseBar
+                key={metric.label}
+                label={metric.label}
+                value={metric.value}
+                note={metric.note}
+              />
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <section className="mt-8 grid gap-6 xl:grid-cols-3">
+        <article className="data-column rounded-[28px] border border-[var(--border)] p-7">
+          <p className="text-[.62rem] font-bold uppercase tracking-[.18em] text-[var(--gold)]">
+            Rotation opportunity
+          </p>
+
+          <div className="mt-7 flex items-end justify-between">
+            <div>
+              <p className="display-serif text-6xl text-[var(--gold-bright)]">
+                {rotation.healthScore}
+              </p>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Rotation health
+              </p>
+            </div>
+            <RotateCcw size={46} strokeWidth={1} className="text-[var(--gold)] opacity-60" />
+          </div>
+
+          {intelligence.rotationAlert ? (
+            <div className="mt-7 rounded-2xl border border-[rgba(213,154,69,.24)] bg-[rgba(213,154,69,.06)] p-4">
+              <p className="text-[.61rem] font-bold uppercase tracking-[.15em] text-[var(--warning)]">
+                Reintroduce
+              </p>
+              <p className="mt-2 font-semibold">
+                {intelligence.rotationAlert.fragranceName}
+              </p>
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                Idle for {intelligence.rotationAlert.daysSinceLastWear} days
+              </p>
+            </div>
+          ) : null}
+        </article>
+
+        <article className="data-column rounded-[28px] border border-[var(--border)] p-7">
+          <p className="text-[.62rem] font-bold uppercase tracking-[.18em] text-[var(--gold)]">
+            Alternative decisions
+          </p>
+
+          <div className="mt-5 divide-y divide-[var(--border)]">
+            {alternatives.slice(0, 3).map((alternative, index) => (
+              <div
+                key={alternative.fragranceId}
+                className="flex items-center justify-between gap-4 py-4"
+              >
+                <div className="flex min-w-0 items-center gap-4">
+                  <span className="display-serif text-2xl text-[var(--gold)]">
+                    {String(index + 2).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold">
+                      {alternative.fragranceName}
+                    </p>
+                    <p className="mt-1 text-xs text-[var(--muted)]">
+                      {alternative.confidence}% confidence
+                    </p>
+                  </div>
+                </div>
+                <strong className="text-sm">{alternative.score}</strong>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="data-column rounded-[28px] border border-[var(--border)] p-7">
+          <p className="text-[.62rem] font-bold uppercase tracking-[.18em] text-[var(--gold)]">
+            Neural systems
+          </p>
+
+          <div className="mt-5 divide-y divide-[var(--border)]">
+            {[
+              ["Recommendation", intelligence.engineVersions.recommendation],
+              ["Collection", intelligence.engineVersions.collection],
+              ["Rotation", intelligence.engineVersions.rotation],
+              ["Neural Core", intelligence.engineVersions.neuralCore],
+            ].map(([name, version]) => (
+              <div
+                key={name}
+                className="flex items-center justify-between gap-4 py-4"
+              >
+                <div>
+                  <p className="text-sm text-[var(--muted)]">{name}</p>
+                  <p className="mt-1 text-[.62rem] text-[var(--gold)]">
+                    {version}
+                  </p>
+                </div>
+                <span className="flex items-center gap-2 text-[.62rem] font-bold text-[var(--success)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
+                  ACTIVE
+                </span>
+              </div>
+            ))}
+          </div>
+        </article>
+      </section>
+
+      <section className="mt-8 rounded-[30px] border border-[var(--border)] bg-black/10 p-7 sm:p-9">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-[.62rem] font-bold uppercase tracking-[.2em] text-[var(--gold)]">
+              Collection dimensions
+            </p>
+            <h3 className="display-serif mt-3 text-4xl">
+              Intelligence health map.
+            </h3>
+          </div>
+          <p className="text-xs text-[var(--muted)]">
+            {intelligence.collectionIntelligence.confidence}% data confidence
+          </p>
+        </div>
+
+        <div className="mt-8">
+          <HealthDimensions analysis={analysis} />
+        </div>
+      </section>
+    </div>
+  );
 }
-function Metric({label,value,suffix="/100"}:{label:string;value:number;suffix?:string}){return <div className="metric-tile rounded-2xl border border-[var(--border)] p-4"><p className="text-[.61rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">{label}</p><p className="display-serif mt-2 text-3xl">{value}{suffix&&<span className="ml-1 text-[.65rem] text-[var(--muted)]">{suffix}</span>}</p></div>}
-function MetricInline({label,value}:{label:string;value:string}){return <div><p className="text-[.62rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">{label}</p><p className="display-serif mt-1 text-2xl capitalize">{value}</p></div>}
-function ScoreRing({score}:{score:number}){const degrees=Math.max(0,Math.min(100,score))*3.6;return <div className="grid h-24 w-24 place-items-center rounded-full p-[1px]" style={{background:`conic-gradient(var(--gold-bright) ${degrees}deg, rgba(255,255,255,.08) 0deg)`}}><div className="grid h-full w-full place-items-center rounded-full bg-[#111419] text-center"><div><p className="display-serif text-2xl text-[var(--gold-bright)]">{score}%</p><p className="text-[.55rem] uppercase tracking-[.12em] text-[var(--muted)]">Confidence</p></div></div></div>}
+
+function PulseBar({
+  label,
+  value,
+  note,
+}: {
+  label: string;
+  value: number;
+  note: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold">{label}</p>
+          <p className="mt-1 text-xs capitalize text-[var(--muted)]">{note}</p>
+        </div>
+        <p className="display-serif text-3xl text-[var(--gold-bright)]">
+          {value}
+        </p>
+      </div>
+      <div className="pulse-track mt-3">
+        <span style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function AnalystFact({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="mt-1 text-[var(--gold)]">{icon}</span>
+      <div>
+        <p className="text-[.59rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+          {label}
+        </p>
+        <p className="mt-2 text-sm leading-6">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function getMetricStatus(value: number) {
+  if (value >= 90) return "exceptional";
+  if (value >= 80) return "strong";
+  if (value >= 70) return "healthy";
+  if (value >= 55) return "developing";
+  return "priority";
+}
+
+function getBottleIdentity(
+  fragranceId?: string,
+  fragranceName?: string,
+) {
+  const fullName = fragranceName ?? "OLFACTUS Selection";
+  const words = fullName.split(" ");
+  const known: Record<
+    string,
+    { brand: string; name: string; shortName: string; variant: string }
+  > = {
+    imagination: {
+      brand: "Louis Vuitton",
+      name: "Imagination",
+      shortName: "IMAGINATION",
+      variant: "bottle-imagination",
+    },
+    ganymede: {
+      brand: "Marc-Antoine Barrois",
+      name: "Ganymede",
+      shortName: "GANYMEDE",
+      variant: "bottle-ganymede",
+    },
+    "grand-soir": {
+      brand: "Maison Francis Kurkdjian",
+      name: "Grand Soir",
+      shortName: "GRAND SOIR",
+      variant: "bottle-grand-soir",
+    },
+    "prada-lhomme": {
+      brand: "Prada",
+      name: "Prada L’Homme",
+      shortName: "L’HOMME",
+      variant: "bottle-prada",
+    },
+    terre: {
+      brand: "Hermès",
+      name: "Terre d’Hermès",
+      shortName: "TERRE",
+      variant: "bottle-terre",
+    },
+    naxos: {
+      brand: "Xerjoff",
+      name: "Naxos",
+      shortName: "NAXOS",
+      variant: "bottle-naxos",
+    },
+    "un-air": {
+      brand: "L’Artisan Parfumeur",
+      name: "Un Air de Bretagne",
+      shortName: "UN AIR",
+      variant: "bottle-un-air",
+    },
+    "bottled-absolu": {
+      brand: "Hugo Boss",
+      name: "Bottled Absolu",
+      shortName: "ABSOLU",
+      variant: "bottle-boss",
+    },
+  };
+
+  if (fragranceId && known[fragranceId]) return known[fragranceId];
+
+  return {
+    brand: words.length > 1 ? words.slice(0, -1).join(" ") : "OLFACTUS",
+    name: words.at(-1) ?? fullName,
+    shortName: (words.at(-1) ?? "SELECTION").toUpperCase(),
+    variant: "bottle-generic",
+  };
+}
