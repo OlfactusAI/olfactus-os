@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/layout/app-shell";
+import { OlfactusOSProvider } from "@/components/os/olfactus-os-provider";
 import { CollectionProvider } from "@/components/providers/collection-provider";
 
 export default function ProductLayout({
@@ -8,7 +9,9 @@ export default function ProductLayout({
 }) {
   return (
     <CollectionProvider>
-      <AppShell>{children}</AppShell>
+      <OlfactusOSProvider>
+        <AppShell>{children}</AppShell>
+      </OlfactusOSProvider>
     </CollectionProvider>
   );
 }
