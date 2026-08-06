@@ -1,6 +1,7 @@
 "use client";
 
 import { Heart, Minus, Plus, SprayCan } from "lucide-react";
+import { FragranceAsset } from "@/components/assets/fragrance-asset";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { CollectionItem } from "@/lib/domain/collection";
@@ -26,8 +27,8 @@ export function FragranceCard({
 }: FragranceCardProps) {
   return (
     <Card className="group flex min-h-80 flex-col transition duration-200 hover:-translate-y-0.5 hover:border-[color:rgba(200,168,102,.32)]">
-      <div className="relative mb-5 grid h-32 place-items-center rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]">
-        <div className="h-24 w-16 rounded-[15px_15px_7px_7px] bg-[linear-gradient(180deg,rgba(255,255,255,.18),rgba(200,168,102,.13))] shadow-2xl transition duration-200 group-hover:-translate-y-1" />
+      <div className="relative mb-5 grid h-40 place-items-center overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]">
+        <FragranceAsset fragranceId={fragrance.id} brand={fragrance.brand} name={fragrance.name} mode="card" className="h-full w-full transition duration-300 group-hover:-translate-y-1" />
         {item && (
           <button
             type="button"

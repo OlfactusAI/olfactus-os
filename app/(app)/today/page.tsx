@@ -130,13 +130,13 @@ export default function TodayPage() {
     },
     {
       label: "DNA Diversity",
-      value: analysis.dimensions.dnaDiversity,
-      note: getMetricStatus(analysis.dimensions.dnaDiversity),
+      value: analysis.dimensions.diversity,
+      note: getMetricStatus(analysis.dimensions.diversity),
     },
     {
       label: "Season Coverage",
-      value: analysis.dimensions.seasonCoverage,
-      note: getMetricStatus(analysis.dimensions.seasonCoverage),
+      value: analysis.dimensions.seasonalBalance,
+      note: getMetricStatus(analysis.dimensions.seasonalBalance),
     },
     {
       label: "Rotation",

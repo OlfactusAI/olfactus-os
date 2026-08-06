@@ -1,62 +1,491 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AlertTriangle, Check, FlaskConical, ShieldCheck } from "lucide-react";
-import { PageHeader } from "@/components/features/page-header";
-import { Card } from "@/components/ui/card";
-import { Eyebrow } from "@/components/ui/eyebrow";
-import { useCollection } from "@/components/providers/collection-provider";
-import { demoProfile } from "@/lib/data/demo";
-import { fragrances } from "@/lib/data/fragrances";
-import { analyzeBuyDecision } from "@/lib/intelligence/buy-decision";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Beaker,
+  BrainCircuit,
+  Check,
+  ChevronDown,
+  CircleDollarSign,
+  Dna,
+  FlaskConical,
+  Gauge,
+  Layers3,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 
-const verdictMeta = {
-  buy: { label: "Buy", icon: Check, tone: "var(--success)" },
-  sample: { label: "Sample first", icon: FlaskConical, tone: "var(--warning)" },
-  skip: { label: "Skip", icon: AlertTriangle, tone: "var(--danger)" },
-} as const;
+import { FragranceAsset } from "@/components/assets/fragrance-asset";
+import { DecisionMetric } from "@/components/decision/decision-metric";
+import { CollectionImpactSimulator } from "@/components/intelligence/collection-impact-simulator";
+import { NeuralActivityFeed } from "@/components/intelligence/neural-activity-feed";
+import { NeuralConfidenceCore } from "@/components/intelligence/neural-confidence-core";
+import { useCollection } from "@/components/providers/collection-provider";
+import { Button } from "@/components/ui/button";
+import {
+  analyzeDecisionLab,
+  type DecisionLabOutput,
+} from "@/lib/intelligence/decision-lab-engine";
 
 export default function DecisionsPage() {
-  const { items, available, addFragrance } = useCollection();
-  const [candidateId, setCandidateId] = useState(available[0]?.id ?? "");
-  const [price, setPrice] = useState("225");
+  const {
+    owned,
+    available,
+    analysis,
+    addFragrance,
+    hydrated,
+  } = useCollection();
 
-  const effectiveCandidateId = available.some((candidate) => candidate.id === candidateId) ? candidateId : available[0]?.id ?? "";
-  const candidate = fragrances.find((fragrance) => fragrance.id === effectiveCandidateId);
+  const candidates = available;
+  const [candidateId, setCandidateId] = useState(
+    candidates[0]?.id ?? "",
+  );
+  const [priceInput, setPriceInput] = useState("");
+
+  const selectedCandidate =
+    candidates.find((candidate) => candidate.id === candidateId) ??
+    candidates[0] ??
+    null;
+
   const decision = useMemo(() => {
-    if (!effectiveCandidateId) return null;
-    return analyzeBuyDecision({ candidateFragranceId: effectiveCandidateId, collection: items, profile: demoProfile, catalog: fragrances, price: Number(price) || undefined });
-  }, [effectiveCandidateId, items, price]);
+    if (!selectedCandidate) return null;
 
-  if (!available.length) {
-    return <><PageHeader eyebrow="Actionable intelligence" title="Decisions" description="Every calibration fragrance is already owned." /><Card><h2 className="display-serif text-3xl">No candidates available</h2><p className="mt-3 text-[var(--muted)]">Remove a fragrance from Collection or expand the intelligence catalog.</p></Card></>;
+    const parsedPrice = Number(priceInput);
+
+    return analyzeDecisionLab({
+      candidate: selectedCandidate,
+      owned: owned.map(({ fragrance }) => fragrance),
+      analysis,
+      price:
+        Number.isFinite(parsedPrice) && parsedPrice > 0
+          ? parsedPrice
+          : undefined,
+    });
+  }, [analysis, owned, priceInput, selectedCandidate]);
+
+  if (!selectedCandidate || !decision) {
+    return (
+      <section className="decision-empty rounded-[38px] border border-[var(--border)] p-12 text-center">
+        <FlaskConical className="mx-auto text-[var(--gold)]" />
+        <h1 className="display-serif mt-6 text-5xl">
+          No decision candidate available.
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-[var(--muted)]">
+          Every fragrance in the current intelligence catalog is already owned.
+        </p>
+      </section>
+    );
   }
 
-  const meta = decision ? verdictMeta[decision.verdict] : verdictMeta.sample;
-  const VerdictIcon = meta.icon;
-
   return (
-    <>
-      <PageHeader eyebrow="Purchase decision center" title="Should this enter your collection?" description="OLFACTUS evaluates contribution, climate, redundancy, quality, price risk, and projected Collection Health." />
-      <section className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-        <Card className="xl:col-span-4">
-          <Eyebrow>Candidate</Eyebrow>
-          <label className="mt-5 block text-sm text-[var(--muted)]" htmlFor="candidate">Fragrance</label>
-          <select id="candidate" value={effectiveCandidateId} onChange={(event) => setCandidateId(event.target.value)} className="focus-ring mt-2 min-h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-4">
-            {available.map((fragrance) => <option key={fragrance.id} value={fragrance.id}>{fragrance.brand} — {fragrance.name}</option>)}
-          </select>
-          <label className="mt-5 block text-sm text-[var(--muted)]" htmlFor="price">Expected price</label>
-          <div className="relative mt-2"><span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)]">$</span><input id="price" inputMode="decimal" value={price} onChange={(event) => setPrice(event.target.value.replace(/[^0-9.]/g, ""))} className="focus-ring min-h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] pl-8 pr-4" /></div>
-          {candidate && <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><p className="font-semibold">{candidate.name}</p><p className="mt-1 text-sm text-[var(--muted)]">{candidate.brand} · {candidate.concentration}</p><p className="mt-3 text-sm text-[var(--muted)]">{candidate.family} · {candidate.roles.join(" · ")}</p></div>}
-        </Card>
+    <div className="decision-lab-page pb-12">
+      <section className="decision-lab-hero relative overflow-hidden rounded-[38px] border border-[rgba(232,200,127,.24)]">
+        <div className="decision-lab-grid pointer-events-none absolute inset-0" />
+        <div className="decision-lab-aura pointer-events-none absolute -right-40 -top-40 h-[760px] w-[760px] rounded-full" />
 
-        {decision && <Card className="relative overflow-hidden xl:col-span-8"><div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(200,168,102,.14),transparent_65%)]" /><div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between"><div><Eyebrow>OLFACTUS Decision</Eyebrow><div className="mt-5 flex items-center gap-3"><VerdictIcon className="h-7 w-7" style={{ color: meta.tone }} /><h2 className="display-serif text-5xl" style={{ color: meta.tone }}>{meta.label}</h2></div><p className="mt-5 max-w-xl text-lg leading-8 text-[var(--muted)]">{decision.summary}</p><p className="mt-5 text-sm text-[var(--muted)]">Confidence <strong className="text-[var(--foreground)]">{decision.confidence}%</strong> · Model {decision.modelVersion}</p></div><div className="grid min-w-[220px] grid-cols-2 gap-3"><div className="rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><Eyebrow>Fit score</Eyebrow><p className="display-serif mt-3 text-4xl text-[var(--gold)]">{decision.score}</p></div><div className="rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><Eyebrow>Risk</Eyebrow><p className="display-serif mt-3 text-4xl">{decision.risk}</p></div></div></div>
-          <div className="relative mt-8 flex flex-wrap gap-3">{decision.verdict === "buy" && <button onClick={() => addFragrance(decision.candidateFragranceId)} className="focus-ring inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--gold)] px-4 text-sm font-semibold text-[#17130c]">Add to collection</button>}<span className="inline-flex min-h-11 items-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-4 text-sm text-[var(--muted)]"><ShieldCheck className="mr-2 h-4 w-4" /> Explainable decision</span></div></Card>}
+        <div className="relative p-6 sm:p-10 xl:p-14">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="decision-command-mark grid h-11 w-11 place-items-center rounded-full">
+                <FlaskConical size={18} />
+              </span>
 
-        {decision && <Card className="xl:col-span-7"><Eyebrow>Evidence</Eyebrow><div className="mt-5 grid gap-3">{decision.evidence.map((item) => <div key={item.key} className="rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><div className="flex items-center justify-between gap-4"><strong>{item.label}</strong><span className={item.direction === "positive" ? "text-[var(--success)]" : item.direction === "negative" ? "text-[var(--danger)]" : "text-[var(--gold)]"}>{item.value}</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-black/30"><div className="h-full rounded-full bg-[var(--gold)]" style={{ width: `${item.value}%` }} /></div><p className="mt-3 text-sm leading-6 text-[var(--muted)]">{item.interpretation}</p></div>)}</div></Card>}
+              <div>
+                <p className="text-[.62rem] font-bold uppercase tracking-[.24em] text-[var(--gold-bright)]">
+                  OLFACTUS Decision Lab
+                </p>
+                <p className="mt-1 text-xs text-[var(--muted)]">
+                  Neural purchase analysis · {decision.modelVersion}
+                </p>
+              </div>
+            </div>
 
-        {decision && <Card className="xl:col-span-5"><Eyebrow>Projected impact</Eyebrow><div className="mt-6 flex items-end gap-4"><div><p className="text-sm text-[var(--muted)]">Current</p><p className="display-serif mt-2 text-4xl">{decision.projectedImpact.currentHealth}</p></div><span className="pb-2 text-2xl text-[var(--muted)]">→</span><div><p className="text-sm text-[var(--muted)]">If added</p><p className="display-serif mt-2 text-5xl text-[var(--success)]">{decision.projectedImpact.projectedHealth}</p></div></div><p className="mt-5 text-sm"><span className="text-[var(--muted)]">Health change </span><strong className={decision.projectedImpact.healthDelta > 0 ? "text-[var(--success)]" : "text-[var(--muted)]"}>{decision.projectedImpact.healthDelta > 0 ? "+" : ""}{decision.projectedImpact.healthDelta}</strong></p>{decision.projectedImpact.newRoles.length > 0 && <p className="mt-3 text-sm text-[var(--muted)]">New coverage: <span className="text-[var(--foreground)]">{decision.projectedImpact.newRoles.join(", ")}</span></p>}{decision.closestOverlap && <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-4"><Eyebrow>Closest overlap</Eyebrow><p className="mt-3 font-semibold">{decision.closestOverlap.fragranceName}</p><p className="mt-1 text-sm text-[var(--muted)]">{decision.closestOverlap.similarity}% functional similarity</p></div>}</Card>}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="decision-status-chip">
+                <span className="h-2 w-2 rounded-full bg-[var(--success)]" />
+                Decision engine ready
+              </span>
+              <span className="decision-status-chip">
+                {decision.pipeline.length} analysis stages
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-9 grid gap-5 rounded-[26px] border border-[var(--border)] bg-black/10 p-5 xl:grid-cols-[1fr_220px]">
+            <label className="decision-select">
+              <span>Candidate fragrance</span>
+              <select
+                value={selectedCandidate.id}
+                onChange={(event) => setCandidateId(event.target.value)}
+              >
+                {candidates.map((candidate) => (
+                  <option key={candidate.id} value={candidate.id}>
+                    {candidate.brand} — {candidate.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={15} />
+            </label>
+
+            <label className="decision-price">
+              <span>Observed price</span>
+              <div>
+                <span>$</span>
+                <input
+                  inputMode="decimal"
+                  value={priceInput}
+                  onChange={(event) => setPriceInput(event.target.value)}
+                  placeholder={String(
+                    selectedCandidate.market?.typicalMarketPrice ??
+                      selectedCandidate.market?.retailPrice ??
+                      180,
+                  )}
+                />
+              </div>
+            </label>
+          </div>
+
+          <div className="mt-10 grid gap-12 xl:grid-cols-[1.03fr_.97fr] xl:items-center">
+            <div>
+              <p className="text-[.64rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                Should I buy?
+              </p>
+
+              <p className="mt-5 text-xs font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                {selectedCandidate.brand}
+              </p>
+
+              <h1 className="display-serif mt-2 text-[clamp(3.4rem,6.5vw,7rem)] leading-[.88] tracking-[-.055em]">
+                {selectedCandidate.name}
+              </h1>
+
+              <div className="mt-8 flex flex-wrap items-end gap-5">
+                <div
+                  className={`decision-verdict decision-verdict-${decision.verdict}`}
+                >
+                  {decision.verdict}
+                </div>
+
+                <div>
+                  <p className="display-serif text-5xl text-[var(--gold-bright)]">
+                    {decision.score}
+                  </p>
+                  <p className="mt-1 text-[.58rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+                    Purchase score
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-7 max-w-2xl text-base leading-8 text-[var(--muted)] sm:text-lg">
+                {decision.analystReport}
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                {decision.verdict === "buy" ? (
+                  <Button
+                    variant="primary"
+                    onClick={() => addFragrance(selectedCandidate.id)}
+                  >
+                    Add to collection
+                    <ArrowRight size={15} />
+                  </Button>
+                ) : (
+                  <Button variant="primary">
+                    <Beaker size={16} />
+                    Mark for sampling
+                  </Button>
+                )}
+
+                <Button>
+                  <BrainCircuit size={16} />
+                  Save analysis
+                </Button>
+              </div>
+            </div>
+
+            <div className="decision-asset-stage relative min-h-[570px]">
+              <div className="decision-orbit-system">
+                <span className="decision-orbit orbit-one" />
+                <span className="decision-orbit orbit-two" />
+                <span className="decision-orbit orbit-three" />
+                <span className="decision-orbit-node node-left" />
+                <span className="decision-orbit-node node-right" />
+              </div>
+
+              <FragranceAsset
+                fragranceId={selectedCandidate.id}
+                brand={selectedCandidate.brand}
+                name={selectedCandidate.name}
+                mode="hero"
+                priority
+                showStatus
+                className="relative z-10 h-[530px]"
+              />
+
+              <div className="absolute bottom-4 right-1 z-20">
+                <NeuralConfidenceCore
+                  value={decision.confidence}
+                  label="Decision confidence"
+                  size="medium"
+                />
+              </div>
+
+              <div className="decision-floating-chip chip-health">
+                <TrendingUp size={14} />
+                Health +{decision.recommendation.projectedHealthGain}
+              </div>
+              <div className="decision-floating-chip chip-overlap">
+                <Layers3 size={14} />
+                {decision.metrics.overlapRisk}% overlap
+              </div>
+              <div className="decision-floating-chip chip-regret">
+                <ShieldAlert size={14} />
+                {decision.metrics.regretRisk}% regret risk
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-3 border-t border-[var(--border)] pt-6 sm:grid-cols-2 xl:grid-cols-5">
+            <HeroMetric
+              label="Collection Fit"
+              value={decision.metrics.collectionFit}
+            />
+            <HeroMetric
+              label="DNA Expansion"
+              value={decision.metrics.dnaExpansion}
+            />
+            <HeroMetric
+              label="Performance"
+              value={decision.metrics.performance}
+            />
+            <HeroMetric
+              label="Value"
+              value={decision.metrics.value}
+            />
+            <HeroMetric
+              label="Long-Term Use"
+              value={decision.metrics.longTermOwnership}
+            />
+          </div>
+        </div>
       </section>
-    </>
+
+      <section className="mt-8 grid gap-6 xl:grid-cols-[1.08fr_.92fr]">
+        <article className="decision-analyst-panel rounded-[32px] border border-[var(--border)] p-7 sm:p-10">
+          <div className="flex items-center gap-3">
+            <Sparkles size={17} className="text-[var(--gold-bright)]" />
+            <p className="text-[.64rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+              Analyst report
+            </p>
+          </div>
+
+          <blockquote className="display-serif mt-7 text-3xl leading-[1.27] sm:text-4xl">
+            “{decision.analystReport}”
+          </blockquote>
+
+          <div className="mt-8 grid gap-4 border-t border-[var(--border)] pt-6 sm:grid-cols-3">
+            <AnalystFact
+              icon={<Target size={16} />}
+              label="Best role"
+              value={
+                decision.recommendation.primaryRole
+                  ? capitalize(decision.recommendation.primaryRole)
+                  : "Balanced use"
+              }
+            />
+            <AnalystFact
+              icon={<Dna size={16} />}
+              label="Originality"
+              value={`${decision.recommendation.originality}/100`}
+            />
+            <AnalystFact
+              icon={<CircleDollarSign size={16} />}
+              label="Value efficiency"
+              value={`${decision.metrics.value}/100`}
+            />
+          </div>
+        </article>
+
+        <article className="decision-scorecard rounded-[32px] border border-[var(--border)] p-7 sm:p-9">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[.64rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                Decision breakdown
+              </p>
+              <h2 className="display-serif mt-3 text-4xl">
+                The verdict, quantified.
+              </h2>
+            </div>
+            <Gauge size={46} strokeWidth={1} className="text-[var(--gold)] opacity-70" />
+          </div>
+
+          <div className="mt-8 space-y-6">
+            <DecisionMetric
+              label="Collection Fit"
+              value={decision.metrics.collectionFit}
+            />
+            <DecisionMetric
+              label="DNA Expansion"
+              value={decision.metrics.dnaExpansion}
+            />
+            <DecisionMetric
+              label="Season Value"
+              value={decision.metrics.seasonValue}
+            />
+            <DecisionMetric
+              label="Long-Term Ownership"
+              value={decision.metrics.longTermOwnership}
+            />
+            <DecisionMetric
+              label="Overlap Risk"
+              value={decision.metrics.overlapRisk}
+              inverse
+            />
+            <DecisionMetric
+              label="Regret Risk"
+              value={decision.metrics.regretRisk}
+              inverse
+            />
+          </div>
+        </article>
+      </section>
+
+      <section className="mt-8 grid gap-6 xl:grid-cols-2">
+        <ReasonPanel
+          title="Why buy"
+          icon={<ShieldCheck size={18} />}
+          reasons={decision.positiveReasons}
+          type="positive"
+        />
+
+        <ReasonPanel
+          title="Watch out"
+          icon={<AlertTriangle size={18} />}
+          reasons={decision.watchReasons}
+          type="watch"
+        />
+      </section>
+
+      <section className="mt-8 grid gap-6 xl:grid-cols-[1.04fr_.96fr]">
+        <CollectionImpactSimulator
+          recommendation={decision.recommendation}
+        />
+        <NeuralActivityFeed stages={decision.pipeline} />
+      </section>
+
+      {!hydrated ? (
+        <p className="mt-6 text-sm text-[var(--muted)]">
+          Loading saved collection before finalizing the verdict…
+        </p>
+      ) : null}
+    </div>
   );
+}
+
+function HeroMetric({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="decision-hero-metric">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[.59rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+          {label}
+        </p>
+        <p className="text-sm text-[var(--gold-bright)]">{value}</p>
+      </div>
+      <div className="decision-progress mt-3">
+        <span style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function AnalystFact({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <span className="mt-1 text-[var(--gold)]">{icon}</span>
+      <div>
+        <p className="text-[.58rem] font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+          {label}
+        </p>
+        <p className="mt-2 text-sm leading-6">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function ReasonPanel({
+  title,
+  icon,
+  reasons,
+  type,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  reasons: DecisionLabOutput["positiveReasons"];
+  type: "positive" | "watch";
+}) {
+  return (
+    <article
+      className={`decision-reason-panel decision-reason-${type} rounded-[32px] border p-7 sm:p-9`}
+    >
+      <div className="flex items-center gap-3">
+        {icon}
+        <p className="text-[.64rem] font-bold uppercase tracking-[.22em]">
+          {title}
+        </p>
+      </div>
+
+      <div className="mt-7 divide-y divide-[var(--border)]">
+        {reasons.map((reason) => (
+          <div key={reason.title} className="flex gap-4 py-5 first:pt-0">
+            <span
+              className={`decision-reason-icon decision-reason-icon-${type}`}
+            >
+              {type === "positive" ? (
+                <Check size={12} />
+              ) : (
+                <AlertTriangle size={12} />
+              )}
+            </span>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-4">
+                <p className="font-semibold">{reason.title}</p>
+                {reason.score !== undefined ? (
+                  <p className="text-sm text-[var(--gold-bright)]">
+                    {reason.score}
+                  </p>
+                ) : null}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                {reason.explanation}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function capitalize(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
