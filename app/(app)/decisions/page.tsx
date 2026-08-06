@@ -18,9 +18,11 @@ import {
   Sparkles,
   Target,
   TrendingUp,
+  GitCompareArrows,
 } from "lucide-react";
 
 import { FragranceAsset } from "@/components/assets/fragrance-asset";
+import { DecisionComparisonView } from "@/components/decision/decision-comparison-view";
 import { DecisionMetric } from "@/components/decision/decision-metric";
 import { CollectionImpactSimulator } from "@/components/intelligence/collection-impact-simulator";
 import { NeuralActivityFeed } from "@/components/intelligence/neural-activity-feed";
@@ -31,6 +33,7 @@ import {
   analyzeDecisionLab,
   type DecisionLabOutput,
 } from "@/lib/intelligence/decision-lab-engine";
+import { compareDecisionCandidates } from "@/lib/intelligence/decision-comparison-engine";
 
 export default function DecisionsPage() {
   const {
@@ -42,14 +45,24 @@ export default function DecisionsPage() {
   } = useCollection();
 
   const candidates = available;
+  const [mode, setMode] = useState<"single" | "compare">("single");
   const [candidateId, setCandidateId] = useState(
     candidates[0]?.id ?? "",
   );
+  const [secondCandidateId, setSecondCandidateId] = useState(
+    candidates[1]?.id ?? candidates[0]?.id ?? "",
+  );
   const [priceInput, setPriceInput] = useState("");
+  const [secondPriceInput, setSecondPriceInput] = useState("");
 
   const selectedCandidate =
     candidates.find((candidate) => candidate.id === candidateId) ??
     candidates[0] ??
+    null;
+
+  const secondCandidate =
+    candidates.find((candidate) => candidate.id === secondCandidateId) ??
+    candidates.find((candidate) => candidate.id !== selectedCandidate?.id) ??
     null;
 
   const decision = useMemo(() => {
@@ -67,6 +80,41 @@ export default function DecisionsPage() {
           : undefined,
     });
   }, [analysis, owned, priceInput, selectedCandidate]);
+
+  const comparison = useMemo(() => {
+    if (
+      !selectedCandidate ||
+      !secondCandidate ||
+      selectedCandidate.id === secondCandidate.id
+    ) {
+      return null;
+    }
+
+    const firstPrice = Number(priceInput);
+    const secondPrice = Number(secondPriceInput);
+
+    return compareDecisionCandidates({
+      firstCandidate: selectedCandidate,
+      secondCandidate,
+      owned: owned.map(({ fragrance }) => fragrance),
+      analysis,
+      firstPrice:
+        Number.isFinite(firstPrice) && firstPrice > 0
+          ? firstPrice
+          : undefined,
+      secondPrice:
+        Number.isFinite(secondPrice) && secondPrice > 0
+          ? secondPrice
+          : undefined,
+    });
+  }, [
+    analysis,
+    owned,
+    priceInput,
+    secondCandidate,
+    secondPriceInput,
+    selectedCandidate,
+  ]);
 
   if (!selectedCandidate || !decision) {
     return (
@@ -116,6 +164,45 @@ export default function DecisionsPage() {
             </div>
           </div>
 
+          <div className="mt-8 inline-flex rounded-2xl border border-[var(--border)] bg-black/10 p-1.5">
+            <button
+              type="button"
+              onClick={() => setMode("single")}
+              className={`decision-mode-button ${mode === "single" ? "is-active" : ""}`}
+            >
+              <FlaskConical size={15} />
+              Single Decision
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("compare")}
+              className={`decision-mode-button ${mode === "compare" ? "is-active" : ""}`}
+            >
+              <GitCompareArrows size={15} />
+              Compare
+            </button>
+          </div>
+
+          {mode === "compare" ? (
+            <div className="mt-7 grid gap-4 rounded-[26px] border border-[var(--border)] bg-black/10 p-5 xl:grid-cols-2">
+              <ComparisonSelector
+                label="Candidate A"
+                candidates={candidates}
+                value={selectedCandidate.id}
+                onChange={setCandidateId}
+                price={priceInput}
+                onPriceChange={setPriceInput}
+              />
+              <ComparisonSelector
+                label="Candidate B"
+                candidates={candidates}
+                value={secondCandidate?.id ?? ""}
+                onChange={setSecondCandidateId}
+                price={secondPriceInput}
+                onPriceChange={setSecondPriceInput}
+              />
+            </div>
+          ) : (
           <div className="mt-9 grid gap-5 rounded-[26px] border border-[var(--border)] bg-black/10 p-5 xl:grid-cols-[1fr_220px]">
             <label className="decision-select">
               <span>Candidate fragrance</span>
@@ -149,7 +236,16 @@ export default function DecisionsPage() {
               </div>
             </label>
           </div>
+          )}
 
+          {mode === "compare" && comparison ? (
+            <div className="mt-10">
+              <DecisionComparisonView comparison={comparison} />
+            </div>
+          ) : null}
+
+          {mode === "single" ? (
+          <>
           <div className="mt-10 grid gap-12 xl:grid-cols-[1.03fr_.97fr] xl:items-center">
             <div>
               <p className="text-[.64rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
@@ -272,9 +368,13 @@ export default function DecisionsPage() {
               value={decision.metrics.longTermOwnership}
             />
           </div>
+          </>
+          ) : null}
         </div>
       </section>
 
+      {mode === "single" ? (
+      <>
       <section className="mt-8 grid gap-6 xl:grid-cols-[1.08fr_.92fr]">
         <article className="decision-analyst-panel rounded-[32px] border border-[var(--border)] p-7 sm:p-10">
           <div className="flex items-center gap-3">
@@ -377,6 +477,9 @@ export default function DecisionsPage() {
         />
         <NeuralActivityFeed stages={decision.pipeline} />
       </section>
+
+          </>
+          ) : null}
 
       {!hydrated ? (
         <p className="mt-6 text-sm text-[var(--muted)]">
@@ -483,6 +586,70 @@ function ReasonPanel({
         ))}
       </div>
     </article>
+  );
+}
+
+function ComparisonSelector({
+  label,
+  candidates,
+  value,
+  onChange,
+  price,
+  onPriceChange,
+}: {
+  label: string;
+  candidates: Array<{
+    id: string;
+    brand: string;
+    name: string;
+    market?: {
+      typicalMarketPrice?: number;
+      retailPrice?: number;
+    };
+  }>;
+  value: string;
+  onChange: (value: string) => void;
+  price: string;
+  onPriceChange: (value: string) => void;
+}) {
+  const candidate = candidates.find((item) => item.id === value);
+
+  return (
+    <div className="comparison-selector-panel">
+      <p className="text-[.58rem] font-bold uppercase tracking-[.16em] text-[var(--gold)]">
+        {label}
+      </p>
+      <label className="decision-select mt-3">
+        <span>Fragrance</span>
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        >
+          {candidates.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.brand} — {item.name}
+            </option>
+          ))}
+        </select>
+        <ChevronDown size={15} />
+      </label>
+      <label className="decision-price mt-3">
+        <span>Observed price</span>
+        <div>
+          <span>$</span>
+          <input
+            inputMode="decimal"
+            value={price}
+            onChange={(event) => onPriceChange(event.target.value)}
+            placeholder={String(
+              candidate?.market?.typicalMarketPrice ??
+                candidate?.market?.retailPrice ??
+                180,
+            )}
+          />
+        </div>
+      </label>
+    </div>
   );
 }
 
