@@ -28,12 +28,15 @@ import { CollectionImpactSimulator } from "@/components/intelligence/collection-
 import { NeuralActivityFeed } from "@/components/intelligence/neural-activity-feed";
 import { NeuralConfidenceCore } from "@/components/intelligence/neural-confidence-core";
 import { useCollection } from "@/components/providers/collection-provider";
+import { useProfilePreferences } from "@/components/profile/use-profile-preferences";
+import { BlindBuyRiskPanel } from "@/components/risk/blind-buy-risk-panel";
 import { Button } from "@/components/ui/button";
 import {
   analyzeDecisionLab,
   type DecisionLabOutput,
 } from "@/lib/intelligence/decision-lab-engine";
 import { compareDecisionCandidates } from "@/lib/intelligence/decision-comparison-engine";
+import { analyzeBlindBuyRisk } from "@/lib/intelligence/blind-buy-risk-engine";
 
 export default function DecisionsPage() {
   const {
@@ -45,6 +48,7 @@ export default function DecisionsPage() {
   } = useCollection();
 
   const candidates = available;
+  const { preferences } = useProfilePreferences();
   const [mode, setMode] = useState<"single" | "compare">("single");
   const [candidateId, setCandidateId] = useState(
     candidates[0]?.id ?? "",
@@ -113,6 +117,29 @@ export default function DecisionsPage() {
     priceInput,
     secondCandidate,
     secondPriceInput,
+    selectedCandidate,
+  ]);
+
+  const blindBuyRisk = useMemo(() => {
+    if (!selectedCandidate || !decision) return null;
+    const observedPrice = Number(priceInput);
+
+    return analyzeBlindBuyRisk({
+      candidate: selectedCandidate,
+      owned: owned.map(({ fragrance }) => fragrance),
+      preferences,
+      decision,
+      observedPrice:
+        Number.isFinite(observedPrice) &&
+        observedPrice > 0
+          ? observedPrice
+          : undefined,
+    });
+  }, [
+    decision,
+    owned,
+    preferences,
+    priceInput,
     selectedCandidate,
   ]);
 
@@ -470,6 +497,12 @@ export default function DecisionsPage() {
           type="watch"
         />
       </section>
+
+      {blindBuyRisk ? (
+        <div className="mt-8">
+          <BlindBuyRiskPanel analysis={blindBuyRisk} />
+        </div>
+      ) : null}
 
       <section className="mt-8 grid gap-6 xl:grid-cols-[1.04fr_.96fr]">
         <CollectionImpactSimulator

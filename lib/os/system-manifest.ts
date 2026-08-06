@@ -1,7 +1,8 @@
 export const olfactusSystemManifest = {
   product: "OLFACTUS OS",
-  version: "1.0.0",
+  version: "1.6.0",
   channel: "stable",
+  release: "Market Intelligence Stable",
   engines: [
     "Neural Core",
     "Collection Intelligence",
@@ -10,5 +11,10 @@ export const olfactusSystemManifest = {
     "Decision Lab",
     "Collection Coach",
     "Profile Intelligence",
+    "Weather Intelligence",
+    "Timeline Intelligence",
+    "Knowledge Graph Intelligence",
+    "Market Intelligence",
+    "Deal Analyzer",
   ],
 } as const;

@@ -71,7 +71,7 @@ export default function ProfilePage() {
           wearCount: item.wearCount,
           daysSinceLastWear:
             item.daysSinceLastWear,
-          favorite: item.favorite,
+          favorite: item.favorite ?? false,
         })),
         available,
         analysis,
@@ -540,7 +540,7 @@ export default function ProfilePage() {
         owned={owned.map(({ item, fragrance }) => ({
           fragrance,
           wearCount: item.wearCount,
-          favorite: item.favorite,
+          favorite: item.favorite ?? false,
           daysSinceLastWear: item.daysSinceLastWear,
         }))}
         analysis={analysis}

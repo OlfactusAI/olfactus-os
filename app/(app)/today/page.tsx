@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { HealthDimensions } from "@/components/features/health-dimensions";
+import { TodayMarketWidget } from "@/components/market/today-market-widget";
 import { useCollection } from "@/components/providers/collection-provider";
 import { Button } from "@/components/ui/button";
 import { runWeatherAwareNeuralCore } from "@/lib/intelligence/weather-aware-neural-core";

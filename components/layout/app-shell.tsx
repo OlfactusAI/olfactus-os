@@ -1,6 +1,7 @@
 import { MobileNav } from "./mobile-nav";
 import { Sidebar } from "./sidebar";
 import { OlfactusOnboarding } from "@/components/os/olfactus-onboarding";
+import { GlobalOlfactusAnalyst } from "@/components/intelligence/global-olfactus-analyst";
 
 export function AppShell({
   children,
@@ -15,6 +16,7 @@ export function AppShell({
       </main>
       <MobileNav />
       <OlfactusOnboarding />
+      <GlobalOlfactusAnalyst />
     </div>
   );
 }

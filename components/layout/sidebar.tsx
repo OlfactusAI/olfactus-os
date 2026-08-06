@@ -9,12 +9,22 @@ import {
   LayoutDashboard,
   Library,
   UserRound,
+  Dna,
+  History,
+  Network,
+  Landmark,
+  BadgeDollarSign,
 } from "lucide-react";
 
 const items = [
   { href: "/today", label: "Today", icon: LayoutDashboard },
   { href: "/collection", label: "Collection", icon: Library },
   { href: "/discover", label: "Discover", icon: Compass },
+  { href: "/genome", label: "Genome", icon: Dna },
+  { href: "/timeline", label: "Timeline", icon: History },
+  { href: "/graph", label: "Knowledge Graph", icon: Network },
+  { href: "/market", label: "Market", icon: Landmark },
+  { href: "/deal-lab", label: "Deal Lab", icon: BadgeDollarSign },
   { href: "/decisions", label: "Decisions", icon: FlaskConical },
   { href: "/profile", label: "Coach & Profile", icon: UserRound },
 ] as const;
@@ -65,11 +75,11 @@ export function Sidebar() {
           </span>
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[var(--success)]" />
-            7 engines synchronized
+            12 engines synchronized
           </span>
         </div>
         <p className="mt-4 border-t border-[var(--border)] pt-3 text-xs text-[var(--muted)]">
-          OLFACTUS OS v1.0.0 · Stable
+          OLFACTUS OS v1.6.0 · Market Stable
         </p>
       </div>
     </aside>
