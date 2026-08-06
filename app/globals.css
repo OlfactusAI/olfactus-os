@@ -2709,3 +2709,58 @@
     transition-duration: .01ms !important;
   }
 }
+
+
+
+/* OLFACTUS v1.1.0 — Weather Intelligence */
+.weather-intelligence-panel {
+  background:
+    radial-gradient(circle at 88% 0%, rgba(95,157,192,.12), transparent 35%),
+    radial-gradient(circle at 0% 100%, rgba(232,200,127,.07), transparent 32%),
+    linear-gradient(145deg,rgba(23,28,35,.98),rgba(10,12,16,.99));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 26px 74px rgba(0,0,0,.2);
+}
+
+.weather-mark {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgba(232,200,127,.2);
+  border-radius: 999px;
+  color: var(--gold-bright);
+  background: rgba(232,200,127,.055);
+}
+
+.weather-metric {
+  background: rgba(255,255,255,.022);
+}
+
+.weather-control {
+  min-height: 42px;
+  width: 100%;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  outline: 0;
+  color: var(--foreground);
+  background: rgba(255,255,255,.025);
+}
+
+.weather-source-chip {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 11px;
+  border: 1px solid rgba(85,173,129,.22);
+  border-radius: 999px;
+  color: var(--success);
+  font-size: .56rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: rgba(85,173,129,.06);
+}

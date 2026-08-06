@@ -18,11 +18,17 @@ import {
 import { HealthDimensions } from "@/components/features/health-dimensions";
 import { useCollection } from "@/components/providers/collection-provider";
 import { Button } from "@/components/ui/button";
-import { runNeuralCore } from "@/lib/intelligence/intelligence-engine";
+import { runWeatherAwareNeuralCore } from "@/lib/intelligence/weather-aware-neural-core";
+import { useWeatherIntelligence } from "@/components/weather/use-weather-intelligence";
+import { WeatherIntelligencePanel } from "@/components/weather/weather-intelligence-panel";
 
 export default function TodayPage() {
   const { analysis, owned, logWear, hydrated } = useCollection();
-  const intelligence = runNeuralCore({ analysis, owned, hydrated });
+  const weatherIntelligence = useWeatherIntelligence();
+  const intelligence = runWeatherAwareNeuralCore(
+    { analysis, owned, hydrated },
+    weatherIntelligence.weather,
+  );
 
   const recommendation = intelligence.primaryRecommendation;
   const alternatives = intelligence.alternativeRecommendations;
@@ -147,7 +153,15 @@ export default function TodayPage() {
 
   return (
     <div className="command-page command-evolution pb-12">
-      <section className="evolution-hero relative min-h-[820px] overflow-hidden rounded-[38px] border border-[rgba(232,200,127,.24)]">
+      <WeatherIntelligencePanel
+        weather={weatherIntelligence.weather}
+        status={weatherIntelligence.status}
+        error={weatherIntelligence.error}
+        preferences={weatherIntelligence.preferences}
+        onRefresh={weatherIntelligence.refresh}
+        onUpdatePreferences={weatherIntelligence.updatePreferences}
+      />
+      <section className="evolution-hero mt-8 relative min-h-[820px] overflow-hidden rounded-[38px] border border-[rgba(232,200,127,.24)]">
         <div className="command-grid pointer-events-none absolute inset-0" />
         <div className="evolution-ambient pointer-events-none absolute inset-0" />
         <div className="evolution-data-stream pointer-events-none absolute inset-y-0 left-[54%] hidden w-px xl:block" />
