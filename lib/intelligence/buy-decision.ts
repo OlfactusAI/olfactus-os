@@ -58,7 +58,17 @@ export function analyzeBuyDecision(input: {
 
   const currentRoles = new Set(owned.flatMap((fragrance) => fragrance.roles));
   const newRoles = candidate.roles.filter((role) => !currentRoles.has(role));
-  const roleContribution = clamp(newRoles.length * 24 + candidate.roles.filter((role) => currentRoles.has(role)).length * 5);
+  const roleContribution = clamp(
+    newRoles.length * 24 +
+      candidate.roles.filter((role) => currentRoles.has(role)).length * 5,
+  );
+
+  const currentFamilies = new Set(
+    owned.map((fragrance) => fragrance.family.toLowerCase()),
+  );
+  const addsNewFamily = !currentFamilies.has(candidate.family.toLowerCase());
+  const familyContribution = addsNewFamily ? 100 : 0;
+
   const environmentFit = climateFit(candidate, input.profile);
   const qualitySignal = Math.round(average([candidate.performance.longevity, candidate.performance.projection, candidate.dna.artistic, candidate.dna.formal]));
   const intelligenceReadiness = candidate.intelligenceStatus === "validated" ? 100 : candidate.intelligenceStatus === "calibration" ? 90 : 55;
@@ -70,7 +80,8 @@ export function analyzeBuyDecision(input: {
     redundancySafety * 0.22 +
     qualitySignal * 0.14 +
     clamp(50 + healthDelta * 12) * 0.15 +
-    intelligenceReadiness * 0.05,
+    intelligenceReadiness * 0.05 +
+    familyContribution * 0.12,
   ));
 
   const risk = Math.round(clamp(

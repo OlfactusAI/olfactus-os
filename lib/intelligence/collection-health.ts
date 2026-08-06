@@ -27,11 +27,15 @@ export function analyzeCollectionHealth(input:{ collection:CollectionItem[]; pro
   const diversity = Math.round(clamp(average(spreads.map(x=>x.score))*.7 + new Set(owned.map(x=>x.fragrance.family)).size*12*.3));
   const overlapPairs:{names:[string,string];similarity:number}[]=[];
   for(let i=0;i<owned.length;i++) for(let j=i+1;j<owned.length;j++){ const score=similarity(owned[i].fragrance,owned[j].fragrance); if(score>=.78) overlapPairs.push({names:[owned[i].fragrance.name,owned[j].fragrance.name],similarity:Math.round(score*100)}); }
-  const redundancy = Math.round(clamp(100-Math.min(55,overlapPairs.reduce((sum,p)=>sum+Math.max(5,(p.similarity-75)*1.2),0))));
+  const redundancy = owned.length === 0
+    ? 0
+    : Math.round(clamp(100-Math.min(55,overlapPairs.reduce((sum,p)=>sum+Math.max(5,(p.similarity-75)*1.2),0))));
   const neglected = owned.filter(x=>x.item.daysSinceLastWear>30);
   const meanWears = average(owned.map(x=>x.item.wearCount));
   const overused = owned.filter(x=>meanWears>0 && x.item.wearCount>meanWears*1.8);
-  const rotation = Math.round(clamp(100-(neglected.length/Math.max(1,owned.length))*55-(overused.length?Math.min(25,overused.length*8):0)));
+  const rotation = owned.length === 0
+    ? 0
+    : Math.round(clamp(100-(neglected.length/owned.length)*55-(overused.length?Math.min(25,overused.length*8):0)));
   const intent = input.profile.collectionStrategy==="minimalist" ? clamp(100-Math.abs(owned.length-input.profile.targetSize)*8) : clamp(76+owned.length*2);
   const moodCounts = new Map<string,number>(); owned.forEach(x=>x.fragrance.moods.forEach(mood=>moodCounts.set(mood,(moodCounts.get(mood)??0)+1)));
   const topMoods=[...moodCounts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,3);

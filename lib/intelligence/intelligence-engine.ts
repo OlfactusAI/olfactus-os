@@ -3,7 +3,10 @@ import {
   analyzeCollectionIntelligence,
   type CollectionIntelligenceOutput,
 } from "@/lib/intelligence/collection-intelligence";
-import { generateWearRecommendations } from "@/lib/intelligence/recommendation-engine";
+import {
+  generateWearRecommendations,
+  type RecommendationSignal,
+} from "@/lib/intelligence/recommendation-engine";
 import {
   optimizeRotation,
   type RotationEngineOutput,
@@ -49,6 +52,8 @@ export interface NeuralCoreOutput {
   confidence: number;
   generatedAt: string;
   activeSources: string[];
+  context: { season: "summer"; temperatureF: number; humidity: number; desiredRole: "office" };
+  engineVersions: { neuralCore: "NC-1.0.0"; recommendation: "RE-2.0.0"; collection: "CIE-1.0.0"; rotation: "ROE-1.0.0" };
   collectionHealth: { score: number; status: string; summary: string };
   collectionIntelligence: CollectionIntelligenceOutput;
   rotationIntelligence: RotationEngineOutput;
@@ -58,6 +63,7 @@ export interface NeuralCoreOutput {
     explanation: string;
     confidence: number;
     score: number;
+    signals: RecommendationSignal[];
   } | null;
   alternativeRecommendations: {
     fragranceId: string;
@@ -136,6 +142,13 @@ export function runNeuralCore({ analysis, owned, hydrated, now = new Date() }: N
       "Collection Intelligence",
       "Rotation Intelligence",
     ],
+    context: recommendationContext,
+    engineVersions: {
+      neuralCore: "NC-1.0.0",
+      recommendation: wearRecommendations.modelVersion,
+      collection: collectionIntelligence.modelVersion,
+      rotation: rotationIntelligence.modelVersion,
+    },
     collectionHealth: {
       score: analysis.score,
       status: analysis.status,
@@ -150,6 +163,7 @@ export function runNeuralCore({ analysis, owned, hydrated, now = new Date() }: N
           explanation: recommendedWear.summary,
           confidence: recommendedWear.confidence,
           score: recommendedWear.score,
+          signals: recommendedWear.signals,
         }
       : null,
     alternativeRecommendations: wearRecommendations.alternatives.map((recommendation) => ({

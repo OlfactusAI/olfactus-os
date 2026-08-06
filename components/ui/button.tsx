@@ -1,10 +1,5 @@
 import type { ButtonHTMLAttributes } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva,type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-
-const buttonVariants = cva("focus-ring inline-flex min-h-11 items-center justify-center rounded-xl px-4 text-sm font-semibold transition hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-50", {
-  variants: { variant: { primary:"bg-[var(--gold)] text-[#17130c] hover:brightness-105", secondary:"border border-[var(--border)] bg-[var(--surface-raised)] text-[var(--foreground)] hover:border-[rgba(200,168,102,.35)]", ghost:"text-[var(--muted)] hover:bg-[var(--surface-raised)] hover:text-[var(--foreground)]" } },
-  defaultVariants: { variant:"secondary" },
-});
-
-export function Button({className,variant,...props}:ButtonHTMLAttributes<HTMLButtonElement>&VariantProps<typeof buttonVariants>){return <button className={cn(buttonVariants({variant}),className)} {...props}/>}
+const variants=cva("focus-ring inline-flex min-h-12 items-center justify-center rounded-2xl px-5 text-sm font-semibold transition duration-300 disabled:pointer-events-none disabled:opacity-50",{variants:{variant:{primary:"bg-[linear-gradient(135deg,#e5c47d,#b68a3d)] text-[#16120a] shadow-[0_12px_30px_rgba(190,145,62,.22)] hover:-translate-y-0.5 hover:brightness-105",secondary:"border border-[var(--border)] bg-white/[.035] text-[var(--foreground)] hover:-translate-y-0.5 hover:border-[rgba(232,200,127,.32)] hover:bg-white/[.05]",ghost:"text-[var(--muted)] hover:bg-white/[.04] hover:text-[var(--foreground)]"}},defaultVariants:{variant:"secondary"}});
+export function Button({className,variant,...props}:ButtonHTMLAttributes<HTMLButtonElement>&VariantProps<typeof variants>){return <button className={cn(variants({variant}),className)} {...props}/>}
