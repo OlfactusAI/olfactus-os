@@ -2,13 +2,17 @@
 
 import { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { demoCollection, demoProfile } from "@/lib/data/demo";
-import { fragrances } from "@/lib/data/fragrances";
+import { useActiveFragranceCatalog } from "@/components/providers/active-catalog-provider";
 import type { CollectionItem } from "@/lib/domain/collection";
 import type { FragranceRecord } from "@/lib/domain/fragrance";
 import { analyzeCollectionHealth } from "@/lib/intelligence/collection-health";
 import { collectionReducer } from "@/lib/collection/store";
 import { appendTimelineEvent, readTimelineLedger } from "@/lib/timeline/event-ledger";
 import type { TimelineMetricSnapshot } from "@/lib/timeline/types";
+import { appendEvolutionSnapshot, readEvolutionLedger } from "@/lib/evolution/evolution-ledger";
+import { createEvolutionSnapshot } from "@/lib/intelligence/collection-evolution-engine";
+import { popRedoAction, popUndoAction, recordRecoveryAction } from "@/lib/recovery/action-ledger";
+import { appendMemoryEvent } from "@/lib/memory/store";
 
 const STORAGE_KEY = "olfactus.collection.v1";
 
@@ -24,11 +28,20 @@ interface CollectionContextValue {
   toggleFavorite: (fragranceId: string) => void;
   updateItem: (fragranceId: string, patch: Partial<Omit<CollectionItem, "fragranceId">>) => void;
   resetCollection: () => void;
+  applyCollectionTransaction: (input: {
+    title: string;
+    summary: string;
+    nextItems: CollectionItem[];
+    metadata?: Record<string, string | number | boolean | undefined>;
+  }) => void;
+  undoLastTransaction: () => boolean;
+  redoLastTransaction: () => boolean;
 }
 
 const CollectionContext = createContext<CollectionContextValue | null>(null);
 
 export function CollectionProvider({ children }: { children: React.ReactNode }) {
+  const { catalog } = useActiveFragranceCatalog();
   const [state, dispatch] = useReducer(collectionReducer, { items: demoCollection });
   const [hydrated, setHydrated] = useState(false);
 
@@ -45,21 +58,76 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (hydrated) window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
-  }, [hydrated, state.items]);
+  }, [catalog, hydrated, state.items]);
 
   const owned = useMemo(
     () =>
       state.items
-        .map((item) => ({ item, fragrance: fragrances.find((fragrance) => fragrance.id === item.fragranceId) }))
+        .map((item) => ({ item, fragrance: catalog.find((fragrance) => fragrance.id === item.fragranceId) }))
         .filter((entry): entry is { item: CollectionItem; fragrance: FragranceRecord } => Boolean(entry.fragrance)),
-    [state.items],
+    [catalog, state.items],
   );
   const ownedIds = useMemo(() => new Set(state.items.map((item) => item.fragranceId)), [state.items]);
-  const available = useMemo(() => fragrances.filter((fragrance) => !ownedIds.has(fragrance.id)), [ownedIds]);
+  const available = useMemo(() => catalog.filter((fragrance) => !ownedIds.has(fragrance.id)), [catalog, ownedIds]);
   const analysis = useMemo(
-    () => analyzeCollectionHealth({ collection: state.items, profile: demoProfile, catalog: fragrances }),
-    [state.items],
+    () => analyzeCollectionHealth({ collection: state.items, profile: demoProfile, catalog }),
+    [catalog, state.items],
   );
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const evolutionLedger =
+      readEvolutionLedger();
+    const latest =
+      evolutionLedger.snapshots.at(-1);
+    const currentIds = state.items
+      .map((item) => item.fragranceId)
+      .sort()
+      .join("|");
+    const latestIds =
+      latest?.ownedFragranceIds
+        .slice()
+        .sort()
+        .join("|") ?? "";
+
+    const totalWears =
+      state.items.reduce(
+        (sum, item) =>
+          sum + item.wearCount,
+        0,
+      );
+
+    const collectionChanged =
+      latest !== undefined &&
+      latestIds !== currentIds;
+    const wearMilestoneReached =
+      latest !== undefined &&
+      totalWears -
+        latest.totalWears >= 5;
+    const shouldCapture =
+      !latest ||
+      collectionChanged ||
+      wearMilestoneReached;
+
+    if (shouldCapture) {
+      appendEvolutionSnapshot(
+        createEvolutionSnapshot({
+          collection: state.items,
+          catalog,
+          profile: demoProfile,
+          source: latest
+            ? "automatic"
+            : "baseline",
+          captureReason: !latest
+            ? "tracking-started"
+            : collectionChanged
+              ? "collection-changed"
+              : "wear-milestone",
+        }),
+      );
+    }
+  }, [hydrated, state.items]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -116,7 +184,7 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
       analysis,
       hydrated,
       addFragrance: (fragranceId) => {
-        const fragrance = fragrances.find((item) => item.id === fragranceId);
+        const fragrance = catalog.find((item) => item.id === fragranceId);
         appendTimelineEvent({
           type: "bottle_added",
           title: "Bottle added",
@@ -126,10 +194,23 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
           fragranceId,
           fragranceName: fragrance?.name,
         });
+        appendMemoryEvent({
+          type: "collection-added",
+          source: "collection",
+          entity: {
+            type: "fragrance",
+            id: fragranceId,
+            label: fragrance?.name,
+          },
+          confidence: 100,
+          metadata: {
+            brand: fragrance?.brand,
+          },
+        });
         dispatch({ type: "add", fragranceId });
       },
       removeFragrance: (fragranceId) => {
-        const fragrance = fragrances.find((item) => item.id === fragranceId);
+        const fragrance = catalog.find((item) => item.id === fragranceId);
         appendTimelineEvent({
           type: "bottle_removed",
           title: "Bottle removed",
@@ -139,10 +220,23 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
           fragranceId,
           fragranceName: fragrance?.name,
         });
+        appendMemoryEvent({
+          type: "collection-removed",
+          source: "collection",
+          entity: {
+            type: "fragrance",
+            id: fragranceId,
+            label: fragrance?.name,
+          },
+          confidence: 100,
+          metadata: {
+            brand: fragrance?.brand,
+          },
+        });
         dispatch({ type: "remove", fragranceId });
       },
       logWear: (fragranceId) => {
-        const fragrance = fragrances.find((item) => item.id === fragranceId);
+        const fragrance = catalog.find((item) => item.id === fragranceId);
         appendTimelineEvent({
           type: "wear_logged",
           title: "Wear logged",
@@ -152,10 +246,28 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
           fragranceId,
           fragranceName: fragrance?.name,
         });
+        appendMemoryEvent({
+          type: "wear-recorded",
+          source: "collection",
+          entity: {
+            type: "fragrance",
+            id: fragranceId,
+            label: fragrance?.name,
+          },
+          confidence: 100,
+          metadata: {
+            brand: fragrance?.brand,
+            family: fragrance?.family,
+            accords:
+              fragrance?.accords,
+            roles:
+              fragrance?.roles,
+          },
+        });
         dispatch({ type: "log-wear", fragranceId });
       },
       toggleFavorite: (fragranceId) => {
-        const fragrance = fragrances.find((item) => item.id === fragranceId);
+        const fragrance = catalog.find((item) => item.id === fragranceId);
         appendTimelineEvent({
           type: "favorite_changed",
           title: "Favorite status changed",
@@ -165,12 +277,63 @@ export function CollectionProvider({ children }: { children: React.ReactNode }) 
           fragranceId,
           fragranceName: fragrance?.name,
         });
+        appendMemoryEvent({
+          type: "favorite-changed",
+          source: "collection",
+          entity: {
+            type: "fragrance",
+            id: fragranceId,
+            label: fragrance?.name,
+          },
+          confidence: 100,
+          metadata: {
+            brand: fragrance?.brand,
+            family: fragrance?.family,
+            accords:
+              fragrance?.accords,
+          },
+        });
         dispatch({ type: "toggle-favorite", fragranceId });
       },
       updateItem: (fragranceId, patch) => dispatch({ type: "update", fragranceId, patch }),
       resetCollection: () => dispatch({ type: "reset", items: demoCollection }),
+      applyCollectionTransaction: ({ title, summary, nextItems, metadata }) => {
+        recordRecoveryAction({
+          type: "collection-transaction",
+          title,
+          summary,
+          beforeCollection: state.items,
+          afterCollection: nextItems,
+          metadata,
+        });
+        dispatch({ type: "hydrate", items: nextItems });
+      },
+      undoLastTransaction: () => {
+        const action = popUndoAction();
+        if (!action?.beforeCollection) return false;
+        dispatch({ type: "hydrate", items: action.beforeCollection });
+        appendTimelineEvent({
+          type: "milestone_reached",
+          title: "Collection transaction undone",
+          summary: action.title,
+          metadata: { recoveryActionId: action.id },
+        });
+        return true;
+      },
+      redoLastTransaction: () => {
+        const action = popRedoAction();
+        if (!action?.afterCollection) return false;
+        dispatch({ type: "hydrate", items: action.afterCollection });
+        appendTimelineEvent({
+          type: "milestone_reached",
+          title: "Collection transaction restored",
+          summary: action.title,
+          metadata: { recoveryActionId: action.id },
+        });
+        return true;
+      },
     }),
-    [analysis, available, hydrated, owned, state.items],
+    [analysis, available, catalog, hydrated, owned, state.items],
   );
 
   return <CollectionContext.Provider value={value}>{children}</CollectionContext.Provider>;

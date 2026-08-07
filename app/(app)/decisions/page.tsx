@@ -28,6 +28,9 @@ import { CollectionImpactSimulator } from "@/components/intelligence/collection-
 import { NeuralActivityFeed } from "@/components/intelligence/neural-activity-feed";
 import { NeuralConfidenceCore } from "@/components/intelligence/neural-confidence-core";
 import { useCollection } from "@/components/providers/collection-provider";
+import {
+  useCollectorIntelligence,
+} from "@/components/providers/collector-intelligence-provider";
 import { useProfilePreferences } from "@/components/profile/use-profile-preferences";
 import { BlindBuyRiskPanel } from "@/components/risk/blind-buy-risk-panel";
 import { Button } from "@/components/ui/button";
@@ -37,17 +40,87 @@ import {
 } from "@/lib/intelligence/decision-lab-engine";
 import { compareDecisionCandidates } from "@/lib/intelligence/decision-comparison-engine";
 import { analyzeBlindBuyRisk } from "@/lib/intelligence/blind-buy-risk-engine";
+import {
+  evaluateCandidateDecision,
+} from "@/lib/decision-core/engine";
+import {
+  runSemanticFragranceQuery,
+} from "@/lib/semantic/engine";
 
 export default function DecisionsPage() {
+  const [
+    semanticQuery,
+    setSemanticQuery,
+  ] =
+    useState("");
+
   const {
     owned,
-    available,
     analysis,
     addFragrance,
     hydrated,
   } = useCollection();
+  const {
+    api,
+    hydrated:
+      intelligenceHydrated,
+  } =
+    useCollectorIntelligence();
 
-  const candidates = available;
+  const catalog =
+    api.getCatalogContext();
+  const ownedIds =
+    new Set(
+      api
+        .getCollectorState()
+        .ownership.map(
+          (item) =>
+            item.fragranceId,
+        ),
+    );
+
+  const candidates =
+    catalog.filter(
+      (fragrance) =>
+        !ownedIds.has(
+          fragrance.id,
+        ),
+    );
+
+  const semanticResults =
+    useMemo(() => {
+      if (
+        semanticQuery
+          .trim()
+          .length <
+        3
+      ) {
+        return null;
+      }
+
+      try {
+        return runSemanticFragranceQuery({
+          api,
+          text:
+            semanticQuery,
+          limit: 8,
+        });
+      } catch {
+        return null;
+      }
+    }, [
+      api,
+      semanticQuery,
+    ]);
+
+  const decisionCandidates =
+    semanticResults
+      ?.candidates
+      .map(
+        (item) =>
+          item.fragrance,
+      ) ??
+    candidates;
   const { preferences } = useProfilePreferences();
   const [mode, setMode] = useState<"single" | "compare">("single");
   const [candidateId, setCandidateId] = useState(
@@ -84,6 +157,44 @@ export default function DecisionsPage() {
           : undefined,
     });
   }, [analysis, owned, priceInput, selectedCandidate]);
+
+  const unifiedDecision =
+    useMemo(() => {
+      if (
+        !selectedCandidate ||
+        !intelligenceHydrated
+      ) {
+        return null;
+      }
+
+      const parsedPrice =
+        Number(
+          priceInput,
+        );
+
+      try {
+        return evaluateCandidateDecision({
+          api,
+          candidateFragranceId:
+            selectedCandidate.id,
+          price:
+            Number.isFinite(
+              parsedPrice,
+            ) &&
+            parsedPrice >
+              0
+              ? parsedPrice
+              : undefined,
+        });
+      } catch {
+        return null;
+      }
+    }, [
+      api,
+      intelligenceHydrated,
+      priceInput,
+      selectedCandidate,
+    ]);
 
   const comparison = useMemo(() => {
     if (
@@ -143,15 +254,55 @@ export default function DecisionsPage() {
     selectedCandidate,
   ]);
 
-  if (!selectedCandidate || !decision) {
+  if (!catalog.length) {
     return (
       <section className="decision-empty rounded-[38px] border border-[var(--border)] p-12 text-center">
         <FlaskConical className="mx-auto text-[var(--gold)]" />
         <h1 className="display-serif mt-6 text-5xl">
-          No decision candidate available.
+          Intelligence catalog unavailable.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-[var(--muted)]">
-          Every fragrance in the current intelligence catalog is already owned.
+          Decision Lab cannot evaluate candidates until the active fragrance catalog has loaded.
+        </p>
+      </section>
+    );
+  }
+
+  if (!selectedCandidate) {
+    const ownsEntireCatalog =
+      catalog.every(
+        (fragrance) =>
+          ownedIds.has(
+            fragrance.id,
+          ),
+      );
+
+    return (
+      <section className="decision-empty rounded-[38px] border border-[var(--border)] p-12 text-center">
+        <FlaskConical className="mx-auto text-[var(--gold)]" />
+        <h1 className="display-serif mt-6 text-5xl">
+          {ownsEntireCatalog
+            ? "Every catalog fragrance is already owned."
+            : "No eligible decision candidate is available."}
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-[var(--muted)]">
+          {ownsEntireCatalog
+            ? "Canonical Collector State confirms that every fragrance in the active intelligence catalog is currently owned."
+            : "The intelligence catalog is loaded, but no fragrance currently passes this Decision Lab candidate view."}
+        </p>
+      </section>
+    );
+  }
+
+  if (!decision) {
+    return (
+      <section className="decision-empty rounded-[38px] border border-[var(--border)] p-12 text-center">
+        <FlaskConical className="mx-auto text-[var(--gold)]" />
+        <h1 className="display-serif mt-6 text-5xl">
+          Decision analysis unavailable.
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-[var(--muted)]">
+          A candidate is available, but Decision Lab could not complete the analysis for it.
         </p>
       </section>
     );
@@ -209,6 +360,200 @@ export default function DecisionsPage() {
               Compare
             </button>
           </div>
+
+          <section className="semantic-decision-search mt-6">
+            <div>
+              <p className="text-[.58rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                Personal Fragrance Language · PFL-1.0.0
+              </p>
+              <h2 className="display-serif mt-2 text-3xl">
+                Describe what you want in your own words.
+              </h2>
+              <p className="mt-2 max-w-3xl text-xs leading-6 text-[var(--muted)]">
+                Try: cleaner than Naxos, darker than Imagination, less sweet than Layton, but still formal and expensive-smelling.
+              </p>
+            </div>
+
+            <input
+              value={semanticQuery}
+              onChange={(event) =>
+                setSemanticQuery(
+                  event.target.value,
+                )
+              }
+              placeholder="Describe the fragrance space you want..."
+              className="semantic-decision-input mt-4"
+            />
+
+            {semanticResults ? (
+              <div className="semantic-decision-results mt-4">
+                <div className="semantic-query-interpretation">
+                  <strong>
+                    {
+                      semanticResults
+                        .request
+                        .weightedDimensions
+                        .length
+                    }{" "}
+                    interpreted constraints
+                  </strong>
+                  <span>
+                    {
+                      semanticResults
+                        .request
+                        .confidence
+                    }
+                    % language confidence
+                  </span>
+                </div>
+
+                <div className="semantic-result-grid mt-3">
+                  {semanticResults
+                    .candidates
+                    .slice(
+                      0,
+                      5,
+                    )
+                    .map(
+                      (result) => (
+                        <button
+                          type="button"
+                          key={
+                            result
+                              .fragrance
+                              .id
+                          }
+                          onClick={() =>
+                            setSelectedCandidateId(
+                              result
+                                .fragrance
+                                .id,
+                            )
+                          }
+                        >
+                          <small>
+                            {
+                              result
+                                .fragrance
+                                .brand
+                            }
+                          </small>
+                          <strong>
+                            {
+                              result
+                                .fragrance
+                                .name
+                            }
+                          </strong>
+                          <span>
+                            {
+                              result
+                                .combinedScore
+                            }
+                            /100
+                          </span>
+                        </button>
+                      ),
+                    )}
+                </div>
+              </div>
+            ) : null}
+          </section>
+
+          {mode === "single" && unifiedDecision ? (
+            <section className="unified-decision-core mt-7">
+              <div>
+                <p className="text-[.58rem] font-bold uppercase tracking-[.22em] text-[var(--gold)]">
+                  Unified Decision Core · UDC-1.0.0
+                </p>
+                <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
+                  <div>
+                    <strong className="display-serif text-4xl uppercase text-[var(--gold-bright)]">
+                      {
+                        unifiedDecision.verdict
+                      }
+                    </strong>
+                    <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+                      {
+                        unifiedDecision.summary
+                      }
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <strong className="display-serif text-3xl">
+                      {
+                        unifiedDecision.score
+                      }
+                    </strong>
+                    <small className="block text-[.5rem] uppercase tracking-[.18em] text-[var(--muted)]">
+                      {
+                        unifiedDecision.confidence
+                      }
+                      % confidence
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div className="unified-decision-factor-grid mt-5">
+                {unifiedDecision.factors.map(
+                  (factor) => (
+                    <article
+                      key={
+                        factor.id
+                      }
+                      data-direction={
+                        factor.direction
+                      }
+                    >
+                      <small>
+                        {
+                          factor.model
+                        }
+                      </small>
+                      <strong>
+                        {
+                          factor.label
+                        }
+                      </strong>
+                      <span>
+                        {
+                          factor.score
+                        }
+                        /100
+                      </span>
+                      <p>
+                        {
+                          factor.explanation
+                        }
+                      </p>
+                    </article>
+                  ),
+                )}
+              </div>
+
+              <div className="mt-4 text-xs text-[var(--muted)]">
+                Provenance:{" "}
+                {
+                  unifiedDecision
+                    .provenance
+                    .model
+                }{" "}
+                ·{" "}
+                {
+                  unifiedDecision
+                    .provenance
+                    .evidence
+                    .length
+                }{" "}
+                evidence channels · risk{" "}
+                {
+                  unifiedDecision.risk
+                }
+                /100
+              </div>
+            </section>
+          ) : null}
 
           {mode === "compare" ? (
             <div className="mt-7 grid gap-4 rounded-[26px] border border-[var(--border)] bg-black/10 p-5 xl:grid-cols-2">

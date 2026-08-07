@@ -1,4 +1,9 @@
 import type { FragranceRecord, FragranceRole, Season } from "@/lib/domain/fragrance";
+import { filterCatalogForEngine, evaluateIntelligenceEligibility } from "@/lib/intelligence/readiness-gateway";
+import {
+  calibrateIntelligenceScore,
+  type CalibratedIntelligenceScore,
+} from "@/lib/intelligence/confidence-calibration";
 
 export interface RecommendationCollectionItem {
   fragrance: FragranceRecord;
@@ -26,6 +31,8 @@ export interface WearRecommendation {
   fragranceName: string;
   score: number;
   confidence: number;
+  calibration:
+    CalibratedIntelligenceScore;
   summary: string;
   signals: RecommendationSignal[];
 }
@@ -99,17 +106,60 @@ function analyzeCandidate(owned: RecommendationCollectionItem, context: Recommen
   const score = Math.round(signals.reduce((total, signal) => total + signal.score * signal.weight, 0));
   const confidence = Math.round(clamp(dataQualityScore * 0.6 + Math.min(100, signals.length * 7) * 0.4));
   const strongest = [...signals].filter((signal) => signal.id !== "data-quality").sort((a, b) => b.score - a.score).slice(0, 2);
+  const eligibility =
+    evaluateIntelligenceEligibility(
+      fragrance,
+    );
+  const calibration =
+    calibrateIntelligenceScore({
+      rawScore: score,
+      eligibility,
+      evidenceSignals:
+        signals.map(
+          (signal) => ({
+            id: signal.id,
+            strength:
+              signal.score,
+            source:
+              signal.id ===
+              "data-quality"
+                ? "explicit"
+                : "derived",
+          }),
+        ),
+    });
+
   return {
     fragranceId: fragrance.id,
     fragranceName: `${fragrance.brand} ${fragrance.name}`,
     score,
-    confidence,
+    confidence:
+      Math.min(
+        confidence,
+        calibration.confidence,
+      ),
+    calibration,
     summary: strongest.map((signal) => signal.explanation).join(" "),
     signals,
   };
 }
 
 export function generateWearRecommendations({ owned, context, now = new Date() }: RecommendationEngineInput): RecommendationEngineOutput {
-  const ranked = owned.map((item) => analyzeCandidate(item, context)).sort((a, b) => b.score - a.score || b.confidence - a.confidence || a.fragranceName.localeCompare(b.fragranceName));
+  const eligibleIds = new Set(filterCatalogForEngine(owned.map((item) => item.fragrance), "recommendation").map((item) => item.id));
+  const ranked = owned
+    .filter(
+      (item) =>
+        eligibleIds.has(
+          item.fragrance.id,
+        ),
+    )
+    .map(
+      (item) =>
+        analyzeCandidate(
+          item,
+          context,
+        ),
+    )
+    .sort((a, b) => b.score - a.score || b.confidence - a.confidence || a.fragranceName.localeCompare(b.fragranceName));
   return { primary: ranked[0] ?? null, alternatives: ranked.slice(1, 4), generatedAt: now.toISOString(), modelVersion: "RE-2.0.0" };
 }

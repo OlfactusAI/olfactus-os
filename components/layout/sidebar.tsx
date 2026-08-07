@@ -4,84 +4,294 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Beaker,
-  Compass,
-  FlaskConical,
-  LayoutDashboard,
-  Library,
-  UserRound,
-  Dna,
-  History,
-  Network,
-  Landmark,
-  BadgeDollarSign,
+  ChevronDown,
+  ChevronRight,
+  Command,
+  Search,
+  Star,
 } from "lucide-react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-const items = [
-  { href: "/today", label: "Today", icon: LayoutDashboard },
-  { href: "/collection", label: "Collection", icon: Library },
-  { href: "/discover", label: "Discover", icon: Compass },
-  { href: "/genome", label: "Genome", icon: Dna },
-  { href: "/timeline", label: "Timeline", icon: History },
-  { href: "/graph", label: "Knowledge Graph", icon: Network },
-  { href: "/market", label: "Market", icon: Landmark },
-  { href: "/deal-lab", label: "Deal Lab", icon: BadgeDollarSign },
-  { href: "/decisions", label: "Decisions", icon: FlaskConical },
-  { href: "/profile", label: "Coach & Profile", icon: UserRound },
-] as const;
+import {
+  searchWorkspaces,
+  workspaceSections,
+  workspaces,
+  type WorkspaceDefinition,
+  type WorkspaceSection,
+} from "@/lib/navigation/workspaces";
+import { useNavigationExperience } from "@/components/navigation/navigation-provider";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const {
+    favorites,
+    recents,
+    analytics,
+    toggleFavorite,
+    isFavorite,
+    sidebarScrollTop,
+    setSidebarScrollTop,
+  } = useNavigationExperience();
+
+  const [query, setQuery] = useState("");
+  const [collapsed, setCollapsed] = useState<
+    Record<WorkspaceSection, boolean>
+  >({
+    Dashboard: false,
+    Knowledge: false,
+    Analytics: false,
+    Account: false,
+  });
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+    element.scrollTop = sidebarScrollTop;
+  }, [sidebarScrollTop]);
+
+  const filtered = useMemo(
+    () => searchWorkspaces(query),
+    [query],
+  );
+
+  const favoriteWorkspaces = favorites
+    .map((href) => workspaces.find((item) => item.href === href))
+    .filter(
+      (
+        workspace,
+      ): workspace is WorkspaceDefinition =>
+        Boolean(workspace),
+    );
+
+  const recentWorkspaces = recents
+    .slice(0, 4)
+    .map((href) => workspaces.find((item) => item.href === href))
+    .filter(
+      (
+        workspace,
+      ): workspace is WorkspaceDefinition =>
+        Boolean(workspace),
+    );
+
+  const mostUsed = [...workspaces]
+    .sort(
+      (a, b) =>
+        (analytics.visits[b.href] ?? 0) -
+        (analytics.visits[a.href] ?? 0),
+    )
+    .slice(0, 3)
+    .filter((workspace) => (analytics.visits[workspace.href] ?? 0) > 0);
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[252px] shrink-0 border-r border-[var(--border)] bg-[rgba(9,10,12,.96)] p-[26px_18px] lg:flex lg:flex-col">
-      <Link
-        href="/today"
-        className="display-serif px-3 text-[26px] tracking-[.13em]"
-      >
-        OLFACTUS
-      </Link>
-      <p className="mt-2 px-3 text-[.56rem] font-bold uppercase tracking-[.2em] text-[var(--gold)]">
-        Neural Operating System
-      </p>
+    <aside className="nexus-sidebar hidden lg:flex">
+      <header className="nexus-sidebar-header">
+        <Link href="/today" className="nexus-brand">
+          <span className="display-serif">OLFACTUS</span>
+          <small>Neural Operating System</small>
+        </Link>
 
-      <nav className="mt-8 grid gap-2">
-        {items.map(({ href, label, icon: Icon }) => {
-          const active = pathname === href;
+        <label className="nexus-workspace-search">
+          <Search size={15} />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search workspaces…"
+          />
+          <kbd>⌘K</kbd>
+        </label>
+      </header>
+
+      <div
+        ref={scrollRef}
+        className="nexus-sidebar-scroll"
+        onScroll={(event) =>
+          setSidebarScrollTop(event.currentTarget.scrollTop)
+        }
+      >
+        {favoriteWorkspaces.length ? (
+          <NavigationGroup
+            title="Favorites"
+            workspaces={favoriteWorkspaces}
+            pathname={pathname}
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+          />
+        ) : null}
+
+        {recentWorkspaces.length ? (
+          <NavigationGroup
+            title="Recent"
+            workspaces={recentWorkspaces}
+            pathname={pathname}
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+            compact
+          />
+        ) : null}
+
+        {mostUsed.length ? (
+          <NavigationGroup
+            title="Most Used"
+            workspaces={mostUsed}
+            pathname={pathname}
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+            compact
+          />
+        ) : null}
+
+        {workspaceSections.map((section) => {
+          const sectionWorkspaces = filtered.filter(
+            (workspace) => workspace.section === section,
+          );
+
+          if (!sectionWorkspaces.length) return null;
+
           return (
-            <Link
-              key={href}
-              href={href}
-              className={`focus-ring flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition ${
-                active
-                  ? "bg-[rgba(232,200,127,.09)] text-[var(--gold-bright)]"
-                  : "text-[var(--muted)] hover:bg-[var(--surface-raised)] hover:text-[var(--foreground)]"
-              }`}
-            >
-              <Icon size={18} />
-              {label}
-            </Link>
+            <section key={section} className="nexus-nav-section">
+              <button
+                type="button"
+                className="nexus-nav-section-header"
+                onClick={() =>
+                  setCollapsed((current) => ({
+                    ...current,
+                    [section]: !current[section],
+                  }))
+                }
+                aria-expanded={!collapsed[section]}
+              >
+                <span>{section}</span>
+                {collapsed[section] ? (
+                  <ChevronRight size={13} />
+                ) : (
+                  <ChevronDown size={13} />
+                )}
+              </button>
+
+              {!collapsed[section] || query ? (
+                <div className="nexus-nav-links">
+                  {sectionWorkspaces.map((workspace) => (
+                    <WorkspaceLink
+                      key={workspace.href}
+                      workspace={workspace}
+                      active={
+                        pathname === workspace.href ||
+                        pathname.startsWith(`${workspace.href}/`)
+                      }
+                      favorite={isFavorite(workspace.href)}
+                      onToggleFavorite={() =>
+                        toggleFavorite(workspace.href)
+                      }
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </section>
           );
         })}
-      </nav>
 
-      <div className="os-status-panel mt-auto rounded-2xl border border-[var(--border)] p-4">
-        <p className="text-[.56rem] font-bold uppercase tracking-[.16em] text-[var(--gold)]">
-          System status
-        </p>
-        <div className="mt-3 space-y-2 text-xs text-[var(--muted)]">
-          <span className="flex items-center gap-2">
-            <Beaker size={13} className="text-[var(--success)]" />
+        {!filtered.length ? (
+          <p className="nexus-nav-empty">
+            No workspace matches “{query}”.
+          </p>
+        ) : null}
+      </div>
+
+      <footer className="nexus-sidebar-footer">
+        <div className="nexus-system-status">
+          <span>
+            <Beaker size={13} />
             Neural Core online
           </span>
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[var(--success)]" />
-            12 engines synchronized
-          </span>
+          <span>171 engines synchronized</span>
         </div>
-        <p className="mt-4 border-t border-[var(--border)] pt-3 text-xs text-[var(--muted)]">
-          OLFACTUS OS v1.6.0 · Market Stable
-        </p>
-      </div>
+        <p>OLFACTUS OS v2.0.0c-1 · Universal Search Core</p>
+      </footer>
     </aside>
+  );
+}
+
+function NavigationGroup({
+  title,
+  workspaces,
+  pathname,
+  isFavorite,
+  toggleFavorite,
+  compact = false,
+}: {
+  title: string;
+  workspaces: WorkspaceDefinition[];
+  pathname: string;
+  isFavorite: (href: string) => boolean;
+  toggleFavorite: (href: string) => void;
+  compact?: boolean;
+}) {
+  return (
+    <section className="nexus-nav-section">
+      <p className="nexus-nav-static-title">{title}</p>
+      <div className="nexus-nav-links">
+        {workspaces.map((workspace) => (
+          <WorkspaceLink
+            key={`${title}-${workspace.href}`}
+            workspace={workspace}
+            active={
+              pathname === workspace.href ||
+              pathname.startsWith(`${workspace.href}/`)
+            }
+            favorite={isFavorite(workspace.href)}
+            onToggleFavorite={() => toggleFavorite(workspace.href)}
+            compact={compact}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function WorkspaceLink({
+  workspace,
+  active,
+  favorite,
+  onToggleFavorite,
+  compact = false,
+}: {
+  workspace: WorkspaceDefinition;
+  active: boolean;
+  favorite: boolean;
+  onToggleFavorite: () => void;
+  compact?: boolean;
+}) {
+  const Icon = workspace.icon;
+
+  return (
+    <div className={`nexus-workspace-row ${active ? "is-active" : ""}`}>
+      <Link
+        href={workspace.href}
+        className="nexus-workspace-link"
+        title={workspace.description}
+      >
+        <Icon size={compact ? 15 : 17} />
+        <span>{workspace.label}</span>
+      </Link>
+      <button
+        type="button"
+        className="nexus-favorite-button"
+        onClick={onToggleFavorite}
+        aria-label={
+          favorite
+            ? `Remove ${workspace.label} from favorites`
+            : `Add ${workspace.label} to favorites`
+        }
+      >
+        <Star size={13} fill={favorite ? "currentColor" : "none"} />
+      </button>
+    </div>
   );
 }

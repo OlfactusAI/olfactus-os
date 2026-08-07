@@ -1,6 +1,6 @@
 {
   "name": "olfactus-os",
-  "version": "1.6.0",
+  "version": "4.3.0-alpha.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:migrate": "node scripts/migrate-database.mjs",
+    "db:seed": "node scripts/seed-database.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.0",

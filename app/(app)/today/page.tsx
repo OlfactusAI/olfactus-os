@@ -1,6 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import {
+  LiveMissionControl,
+} from "@/components/intelligence/live-mission-control";
+import {
+  PredictiveAhead,
+} from "@/components/intelligence/predictive-ahead";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -19,17 +26,61 @@ import { HealthDimensions } from "@/components/features/health-dimensions";
 import { TodayMarketWidget } from "@/components/market/today-market-widget";
 import { useCollection } from "@/components/providers/collection-provider";
 import { Button } from "@/components/ui/button";
-import { runWeatherAwareNeuralCore } from "@/lib/intelligence/weather-aware-neural-core";
+import { runUnifiedWeatherAwareNeuralCore } from "@/lib/intelligence/unified-weather-aware-neural-core";
 import { useWeatherIntelligence } from "@/components/weather/use-weather-intelligence";
 import { WeatherIntelligencePanel } from "@/components/weather/weather-intelligence-panel";
+import { CollectorAssistantPanel } from "@/components/intelligence/collector-assistant-panel";
+import { buildCollectorAssistantInsights } from "@/lib/intelligence/collector-assistant-engine";
+import { useCollectorIntelligence } from "@/components/providers/collector-intelligence-provider";
 
 export default function TodayPage() {
-  const { analysis, owned, logWear, hydrated } = useCollection();
-  const weatherIntelligence = useWeatherIntelligence();
-  const intelligence = runWeatherAwareNeuralCore(
-    { analysis, owned, hydrated },
-    weatherIntelligence.weather,
-  );
+  const {
+    logWear,
+    hydrated:
+      collectionHydrated,
+  } = useCollection();
+  const {
+    api,
+    state:
+      collectorState,
+    hydrated:
+      intelligenceHydrated,
+  } =
+    useCollectorIntelligence();
+  
+const hydrated =
+  collectionHydrated &&
+  intelligenceHydrated;
+const catalog =
+    api.getCatalogContext();
+  const analysis =
+    api.getCollectionHealthContext();
+  const assistantInsights =
+    useMemo(
+      () =>
+        buildCollectorAssistantInsights({
+          collection:
+            collectorState.collection,
+          catalog,
+          analysis,
+        }),
+      [
+        collectorState.collection,
+        catalog,
+        analysis,
+      ],
+    );
+  const weatherIntelligence =
+    useWeatherIntelligence();
+  const intelligence =
+    runUnifiedWeatherAwareNeuralCore({
+      api,
+      hydrated:
+        collectionHydrated &&
+        intelligenceHydrated,
+      weather:
+        weatherIntelligence.weather,
+    });
 
   const recommendation = intelligence.primaryRecommendation;
   const alternatives = intelligence.alternativeRecommendations;
@@ -115,7 +166,7 @@ export default function TodayPage() {
         ? `${weakestSignal.label} is the main opportunity for future collection growth.`
         : "Continue logging wears to improve long-term precision.");
 
-    return `${weatherSentence} ${rotationSentence} ${recommendationName} currently provides the best total outcome. ${strengthSentence} ${growthSentence}`;
+    return `${weatherSentence} ${rotationSentence} ${recommendationName} currently provides the best total outcome. ${strengthSentence} ${growthSentence} Decision context is unified through ${intelligence.recommendationModel}.`;
   }, [
     insight?.action,
     intelligence.context.humidity,
@@ -162,6 +213,7 @@ export default function TodayPage() {
         onRefresh={weatherIntelligence.refresh}
         onUpdatePreferences={weatherIntelligence.updatePreferences}
       />
+      <CollectorAssistantPanel insights={assistantInsights} />
       <section className="evolution-hero mt-8 relative min-h-[820px] overflow-hidden rounded-[38px] border border-[rgba(232,200,127,.24)]">
         <div className="command-grid pointer-events-none absolute inset-0" />
         <div className="evolution-ambient pointer-events-none absolute inset-0" />
@@ -545,6 +597,13 @@ export default function TodayPage() {
           <HealthDimensions analysis={analysis} />
         </div>
       </section>
+
+
+
+<PredictiveAhead />
+
+      <LiveMissionControl />
+
     </div>
   );
 }
@@ -594,6 +653,8 @@ function AnalystFact({
         </p>
         <p className="mt-2 text-sm leading-6">{value}</p>
       </div>
+    
+      
     </div>
   );
 }

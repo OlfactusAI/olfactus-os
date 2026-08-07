@@ -1,0 +1,12 @@
+import { describe,expect,it } from "vitest";
+import type { FragranceRecord } from "@/lib/domain/fragrance";
+import type { CollectionItem } from "@/lib/domain/collection";
+import { buildKnowledgeGraph } from "@/lib/intelligence/knowledge-graph-engine";
+import { activateDynamicKnowledgeGraph } from "@/lib/intelligence/dynamic-graph-runtime";
+import { buildCollectorAssistantInsights } from "@/lib/intelligence/collector-assistant-engine";
+import { analyzeCollectionHealth } from "@/lib/intelligence/collection-health";
+import { simulateCollectionChange } from "@/lib/intelligence/neural-collection-simulator";
+import { ScalableFragranceRepository,estimateRepositoryCapacity } from "@/lib/database/scaling/repository-v3";
+const f=(id:string,name:string,woody:number):FragranceRecord=>({id,brand:"Example",name,concentration:"Eau de Parfum",releaseYear:2024,family:"Woody",perfumers:["Nose"],notes:{top:["Bergamot"],heart:["Lavender"],base:["Cedar"]},accords:["Woody"],roles:["office"],seasons:{spring:75,summer:65,fall:80,winter:70},dna:{fresh:60,green:40,woody,amber:40,sweet:20,dark:30,artistic:65,formal:75},moods:["refined"],performance:{longevity:78,projection:72},intelligenceStatus:"validated"});
+const catalog=[f("a","Atlas",80),f("b","Boreal",35)]; const collection:CollectionItem[]=[{fragranceId:"a",wearCount:1,daysSinceLastWear:50}]; const profile={collectionStrategy:"balanced-luxury" as const,targetSize:10,climate:"four-seasons" as const};
+describe("Intelligence Layer 3",()=>{it("activates graph runtime",()=>{const graph=activateDynamicKnowledgeGraph({graph:buildKnowledgeGraph({catalog,ownedIds:new Set(["a"])}),catalog,collection,timeline:[]});expect(graph.nodes.some(n=>n.type==="collection")).toBe(true)});it("generates assistant insights",()=>{const analysis=analyzeCollectionHealth({collection,catalog,profile});expect(buildCollectorAssistantInsights({collection,catalog,analysis}).length).toBeGreaterThan(0)});it("simulates without mutating source",()=>{const result=simulateCollectionChange({action:"add",candidateId:"b",collection,catalog,profile});expect(result.projectedCollection).toHaveLength(2);expect(collection).toHaveLength(1)});it("paginates scalable repository",()=>{const repo=new ScalableFragranceRepository(catalog);expect(repo.page({pageSize:1}).pageCount).toBe(2);expect(estimateRepositoryCapacity(50000).indexShards).toBe(10)})});

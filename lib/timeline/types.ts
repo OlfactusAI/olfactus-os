@@ -9,8 +9,18 @@ export type TimelineEventType =
   | "coach_action_completed"
   | "decision_completed"
   | "deal_analyzed"
+  | "evolution_snapshot"
+  | "annual_review_generated"
   | "purchase_skipped"
-  | "profile_updated";
+  | "profile_updated"
+  | "sample_added"
+  | "decant_added"
+  | "bottle_finished"
+  | "bottle_upgraded"
+  | "repurchased"
+  | "milestone_reached"
+  | "collection_value_updated"
+  | "simulation_applied";
 
 export interface TimelineMetricSnapshot {
   collectionHealth: number;

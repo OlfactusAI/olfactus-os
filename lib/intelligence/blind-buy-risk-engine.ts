@@ -4,6 +4,11 @@ import type {
 } from "@/lib/domain/fragrance";
 import type { ProfilePreferences } from "@/lib/intelligence/profile-intelligence-engine";
 import type { DecisionLabOutput } from "@/lib/intelligence/decision-lab-engine";
+import { assertEligibleForEngine, filterCatalogForEngine } from "@/lib/intelligence/readiness-gateway";
+import {
+  calibrateIntelligenceScore,
+  type CalibratedIntelligenceScore,
+} from "@/lib/intelligence/confidence-calibration";
 
 const dnaDimensions: DnaDimension[] = [
   "fresh",
@@ -52,6 +57,8 @@ export interface BlindBuyRiskOutput {
   generatedAt: string;
   candidate: FragranceRecord;
   riskScore: number;
+  calibration:
+    CalibratedIntelligenceScore;
   riskTier: BlindBuyRiskTier;
   verdict: BlindBuyVerdict;
   personalConfidence: number;
@@ -86,7 +93,18 @@ export function analyzeBlindBuyRisk({
   decision,
   observedPrice,
 }: BlindBuyRiskInput): BlindBuyRiskOutput {
-  const similarOwned = owned
+  const eligibility =
+    assertEligibleForEngine(
+      candidate,
+      "blind-buy-risk",
+    );
+  const eligibleOwned =
+    filterCatalogForEngine(
+      owned,
+      "blind-buy-risk",
+    );
+
+  const similarOwned = eligibleOwned
     .map((fragrance) => ({
       fragranceId: fragrance.id,
       fragranceName: fragrance.name,
@@ -247,12 +265,60 @@ export function analyzeBlindBuyRisk({
         Math.min(100, owned.length * 9) * 0.15,
     ),
   );
+  const calibration =
+    calibrateIntelligenceScore({
+      rawScore: riskScore,
+      eligibility,
+      evidenceSignals: [
+        {
+          id:
+            "decision-confidence",
+          strength:
+            decision.confidence,
+          source: "derived",
+        },
+        {
+          id: "compatibility",
+          strength:
+            compatibility,
+          source: "derived",
+        },
+        {
+          id:
+            "collection-overlap",
+          strength:
+            collectionOverlap,
+          source: "derived",
+        },
+        {
+          id: "price-value",
+          strength:
+            baselineValue,
+          source: "explicit",
+        },
+        {
+          id:
+            "preference-fit",
+          strength:
+            100 -
+            preferenceRisk,
+          source: "derived",
+        },
+      ],
+      warnings:
+        eligibleOwned.length < 2
+          ? [
+              "Collection-overlap confidence is limited by a small comparison set.",
+            ]
+          : [],
+    });
 
   return {
     modelVersion: "BRI-1.0.0",
     generatedAt: new Date().toISOString(),
     candidate,
     riskScore,
+    calibration,
     riskTier,
     verdict,
     personalConfidence,

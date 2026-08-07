@@ -1,0 +1,53 @@
+import {
+  describe,
+  expect,
+  it,
+} from "vitest";
+
+import {
+  olfactusSystemManifest,
+} from "@/lib/os/system-manifest";
+
+describe("System diagnostics hydration contract", () => {
+  it("uses deterministic server-safe initial metrics", () => {
+    const initial = {
+      version:
+        olfactusSystemManifest.version,
+      engineCount:
+        olfactusSystemManifest.engines.length,
+      importedCount: 0,
+      timelineEvents: 0,
+      savedScenarios: 0,
+      undoCount: 0,
+      redoCount: 0,
+    };
+
+    expect(
+      initial.timelineEvents,
+    ).toBe(0);
+    expect(
+      initial.savedScenarios,
+    ).toBe(0);
+    expect(
+      initial.undoCount,
+    ).toBe(0);
+  });
+});
+
+
+describe("Registry timing hydration", () => {
+  it("does not render buildTimeMs directly from collectEntityDiagnostics", () => {
+    const source =
+      readFileSync(
+        join(
+          process.cwd(),
+          "app/(app)/system/page.tsx",
+        ),
+        "utf8",
+      );
+
+    expect(source).not.toContain(
+      "entityDiagnostics.buildTimeMs",
+    );
+  });
+});

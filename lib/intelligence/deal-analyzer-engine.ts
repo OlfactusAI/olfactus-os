@@ -3,6 +3,11 @@ import type { FragranceRecord } from "@/lib/domain/fragrance";
 import { analyzeMarketIntelligence } from "@/lib/intelligence/market-intelligence-engine";
 import { createUnifiedKnowledgeGraph, explainGraphRecommendation, getUnifiedGraphSignal } from "@/lib/intelligence/unified-graph-intelligence";
 import { getMarketCatalogEntry } from "@/lib/market/market-catalog";
+import { assertEligibleForEngine, filterCatalogForEngine } from "@/lib/intelligence/readiness-gateway";
+import {
+  calibrateIntelligenceScore,
+  type CalibratedIntelligenceScore,
+} from "@/lib/intelligence/confidence-calibration";
 
 export interface DealOffer { id: string; seller: string; price: number; condition: "new" | "tester" | "used"; }
 export interface DealAnalysisInput { candidateId: string; offers: DealOffer[]; collection: CollectionItem[]; catalog: FragranceRecord[]; }
@@ -13,6 +18,8 @@ export interface DealAnalyzerOutput {
   bestOffer: DealOfferAnalysis;
   offers: DealOfferAnalysis[];
   purchaseScore: number;
+  calibration:
+    CalibratedIntelligenceScore;
   verdict: string;
   fairValue: number;
   buyWindow: { minimum: number; maximum: number };
@@ -95,9 +102,15 @@ function classifyOfferPrice({
 export function analyzeDeal(input: DealAnalysisInput): DealAnalyzerOutput {
   const candidate = input.catalog.find((item) => item.id === input.candidateId);
   if (!candidate) throw new Error(`Unknown fragrance: ${input.candidateId}`);
+  const eligibility =
+    assertEligibleForEngine(
+      candidate,
+      "deal-lab",
+    );
+  const eligibleCatalog = filterCatalogForEngine(input.catalog, "deal-lab");
   const ownedIds = new Set(input.collection.map((item) => item.fragranceId));
-  const graph = createUnifiedKnowledgeGraph({ catalog: input.catalog, ownedIds });
-  const signal = getUnifiedGraphSignal({ graph, catalog: input.catalog, fragranceId: candidate.id });
+  const graph = createUnifiedKnowledgeGraph({ catalog: eligibleCatalog, ownedIds });
+  const signal = getUnifiedGraphSignal({ graph, catalog: eligibleCatalog, fragranceId: candidate.id });
   const market = getMarketCatalogEntry(candidate.id, candidate.market?.retailPrice);
   const blindBuyRisk = Math.round(Math.min(100, signal.overlap * .48 + (100 - signal.strategicValue) * .28 + 18));
 
@@ -203,9 +216,9 @@ export function analyzeDeal(input: DealAnalysisInput): DealAnalyzerOutput {
     blindBuyRisk,
   });
 
-  const alternatives = input.catalog
+  const alternatives = eligibleCatalog
     .filter((item) => !ownedIds.has(item.id) && item.id !== candidate.id)
-    .map((item) => ({ item, signal: getUnifiedGraphSignal({ graph, catalog: input.catalog, fragranceId: item.id }) }))
+    .map((item) => ({ item, signal: getUnifiedGraphSignal({ graph, catalog: eligibleCatalog, fragranceId: item.id }) }))
     .sort((a,b) => b.signal.strategicValue - a.signal.strategicValue)
     .slice(0,3)
     .map(({item, signal}) => ({ fragranceId:item.id, name:item.name, brand:item.brand, strategicValue:signal.strategicValue, expansionValue:signal.expansionValue }));
@@ -218,9 +231,72 @@ export function analyzeDeal(input: DealAnalysisInput): DealAnalyzerOutput {
   ];
 
   const opportunity = bestOffer.purchaseScore >= 90 ? "Exceptional" : bestOffer.purchaseScore >= 78 ? "Strong" : bestOffer.purchaseScore >= 62 ? "Fair" : "Weak";
+  const calibration =
+    calibrateIntelligenceScore({
+      rawScore:
+        bestOffer.purchaseScore,
+      eligibility,
+      evidenceSignals: [
+        {
+          id: "fair-value",
+          strength:
+            bestOffer.fairValueScore,
+          source: "derived",
+        },
+        {
+          id:
+            "strategic-value",
+          strength:
+            signal.strategicValue,
+          source: "derived",
+        },
+        {
+          id: "market-risk",
+          strength:
+            100 -
+            bestOffer.marketRisk,
+          source: "derived",
+        },
+        {
+          id: "offer-quality",
+          strength:
+            Math.max(
+              0,
+              Math.min(
+                100,
+                100 -
+                  Math.abs(
+                    bestOffer.price -
+                      bestMarket.fairValuePrice,
+                  ) /
+                    Math.max(
+                      1,
+                      bestMarket.fairValuePrice,
+                    ) *
+                    100,
+              ),
+            ),
+          source: "explicit",
+        },
+        {
+          id: "graph-overlap",
+          strength:
+            100 -
+            signal.overlap,
+          source: "inferred",
+        },
+      ],
+      warnings:
+        input.offers.length < 2
+          ? [
+              "Only one live offer was available for comparison.",
+            ]
+          : [],
+    });
+
   return {
     modelVersion:"DLA-1.0.0", candidate, bestOffer, offers,
-    purchaseScore:bestOffer.purchaseScore, verdict:bestOffer.verdict,
+    purchaseScore:bestOffer.purchaseScore, calibration, verdict:bestOffer.verdict,
     fairValue:bestMarket.fairValuePrice, buyWindow:bestMarket.recommendedBuyWindow,
     typicalMarketPrice:market.typicalMarketPrice, retailPrice:market.retailPrice,
     graph:{ overlap:signal.overlap, expansionValue:signal.expansionValue, bridgeValue:signal.bridgeValue, strategicValue:signal.strategicValue },

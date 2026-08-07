@@ -19,9 +19,15 @@ export interface Recommendation {
   confidence: number;
 }
 
+import type {
+  CalibratedIntelligenceScore,
+} from "@/lib/intelligence/confidence-calibration";
+
 export interface CollectionHealthAnalysis {
   analysisType: "collection_health";
   score: number;
+  calibration:
+    CalibratedIntelligenceScore;
   status: "Excellent" | "Strong Foundation" | "Developing" | "Needs Attention";
   confidence: number;
   summary: string;

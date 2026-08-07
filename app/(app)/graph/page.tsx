@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useEffect, useMemo, useState } from "react";
 import {
   Activity,
   BrainCircuit,
@@ -17,7 +18,7 @@ import { GraphIntelligenceBriefing } from "@/components/graph/graph-intelligence
 import { GraphRelationshipComparison } from "@/components/graph/graph-relationship-comparison";
 import { KnowledgeGraphCanvas } from "@/components/graph/knowledge-graph-canvas";
 import { useCollection } from "@/components/providers/collection-provider";
-import { fragrances } from "@/lib/data/fragrances";
+import { useActiveFragranceCatalog } from "@/components/providers/active-catalog-provider";
 import {
   buildKnowledgeGraph,
   findRecommendationPath,
@@ -29,10 +30,28 @@ import {
   type NeuralGraphSearchOutput,
 } from "@/lib/intelligence/neural-graph-search";
 import { analyzeGraphIntelligence } from "@/lib/intelligence/graph-intelligence-engine";
+import { buildGlobalFragranceDatabase } from "@/lib/database/database-foundation";
+import { inferLineageRegistry } from "@/lib/lineage/inference";
+import { analyzeLineageIntelligence } from "@/lib/intelligence/lineage-intelligence-engine";
+import { augmentKnowledgeGraphWithLineage } from "@/lib/intelligence/lineage-graph-integration";
+import { activateDynamicKnowledgeGraph } from "@/lib/intelligence/dynamic-graph-runtime";
+import {
+  loadGraphSelection,
+  saveGraphSelection,
+} from "@/lib/intelligence/graph-session";
+import { useTimelineLedger } from "@/components/timeline/use-timeline-ledger";
 
 export default function GraphPage() {
-  const { owned, hydrated } =
+  const { owned, items, hydrated } =
     useCollection();
+  const { ledger } = useTimelineLedger();
+
+  const {
+    catalog,
+    importedIds,
+    readinessById,
+    isHydrated: catalogHydrated,
+  } = useActiveFragranceCatalog();
   const ownedIds = useMemo(
     () =>
       new Set(
@@ -45,24 +64,41 @@ export default function GraphPage() {
   );
 
   const graph = useMemo(
-    () =>
-      buildKnowledgeGraph({
-        catalog: fragrances,
-        ownedIds,
-      }),
-    [ownedIds],
+    () => {
+      const baseGraph =
+        buildKnowledgeGraph({
+          catalog,
+          ownedIds,
+        });
+      const database =
+        buildGlobalFragranceDatabase({
+          catalog,
+        });
+      const registry =
+        inferLineageRegistry(database);
+      const lineage =
+        analyzeLineageIntelligence({
+          database,
+          registry,
+          inferMissing: false,
+        });
+
+      const lineageGraph = augmentKnowledgeGraphWithLineage({ graph: baseGraph, lineage });
+      return activateDynamicKnowledgeGraph({ graph: lineageGraph, catalog, collection: items, timeline: ledger.events, recommendationIds: owned.slice(0, 2).map(({ fragrance }) => fragrance.id) });
+    },
+    [catalog, items, ledger.events, owned, ownedIds],
   );
 
   const metrics = useMemo(
     () => getGraphMetrics(graph),
-    [graph],
+    [catalog, graph],
   );
 
   const graphIntelligence = useMemo(
     () =>
       analyzeGraphIntelligence({
         graph,
-        catalog: fragrances,
+        catalog,
       }),
     [graph],
   );
@@ -91,6 +127,47 @@ export default function GraphPage() {
 
   const [comparisonNodeId, setComparisonNodeId] =
     useState<string | null>(null);
+
+  useEffect(() => {
+    const stored =
+      loadGraphSelection();
+
+    if (
+      stored.selectedNodeId &&
+      graph.nodes.some(
+        (node) =>
+          node.id ===
+          stored.selectedNodeId,
+      )
+    ) {
+      setSelectedNodeId(
+        stored.selectedNodeId,
+      );
+    }
+
+    if (
+      stored.comparisonNodeId &&
+      graph.nodes.some(
+        (node) =>
+          node.id ===
+          stored.comparisonNodeId,
+      )
+    ) {
+      setComparisonNodeId(
+        stored.comparisonNodeId,
+      );
+    }
+  }, [graph.nodes]);
+
+  useEffect(() => {
+    saveGraphSelection({
+      selectedNodeId,
+      comparisonNodeId,
+    });
+  }, [
+    comparisonNodeId,
+    selectedNodeId,
+  ]);
   const [searchQuery, setSearchQuery] =
     useState("");
   const [searchResult, setSearchResult] =
@@ -131,7 +208,7 @@ export default function GraphPage() {
     const result =
       executeNeuralGraphSearch({
         graph,
-        catalog: fragrances,
+        catalog,
         query: parsed,
         wearCounts,
       });
@@ -280,7 +357,7 @@ export default function GraphPage() {
           graph={graph}
           firstNode={selectedNode}
           secondNode={comparisonNode}
-          catalog={fragrances}
+          catalog={catalog}
           onClear={() => setComparisonNodeId(null)}
         />
       </div>

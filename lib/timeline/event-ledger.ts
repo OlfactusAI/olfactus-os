@@ -106,3 +106,70 @@ function deduplicateEvents(
     return true;
   });
 }
+
+export function updateTimelineEvent(
+  eventId: string,
+  patch: Partial<
+    Omit<
+      TimelineEvent,
+      "id"
+    >
+  >,
+) {
+  const ledger =
+    readTimelineLedger();
+  const index =
+    ledger.events.findIndex(
+      (event) =>
+        event.id ===
+        eventId,
+    );
+
+  if (index < 0) {
+    return null;
+  }
+
+  ledger.events[index] = {
+    ...ledger.events[index],
+    ...patch,
+    id: eventId,
+  };
+  writeTimelineLedger(ledger);
+  window.dispatchEvent(
+    new CustomEvent(
+      "olfactus:timeline-updated",
+    ),
+  );
+
+  return ledger.events[index];
+}
+
+export function deleteTimelineEvent(
+  eventId: string,
+) {
+  const ledger =
+    readTimelineLedger();
+  const before =
+    ledger.events.length;
+  ledger.events =
+    ledger.events.filter(
+      (event) =>
+        event.id !==
+        eventId,
+    );
+
+  if (
+    ledger.events.length ===
+    before
+  ) {
+    return false;
+  }
+
+  writeTimelineLedger(ledger);
+  window.dispatchEvent(
+    new CustomEvent(
+      "olfactus:timeline-updated",
+    ),
+  );
+  return true;
+}

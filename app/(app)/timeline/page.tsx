@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useMemo } from "react";
 import {
   Activity,
@@ -20,6 +22,7 @@ import { useCollection } from "@/components/providers/collection-provider";
 import { fragrances } from "@/lib/data/fragrances";
 import { analyzePredictionAccuracy } from "@/lib/intelligence/prediction-accuracy-engine";
 import { InteractiveEvolutionChart } from "@/components/timeline/interactive-evolution-chart";
+import { TimelineEventEditor } from "@/components/timeline/timeline-event-editor";
 import { Button } from "@/components/ui/button";
 import { analyzeTimelineIntelligence } from "@/lib/intelligence/timeline-intelligence-engine";
 import type { TimelineEventType } from "@/lib/timeline/types";
@@ -35,8 +38,18 @@ const eventLabels: Record<TimelineEventType, string> = {
   coach_action_completed: "Coach",
   decision_completed: "Decision",
   deal_analyzed: "Deal Analysis",
+  evolution_snapshot: "Evolution Snapshot",
+  annual_review_generated: "Annual Review",
   purchase_skipped: "Purchase Avoided",
   profile_updated: "Profile",
+  sample_added: "Sample",
+  decant_added: "Decant",
+  bottle_finished: "Finished",
+  bottle_upgraded: "Upgrade",
+  repurchased: "Repurchase",
+  milestone_reached: "Milestone",
+  collection_value_updated: "Value Update",
+  simulation_applied: "Simulation Applied",
 };
 
 export default function TimelinePage() {
@@ -97,9 +110,17 @@ export default function TimelinePage() {
               </p>
             </div>
           </div>
-          <span className="timeline-status-chip">
-            Event ledger active
-          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/annual-review"
+              className="timeline-status-chip"
+            >
+              Annual Review
+            </Link>
+            <span className="timeline-status-chip">
+              Event ledger active
+            </span>
+          </div>
         </div>
 
         <div className="relative mt-10 grid gap-10 xl:grid-cols-[1.08fr_.92fr] xl:items-end">
@@ -329,6 +350,12 @@ export default function TimelinePage() {
           </div>
         </article>
       </section>
+
+      <div className="mt-8">
+        <TimelineEventEditor
+          events={ledger.events}
+        />
+      </div>
 
       <div className="mt-8">
         <PredictionAccuracyPanel

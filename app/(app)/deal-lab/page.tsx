@@ -19,7 +19,7 @@ import {
 
 import { useCollection } from "@/components/providers/collection-provider";
 import { useDealHistory } from "@/components/market/use-deal-history";
-import { fragrances } from "@/lib/data/fragrances";
+import { useActiveFragranceCatalog } from "@/components/providers/active-catalog-provider";
 import {
   analyzeDeal,
   type DealOffer,
@@ -29,16 +29,25 @@ import {
 } from "@/lib/market/deal-history";
 import { appendTimelineEvent } from "@/lib/timeline/event-ledger";
 import { getMarketCatalogEntry } from "@/lib/market/market-catalog";
+import { LineageIntegrationCard } from "@/components/lineage/lineage-integration-card";
+import { CalibratedScoreDetails } from "@/components/intelligence/calibrated-score-details";
 
 export default function DealLabPage() {
   const { items, available } =
     useCollection();
+
+  const {
+    catalog,
+    importedIds,
+    readinessById,
+    isHydrated: catalogHydrated,
+  } = useActiveFragranceCatalog();
   const { history, clear } =
     useDealHistory();
 
   const initialCandidate =
     available[0]?.id ??
-    fragrances[0]?.id ??
+    catalog[0]?.id ??
     "";
 
   const initialMarket =
@@ -75,7 +84,7 @@ export default function DealLabPage() {
 
     if (
       fragranceId &&
-      fragrances.some(
+      catalog.some(
         (item) =>
           item.id === fragranceId,
       )
@@ -101,12 +110,15 @@ export default function DealLabPage() {
   }, []);
 
   const effective =
-    fragrances.some(
+    catalog.some(
       (item) =>
         item.id === candidateId,
     )
       ? candidateId
-      : fragrances[0].id;
+      : catalog[0].id;
+
+  const candidateReadiness =
+    readinessById.get(effective);
 
   const analysis = useMemo(
     () =>
@@ -114,9 +126,9 @@ export default function DealLabPage() {
         candidateId: effective,
         offers,
         collection: items,
-        catalog: fragrances,
+        catalog,
       }),
-    [effective, items, offers],
+    [catalog, effective, items, offers],
   );
 
   function updateOffer(
@@ -216,7 +228,7 @@ export default function DealLabPage() {
               }
               className="deal-select mt-4"
             >
-              {fragrances.map(
+              {catalog.map(
                 (fragrance) => (
                   <option
                     key={fragrance.id}
@@ -268,6 +280,13 @@ export default function DealLabPage() {
               Opportunity:{" "}
               {analysis.opportunity}
             </p>
+            <div className="mt-5">
+              <CalibratedScoreDetails
+                calibration={
+                  analysis.calibration
+                }
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -646,7 +665,11 @@ export default function DealLabPage() {
         </article>
       </section>
 
-      <section className="mt-8 deal-panel p-7 sm:p-9">
+            <LineageIntegrationCard
+        fragranceId={effective}
+      />
+
+<section className="mt-8 deal-panel p-7 sm:p-9">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="deal-kicker">

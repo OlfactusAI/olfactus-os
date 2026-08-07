@@ -1,7 +1,13 @@
 import type { CollectionHealthAnalysis, Finding, Recommendation } from "@/lib/domain/analysis";
 import type { CollectionItem, CollectorProfile } from "@/lib/domain/collection";
 import { roles, type DnaDimension, type FragranceRecord, type Season } from "@/lib/domain/fragrance";
-
+import {
+  evaluateIntelligenceEligibility,
+  filterCatalogForEngine,
+} from "@/lib/intelligence/readiness-gateway";
+import {
+  calibrateIntelligenceScore,
+} from "@/lib/intelligence/confidence-calibration";
 const weights = { roleCoverage:.20, seasonalBalance:.15, diversity:.20, redundancy:.15, rotation:.15, intent:.10, identity:.05 } as const;
 const dnaKeys: DnaDimension[] = ["fresh","green","woody","amber","sweet","dark","artistic","formal"];
 const seasons: Season[] = ["spring","summer","fall","winter"];
@@ -18,6 +24,7 @@ function similarity(a:FragranceRecord,b:FragranceRecord) {
 }
 
 export function analyzeCollectionHealth(input:{ collection:CollectionItem[]; profile:CollectorProfile; catalog:FragranceRecord[] }):CollectionHealthAnalysis {
+  input = { ...input, catalog: filterCatalogForEngine(input.catalog, "collection-health") };
   const owned = input.collection.map(item=>({ item, fragrance:input.catalog.find(f=>f.id===item.fragranceId) })).filter((x):x is {item:CollectionItem;fragrance:FragranceRecord}=>Boolean(x.fragrance));
   const roleScores = roles.map(role=>{ const count=owned.filter(x=>x.fragrance.roles.includes(role)).length; return {role,score:clamp(count*45+(count>1?10:0))}; });
   const roleCoverage = Math.round(average(roleScores.map(x=>x.score)));
@@ -60,5 +67,55 @@ export function analyzeCollectionHealth(input:{ collection:CollectionItem[]; pro
 
   const strongestSeason=[...seasonScores].sort((a,b)=>b.score-a.score)[0];
   const validDimensions={roleCoverage,seasonalBalance,diversity,redundancy,rotation,intent:Math.round(intent),identity};
-  return { analysisType:"collection_health", score, status:score>=88?"Excellent":score>=75?"Strong Foundation":score>=60?"Developing":"Needs Attention", confidence:Math.min(99,75+owned.length*3), summary:`Strongest in ${strongestSeason.season}; identity centers on ${topMoods.map(([m])=>m).join(", ") || "versatility"}.`, dimensions:validDimensions, findings, recommendations, modelVersion:"CHE-1.0.0" };
+  const eligibility =
+    owned.length
+      ? owned
+          .map((item) =>
+            evaluateIntelligenceEligibility(
+              item.fragrance,
+            ),
+          )
+          .sort(
+            (a, b) =>
+              a.confidence -
+              b.confidence,
+          )[0]
+      : {
+          readiness:
+            "partial" as const,
+          confidence: 60,
+          allowedEngines: [
+            "collection-health" as const,
+          ],
+          restrictedEngines: [],
+          warnings: [
+            "The collection contains no eligible fragrances.",
+          ],
+          missingFields: [
+            "collection",
+          ],
+        };
+  const calibration =
+    calibrateIntelligenceScore({
+      rawScore: score,
+      eligibility,
+      evidenceSignals:
+        Object.entries(
+          validDimensions,
+        ).map(
+          ([id, strength]) => ({
+            id,
+            strength,
+            source:
+              "derived" as const,
+          }),
+        ),
+      warnings:
+        owned.length < 3
+          ? [
+              "Collection-level confidence is limited by a small sample.",
+            ]
+          : [],
+    });
+  return { analysisType:"collection_health", score, calibration, status:score>=88?"Excellent":score>=75?"Strong Foundation":score>=60?"Developing":"Needs Attention", confidence:calibration.confidence, summary:`Strongest in ${strongestSeason.season}; identity centers on ${topMoods.map(([m])=>m).join(", ") || "versatility"}.`, dimensions:validDimensions, findings, recommendations, modelVersion:"CHE-1.0.0" };
 }

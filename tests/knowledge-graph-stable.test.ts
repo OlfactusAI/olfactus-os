@@ -22,13 +22,7 @@ describe("Knowledge Graph Stable integration", () => {
       ownedIds,
     });
 
-  it("publishes a stable v1.5.0 system manifest", () => {
-    expect(
-      olfactusSystemManifest.version,
-    ).toBe("1.5.0");
-    expect(
-      olfactusSystemManifest.channel,
-    ).toBe("stable");
+  it("keeps Knowledge Graph Intelligence registered in the current system manifest", () => {
     expect(
       olfactusSystemManifest.engines,
     ).toContain(

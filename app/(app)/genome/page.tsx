@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useMemo } from "react";
 import {
   Activity,
@@ -64,9 +66,17 @@ export default function GenomePage() {
               </p>
             </div>
           </div>
-          <span className="genome-status-chip">
-            Genome synchronized
-          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/annual-review"
+              className="genome-status-chip"
+            >
+              Taste History
+            </Link>
+            <span className="genome-status-chip">
+              Genome synchronized
+            </span>
+          </div>
         </div>
 
         <div className="relative mt-10 grid gap-12 xl:grid-cols-[1.08fr_.92fr] xl:items-center">

@@ -13,7 +13,12 @@ export type KnowledgeNodeType =
   | "family"
   | "role"
   | "season"
-  | "dna";
+  | "dna"
+  | "lineage"
+  | "collection"
+  | "market"
+  | "recommendation"
+  | "timeline-event";
 
 export type KnowledgeEdgeType =
   | "belongs-to-brand"
@@ -26,7 +31,18 @@ export type KnowledgeEdgeType =
   | "expresses-dna"
   | "similar-to"
   | "complements"
-  | "high-overlap";
+  | "high-overlap"
+  | "belongs-to-lineage"
+  | "lineage-parent"
+  | "lineage-successor"
+  | "lineage-clone"
+  | "lineage-inspired-by"
+  | "same-lineage"
+  | "owned-in-collection"
+  | "has-market-signal"
+  | "recommended-by"
+  | "recorded-in-timeline"
+  | "competes-with";
 
 export interface KnowledgeGraphNode {
   id: string;

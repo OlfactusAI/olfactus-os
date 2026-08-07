@@ -1,85 +1,113 @@
-import Link from "next/link";
-import {
-  Compass,
-  Dna,
-  FlaskConical,
-  History,
-  LayoutDashboard,
-  Library,
-  Network,
-  Landmark,
-  BadgeDollarSign,
-  UserRound,
-} from "lucide-react";
+"use client";
 
-const items = [
-  {
-    href: "/today",
-    label: "Today",
-    icon: LayoutDashboard,
-  },
-  {
-    href: "/collection",
-    label: "Collection",
-    icon: Library,
-  },
-  {
-    href: "/discover",
-    label: "Discover",
-    icon: Compass,
-  },
-  {
-    href: "/genome",
-    label: "Genome",
-    icon: Dna,
-  },
-  {
-    href: "/timeline",
-    label: "Timeline",
-    icon: History,
-  },
-  {
-    href: "/graph",
-    label: "Graph",
-    icon: Network,
-  },
-  {
-    href: "/market",
-    label: "Market",
-    icon: Landmark,
-  },
-  {
-    href: "/deal-lab",
-    label: "Deal Lab",
-    icon: BadgeDollarSign,
-  },
-  {
-    href: "/decisions",
-    label: "Decisions",
-    icon: FlaskConical,
-  },
-  {
-    href: "/profile",
-    label: "Profile",
-    icon: UserRound,
-  },
-] as const;
+import Link from "next/link";
+import { Menu, Search, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+import {
+  workspaceSections,
+  workspaces,
+  type WorkspaceDefinition,
+} from "@/lib/navigation/workspaces";
+
+const primaryHrefs = [
+  "/today",
+  "/collection",
+  "/explorer",
+  "/deal-lab",
+  "/profile",
+];
 
 export function MobileNav() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  const primary = primaryHrefs
+    .map((href) => workspaces.find((item) => item.href === href))
+    .filter(
+      (
+        workspace,
+      ): workspace is WorkspaceDefinition =>
+        Boolean(workspace),
+    );
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 flex overflow-x-auto border-t border-[var(--border)] bg-[rgba(9,10,12,.97)] lg:hidden">
-      {items.map(
-        ({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="focus-ring grid min-h-16 min-w-[76px] flex-1 place-items-center gap-1 px-2 py-2 text-[10px] text-[var(--muted)]"
-          >
-            <Icon size={18} />
-            <span>{label}</span>
-          </Link>
-        ),
-      )}
-    </nav>
+    <>
+      <nav className="nexus-mobile-dock lg:hidden">
+        {primary.map((workspace) => {
+          const Icon = workspace.icon;
+          const active = pathname === workspace.href;
+
+          return (
+            <Link
+              key={workspace.href}
+              href={workspace.href}
+              className={active ? "is-active" : ""}
+            >
+              <Icon size={18} />
+              <span>{workspace.shortLabel}</span>
+            </Link>
+          );
+        })}
+        <button type="button" onClick={() => setOpen(true)}>
+          <Menu size={18} />
+          <span>More</span>
+        </button>
+      </nav>
+
+      {open ? (
+        <div className="nexus-mobile-backdrop lg:hidden">
+          <aside className="nexus-mobile-drawer">
+            <header>
+              <div>
+                <p className="display-serif">OLFACTUS</p>
+                <span>All Workspaces</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close navigation"
+              >
+                <X size={19} />
+              </button>
+            </header>
+
+            <div className="nexus-mobile-search">
+              <Search size={15} />
+              <span>Use ⌘K or Ctrl+K for quick search</span>
+            </div>
+
+            <div className="nexus-mobile-scroll">
+              {workspaceSections.map((section) => (
+                <section key={section}>
+                  <p>{section}</p>
+                  <div>
+                    {workspaces
+                      .filter((workspace) => workspace.section === section)
+                      .map((workspace) => {
+                        const Icon = workspace.icon;
+                        return (
+                          <Link
+                            key={workspace.href}
+                            href={workspace.href}
+                            onClick={() => setOpen(false)}
+                            className={
+                              pathname === workspace.href ? "is-active" : ""
+                            }
+                          >
+                            <Icon size={17} />
+                            <span>{workspace.label}</span>
+                          </Link>
+                        );
+                      })}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </aside>
+        </div>
+      ) : null}
+    </>
   );
 }
