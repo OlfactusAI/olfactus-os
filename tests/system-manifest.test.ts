@@ -9,29 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies Official Source Batch 002 + Enrichment Queue", () => {
+  it("identifies the Catalog Intelligence Enrichment + Promotion Workflow", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.5-alpha.3",
+      "4.4.6-alpha.1",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Official Source Batch 002 + Enrichment Queue",
-    );
-
-    expect(
-      olfactusSystemManifest.engines,
-    ).toContain(
-      "Catalog Activation Bridge",
+      "Catalog Intelligence Enrichment + Promotion Workflow",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
       "Catalog Enrichment Queue",
+    );
+
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Intelligence Promotion Gate",
     );
   });
 });
