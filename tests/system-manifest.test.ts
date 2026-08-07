@@ -9,29 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Production Fingerprint Builder milestone", () => {
+  it("identifies the Production Activation Bridge milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.7-alpha.2",
+      "4.4.7-alpha.3",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Production Fingerprint Builder + Coverage Synchronization",
+      "Production Activation Bridge",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Production Fingerprint Builder",
+      "Production Activation Bridge",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Production Coverage Synchronization",
+      "Runtime Reference Registry",
     );
   });
 });
