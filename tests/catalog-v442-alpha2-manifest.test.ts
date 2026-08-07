@@ -10,8 +10,8 @@ import {
   join,
 } from "node:path";
 
-describe("Catalog V2 release integration", () => {
-  it("registers the current Catalog V2 source-adapter and activation release", () => {
+describe("Catalog v4.4.2 alpha.2 release integration", () => {
+  it("registers source adapters, staging, and activation", () => {
     const source =
       readFileSync(
         join(
@@ -24,15 +24,9 @@ describe("Catalog V2 release integration", () => {
     expect(source).toContain(
       'version: "4.4.2-alpha.2"',
     );
-
-    expect(source).toContain(
-      'release: "Source Adapters + Catalog Staging & Activation"',
-    );
-
     expect(source).toContain(
       "Catalog Source Adapters",
     );
-
     expect(source).toContain(
       "Catalog Activation Gateway",
     );

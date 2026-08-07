@@ -9,29 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Global Fragrance Catalog Expansion Foundation release", () => {
+  it("identifies the Source Adapters + Catalog Staging & Activation release", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.2-alpha.1",
+      "4.4.2-alpha.2",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Global Fragrance Catalog Expansion Foundation",
-    );
-
-    expect(
-      olfactusSystemManifest.engines,
-    ).toContain(
-      "Neural Recommendation Engine 2.0",
+      "Source Adapters + Catalog Staging & Activation",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
       "Catalog V2 Ingestion",
+    );
+
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Catalog Activation Gateway",
     );
   });
 });

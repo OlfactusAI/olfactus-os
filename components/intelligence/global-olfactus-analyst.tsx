@@ -247,12 +247,12 @@ export function GlobalOlfactusAnalyst() {
         kind:
           "action-proposed",
         summary:
-          ("preview" in result ? result.preview : undefined)?.summary,
+          ("preview" in result ? result.preview : undefined)?.summary ?? "",
         metadata: {
           action:
-            ("preview" in result ? result.preview : undefined)?.action,
+            ("preview" in result ? result.preview : undefined)?.action ?? "",
           fragranceId:
-            ("preview" in result ? result.preview : undefined)?.fragranceId,
+            ("preview" in result ? result.preview : undefined)?.fragranceId ?? "",
         },
       });
     }
@@ -262,7 +262,6 @@ export function GlobalOlfactusAnalyst() {
     if (!preview) {
       return;
     }
-
     if (
       preview.action ===
       "record-wear"
