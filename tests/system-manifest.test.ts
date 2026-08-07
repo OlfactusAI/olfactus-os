@@ -9,29 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Reference Intelligence Laboratory consensus milestone", () => {
+  it("identifies the Reference Intelligence Laboratory Gold Standard milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.6-alpha.5",
+      "4.4.6-alpha.6",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Reference Intelligence Laboratory — Consensus + Conflict Detection",
+      "Reference Intelligence Laboratory — Gold Standard Certification",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Reference Consensus Engine",
+      "Gold Standard Certification Engine",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Calibration Conflict Detection",
+      "Reference Production Promotion Queue",
     );
   });
 });

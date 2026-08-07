@@ -16,3 +16,6 @@ export * from "@/lib/reference-lab/consensus-types";
 export * from "@/lib/reference-lab/consensus-engine";
 export * from "@/lib/reference-lab/conflict-resolution";
 export * from "@/lib/reference-lab/consensus-storage";
+export * from "@/lib/reference-lab/certification-types";
+export * from "@/lib/reference-lab/certification-engine";
+export * from "@/lib/reference-lab/certification-storage";
