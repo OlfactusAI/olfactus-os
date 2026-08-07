@@ -9,29 +9,23 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the first live Gold Standard reference milestone", () => {
+  it("identifies the Gold Standard Dataset Builder milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.8-alpha.1",
+      "4.5.0-alpha.1",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "First Live Gold Standard Reference — Creed Aventus",
+      "Gold Standard Dataset Builder",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "First Live Gold Standard Reference",
-    );
-
-    expect(
-      olfactusSystemManifest.engines,
-    ).toContain(
-      "Creed Aventus Reference Activation",
+      "Gold Standard Dataset Builder",
     );
   });
 });
