@@ -9,23 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Dataset Review Console milestone", () => {
+  it("identifies the Dataset Consensus + Certification Orchestrator milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.5.0-alpha.3",
+      "4.5.0-alpha.4",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Dataset Review Console",
+      "Dataset Consensus + Certification Orchestrator",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Dataset Review Console",
+      "Dataset Consensus + Certification Orchestrator",
+    );
+
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Dataset Production Preparation",
     );
   });
 });
