@@ -12,3 +12,7 @@ export * from "@/lib/reference-lab/review-types";
 export * from "@/lib/reference-lab/review-workflow";
 export * from "@/lib/reference-lab/review-storage";
 export * from "@/lib/reference-lab/submission";
+export * from "@/lib/reference-lab/consensus-types";
+export * from "@/lib/reference-lab/consensus-engine";
+export * from "@/lib/reference-lab/conflict-resolution";
+export * from "@/lib/reference-lab/consensus-storage";
