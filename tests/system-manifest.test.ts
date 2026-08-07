@@ -9,23 +9,23 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Integrated Two-Reviewer Authoring milestone", () => {
+  it("identifies the Dataset Review Console milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.5.0-alpha.2",
+      "4.5.0-alpha.3",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Integrated Two-Reviewer Authoring Workspace",
+      "Dataset Review Console",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Reviewer Independence Guard",
+      "Dataset Review Console",
     );
   });
 });
