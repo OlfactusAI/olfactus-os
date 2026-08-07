@@ -17,7 +17,6 @@ import {
   calculateReferenceWorkspaceCompleteness,
   claimKey,
   createReferenceWorkspaceDraft,
-  materializeReferenceWorkspace,
   submitReferenceWorkspaceForReview,
   updateReferenceWorkspaceClaim,
   type ReferenceWorkspaceDraft,
@@ -26,6 +25,12 @@ import {
   loadReferenceWorkspaceDraft,
   saveReferenceWorkspaceDraft,
 } from "@/lib/reference-lab/workspace-storage";
+import {
+  createReviewPackageFromWorkspace,
+} from "@/lib/reference-lab/submission";
+import {
+  upsertReferenceReviewPackage,
+} from "@/lib/reference-lab/review-storage";
 
 const reviewerId =
   "reviewer:local-calibrator";
@@ -195,14 +200,18 @@ export function CalibrationWorkspace() {
                 .toISOString(),
           });
 
-        const materialized =
-          materializeReferenceWorkspace({
+        const reviewPackage =
+          createReviewPackageFromWorkspace({
             draft:
               submitted,
             timestamp:
               new Date()
                 .toISOString(),
           });
+
+        upsertReferenceReviewPackage(
+          reviewPackage,
+        );
 
         saveReferenceWorkspaceDraft(
           submitted,
@@ -211,7 +220,7 @@ export function CalibrationWorkspace() {
           submitted,
         );
         setNotice(
-          `Submitted for review · ${materialized.claims.length} calibrated claims · ${materialized.evidence.length} evidence records.`,
+          `Submitted for review · ${reviewPackage.claims.length} calibrated claims · ${reviewPackage.evidence.length} evidence records.`,
         );
       } catch (
         error

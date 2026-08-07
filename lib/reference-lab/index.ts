@@ -8,3 +8,7 @@ export * from "@/lib/reference-lab/reference-targets";
 export * from "@/lib/reference-lab/workspace-schema";
 export * from "@/lib/reference-lab/workspace";
 export * from "@/lib/reference-lab/workspace-storage";
+export * from "@/lib/reference-lab/review-types";
+export * from "@/lib/reference-lab/review-workflow";
+export * from "@/lib/reference-lab/review-storage";
+export * from "@/lib/reference-lab/submission";
