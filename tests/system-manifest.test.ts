@@ -3,34 +3,27 @@ import {
   expect,
   it,
 } from "vitest";
+
 import {
   olfactusSystemManifest,
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Catalog Activation Bridge Foundation release", () => {
+  it("identifies Official Source Batch 001 while retaining the activation bridge", () => {
     expect(
       olfactusSystemManifest.version,
-    ).toBe(
-      "4.4.5-alpha.1",
-    );
+    ).toBe("4.4.5-alpha.2");
 
     expect(
       olfactusSystemManifest.release,
-    ).toBe(
-      "Catalog Activation Bridge Foundation",
-    );
+    ).toBe("Official Source Batch 001");
 
     expect(
       olfactusSystemManifest.engines,
-    ).toContain(
-      "Unified Intelligence Context",
-    );
+    ).toContain("Catalog Activation Bridge");
 
     expect(
       olfactusSystemManifest.engines,
-    ).toContain(
-      "Catalog Activation Bridge",
-    );
+    ).toContain("Official Source Catalog Batch 001");
   });
 });

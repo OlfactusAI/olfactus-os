@@ -1,0 +1,25 @@
+{
+  "batch": "official-source-batch-001",
+  "release": "4.4.5-alpha.2",
+  "record_count": 39,
+  "house_count": 10,
+  "source_descriptor_count": 24,
+  "houses": [
+    "Amouage",
+    "BDK Parfums",
+    "Chanel",
+    "Creed",
+    "Dior",
+    "Hermès",
+    "Maison Francis Kurkdjian",
+    "Montale",
+    "Parfums de Marly",
+    "Xerjoff"
+  ],
+  "source_policy": "Official brand websites only",
+  "activation_policy": {
+    "identity_and_discovery_allowed": true,
+    "intelligence_profile_fabrication": false,
+    "nre_activation_expected": 0
+  }
+}
