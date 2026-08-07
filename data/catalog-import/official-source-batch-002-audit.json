@@ -1,0 +1,21 @@
+{
+  "batch": "official-source-batch-002",
+  "release": "4.4.5-alpha.3",
+  "record_count": 50,
+  "house_count": 10,
+  "houses": [
+    "Byredo",
+    "Diptyque",
+    "Essential Parfums",
+    "Giorgio Armani",
+    "Guerlain",
+    "Initio",
+    "Le Labo",
+    "Penhaligon's",
+    "Valentino",
+    "Yves Saint Laurent"
+  ],
+  "source_policy": "Official brand websites only",
+  "enrichment_policy": "Missing fields become queued tasks; no intelligence defaults are fabricated.",
+  "intelligence_ready_expected": 0
+}

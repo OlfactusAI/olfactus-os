@@ -9,21 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies Official Source Batch 001 while retaining the activation bridge", () => {
+  it("identifies Official Source Batch 002 + Enrichment Queue", () => {
     expect(
       olfactusSystemManifest.version,
-    ).toBe("4.4.5-alpha.2");
+    ).toBe(
+      "4.4.5-alpha.3",
+    );
 
     expect(
       olfactusSystemManifest.release,
-    ).toBe("Official Source Batch 001");
+    ).toBe(
+      "Official Source Batch 002 + Enrichment Queue",
+    );
 
     expect(
       olfactusSystemManifest.engines,
-    ).toContain("Catalog Activation Bridge");
+    ).toContain(
+      "Catalog Activation Bridge",
+    );
 
     expect(
       olfactusSystemManifest.engines,
-    ).toContain("Official Source Catalog Batch 001");
+    ).toContain(
+      "Catalog Enrichment Queue",
+    );
   });
 });
