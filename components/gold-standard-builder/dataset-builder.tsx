@@ -28,6 +28,12 @@ import {
 import {
   referenceCalibrationSections,
 } from "@/lib/reference-lab/workspace-schema";
+import {
+  getResearchFactsForSection,
+} from "@/lib/gold-standard-builder/research-packs";
+import {
+  loadResearchPack,
+} from "@/lib/gold-standard-builder/research-packs/storage";
 import type {
   GoldStandardDatasetTarget,
 } from "@/lib/gold-standard-builder/types";
@@ -530,6 +536,11 @@ export function GoldStandardDatasetBuilder() {
                     </p>
                   </div>
 
+                  <ResearchEvidencePanel
+                    fragranceId={state.target.fragranceId}
+                    sectionId={activeSection.id}
+                  />
+
                   <div className="divide-y divide-white/10">
                     {activeSection.metrics.map(
                       (metric) => {
@@ -863,6 +874,78 @@ function AuthoringMetric({
             />
           </label>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ResearchEvidencePanel({
+  fragranceId,
+  sectionId,
+}: {
+  fragranceId: string;
+  sectionId: string;
+}) {
+  const imported =
+    loadResearchPack(
+      fragranceId,
+    );
+
+  const facts =
+    imported
+      ? getResearchFactsForSection(
+          fragranceId,
+          sectionId,
+        )
+      : [];
+
+  if (!imported) {
+    return (
+      <div className="my-5 rounded-2xl border border-white/10 bg-black/20 p-4">
+        <p className="text-sm font-semibold text-white">
+          No research pack imported
+        </p>
+        <p className="mt-1 text-xs leading-5 text-white/40">
+          Open /gold-standard-builder/research and import the Aventus evidence pack before calibration.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="my-5 rounded-2xl border border-white/10 bg-black/20 p-4">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.12em] text-white/30">
+            Shared research evidence
+          </p>
+          <p className="mt-1 text-sm text-white/55">
+            Evidence is shared; scores remain independent.
+          </p>
+        </div>
+        <span className="text-xs font-semibold text-white/35">
+          {facts.length} facts
+        </span>
+      </div>
+
+      <div className="mt-4 space-y-2">
+        {facts.map(
+          (fact) => (
+            <div
+              key={
+                fact.factId
+              }
+              className="rounded-xl border border-white/10 p-3"
+            >
+              <p className="text-sm leading-6 text-white/65">
+                {fact.claim}
+              </p>
+              <p className="mt-1 text-xs text-white/30">
+                {fact.sourceIds.join(", ")}
+              </p>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,256 @@
+{
+  "researchPackId": "research-pack:creed:aventus:2026-08-07",
+  "fragranceId": "creed:aventus",
+  "brand": "Creed",
+  "name": "Aventus",
+  "edition": "Eau de Parfum",
+  "researchedAt": "2026-08-07",
+  "policy": {
+    "scoresIncluded": false,
+    "purpose": "Shared evidence base for independent reviewer calibration.",
+    "warning": "Evidence supports reviewer judgment; it is not a substitute for independent scoring."
+  },
+  "sources": [
+    {
+      "sourceId": "creed-official-aventus",
+      "publisher": "The House of Creed",
+      "sourceType": "official-brand",
+      "url": "https://creedboutique.com/products/aventus",
+      "accessedAt": "2026-08-07",
+      "weight": "primary"
+    },
+    {
+      "sourceId": "parfumo-aventus",
+      "publisher": "Parfumo",
+      "sourceType": "community-database",
+      "url": "https://www.parfumo.com/Perfumes/Creed/aventus",
+      "accessedAt": "2026-08-07",
+      "weight": "secondary"
+    },
+    {
+      "sourceId": "fragrantica-aventus",
+      "publisher": "Fragrantica",
+      "sourceType": "community-database",
+      "url": "https://www.fragrantica.com/perfume/Creed/Aventus-9828.html",
+      "accessedAt": "2026-08-07",
+      "weight": "secondary"
+    },
+    {
+      "sourceId": "basenotes-aventus",
+      "publisher": "Basenotes",
+      "sourceType": "community-database",
+      "url": "https://basenotes.com/fragrances/aventus-by-creed.26131702",
+      "accessedAt": "2026-08-07",
+      "weight": "secondary"
+    }
+  ],
+  "facts": [
+    {
+      "factId": "identity-current",
+      "category": "identity",
+      "claim": "Aventus is currently sold by Creed as an Eau de Parfum and described as dry woods, fresh, citrus and fruity.",
+      "sourceIds": [
+        "creed-official-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "launch-2010",
+      "category": "identity",
+      "claim": "Creed states that Aventus has endured since 2010; major fragrance databases also list a 2010 release.",
+      "sourceIds": [
+        "creed-official-aventus",
+        "parfumo-aventus",
+        "fragrantica-aventus"
+      ],
+      "confidence": 99
+    },
+    {
+      "factId": "official-current-head",
+      "category": "notes",
+      "claim": "Creed's current official head notes are Calabrian bergamot, Sicilian lemon and blackcurrant leaf accord.",
+      "sourceIds": [
+        "creed-official-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "official-current-heart",
+      "category": "notes",
+      "claim": "Creed's current official heart notes are pineapple accord, pink pepper and jasmine accord.",
+      "sourceIds": [
+        "creed-official-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "official-current-base",
+      "category": "notes",
+      "claim": "Creed's current official base notes are birch, patchouli and musk accord.",
+      "sourceIds": [
+        "creed-official-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "official-character",
+      "category": "dna",
+      "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+      "sourceIds": [
+        "creed-official-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "parfumo-main-accords",
+      "category": "dna",
+      "claim": "Parfumo classifies the principal accords as fresh, fruity, citrus, woody and smoky.",
+      "sourceIds": [
+        "parfumo-aventus"
+      ],
+      "confidence": 90
+    },
+    {
+      "factId": "fragrantica-main-accords",
+      "category": "dna",
+      "claim": "Fragrantica's current main accords emphasize fruity, sweet, woody, leather, citrus, smoky, musky, fresh, tropical and mossy facets.",
+      "sourceIds": [
+        "fragrantica-aventus"
+      ],
+      "confidence": 90
+    },
+    {
+      "factId": "parfumo-rating",
+      "category": "community",
+      "claim": "Parfumo reports 8.4/10 from 8,463 ratings.",
+      "sourceIds": [
+        "parfumo-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "parfumo-performance",
+      "category": "performance",
+      "claim": "Parfumo reports longevity 7.3/10 from 7,797 ratings and sillage 7.3/10 from 7,725 ratings.",
+      "sourceIds": [
+        "parfumo-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "fragrantica-rating",
+      "category": "community",
+      "claim": "Fragrantica reports 4.32/5 from 27,819 votes.",
+      "sourceIds": [
+        "fragrantica-aventus"
+      ],
+      "confidence": 100
+    },
+    {
+      "factId": "performance-variance",
+      "category": "performance",
+      "claim": "Individual community reports vary materially: some describe strong attention and 6\u20138 hour wear, while other reports describe weak projection or short wear. Treat performance as variable rather than universally fixed.",
+      "sourceIds": [
+        "parfumo-aventus",
+        "fragrantica-aventus"
+      ],
+      "confidence": 80
+    },
+    {
+      "factId": "similarity-lineage",
+      "category": "similarity",
+      "claim": "Parfumo's similarity section prominently associates Aventus with Club de Nuit Intense Man, L'Aventure, Aventus Cologne and Montblanc Explorer, supporting its role as a major reference DNA.",
+      "sourceIds": [
+        "parfumo-aventus"
+      ],
+      "confidence": 90
+    },
+    {
+      "factId": "perfumer-attribution",
+      "category": "attribution",
+      "claim": "Jean-Christophe H\u00e9rault is consistently attributed as a perfumer. Fragrantica also credits Erwin Creed, while Parfumo lists Jean-Christophe H\u00e9rault alone.",
+      "sourceIds": [
+        "parfumo-aventus",
+        "fragrantica-aventus"
+      ],
+      "confidence": 95
+    },
+    {
+      "factId": "note-list-disagreement",
+      "category": "caution",
+      "claim": "Current official Creed notes differ from older/community pyramids that include apple, oakmoss, ambergris, vanilla, rose or cedarwood. This is a source-description difference and should not by itself be treated as proof of a formula change.",
+      "sourceIds": [
+        "creed-official-aventus",
+        "parfumo-aventus",
+        "fragrantica-aventus",
+        "basenotes-aventus"
+      ],
+      "confidence": 95
+    },
+    {
+      "factId": "batch-process",
+      "category": "caution",
+      "claim": "Creed states that each batch is hand-mixed, macerated and matured at its Ury, France facilities and describes the process as preserving consistency and integrity. Reviewer claims about batch variation should therefore be evidenced separately rather than assumed.",
+      "sourceIds": [
+        "creed-official-aventus"
+      ],
+      "confidence": 100
+    }
+  ],
+  "sectionEvidence": {
+    "dna": [
+      "official-character",
+      "parfumo-main-accords",
+      "fragrantica-main-accords",
+      "note-list-disagreement"
+    ],
+    "performance": [
+      "parfumo-performance",
+      "performance-variance",
+      "batch-process"
+    ],
+    "roles": [
+      "official-character",
+      "parfumo-rating",
+      "similarity-lineage"
+    ],
+    "seasons": [
+      "official-current-head",
+      "official-current-heart",
+      "official-current-base",
+      "parfumo-main-accords"
+    ],
+    "weather": [
+      "official-current-head",
+      "official-current-heart",
+      "official-current-base",
+      "parfumo-performance"
+    ],
+    "time": [
+      "official-character",
+      "parfumo-main-accords"
+    ],
+    "formality": [
+      "official-character",
+      "parfumo-main-accords"
+    ],
+    "mood": [
+      "official-character",
+      "fragrantica-main-accords"
+    ],
+    "collector": [
+      "parfumo-rating",
+      "fragrantica-rating",
+      "similarity-lineage",
+      "performance-variance"
+    ]
+  },
+  "reviewerCautions": [
+    "Do not convert community ratings directly into OLFACTUS 0\u2013100 metric scores.",
+    "Do not infer season, weather, role or formality values solely from note pyramids.",
+    "Use official Creed material for current identity/notes, but retain community sources for perception and wear behavior.",
+    "Where sources disagree, record the disagreement in rationale rather than silently choosing one source.",
+    "Performance should be calibrated as a distribution/consensus judgment because community reports vary.",
+    "Reviewer A and Reviewer B must score independently even though they share this evidence pack."
+  ]
+}

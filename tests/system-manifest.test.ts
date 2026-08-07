@@ -9,29 +9,23 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Dataset Consensus + Certification Orchestrator milestone", () => {
+  it("identifies the Aventus Reference Research Pack milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.5.0-alpha.4",
+      "4.5.0-alpha.5",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Dataset Consensus + Certification Orchestrator",
+      "Aventus Reference Research Pack + Calibration Evidence Import",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Dataset Consensus + Certification Orchestrator",
-    );
-
-    expect(
-      olfactusSystemManifest.engines,
-    ).toContain(
-      "Dataset Production Preparation",
+      "Aventus Reference Research Pack",
     );
   });
 });
