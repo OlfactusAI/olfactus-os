@@ -424,7 +424,7 @@ export default function DecisionsPage() {
                               .id
                           }
                           onClick={() =>
-                            setSelectedCandidateId(
+                            setCandidateId(
                               result
                                 .fragrance
                                 .id,

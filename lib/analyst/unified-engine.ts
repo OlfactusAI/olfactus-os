@@ -28,8 +28,8 @@ export function runUnifiedAnalystCommand({
     EntityRegistry;
 }) {
   if (
-    command.type ===
-      "unknown" &&
+    command.intent ===
+      "help" &&
     looksLikeSemanticFragranceRequest(
       command.raw,
     )
@@ -49,6 +49,7 @@ export function runUnifiedAnalystCommand({
     if (top) {
       return {
         command,
+        preview: undefined,
         response: {
           type:
             "recommendation",
@@ -60,7 +61,7 @@ export function runUnifiedAnalystCommand({
             top.fragrance.name,
           brand:
             top.fragrance.brand,
-          probability:
+          score:
             top.combinedScore,
           confidence:
             semantic.request
@@ -73,6 +74,9 @@ export function runUnifiedAnalystCommand({
                 ? `Unified Decision Core: ${top.decision.verdict.toUpperCase()} at ${top.decision.confidence}% confidence.`
                 : "Unified Decision Core was not available for this candidate.",
             ],
+          summary:
+            semantic.request.explanation.join("; ") ||
+            "Semantic fragrance request matched against the active intelligence catalog.",
           evidence: [
             {
               kind:

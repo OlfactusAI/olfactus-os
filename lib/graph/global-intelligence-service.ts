@@ -1,3 +1,4 @@
+import { mergeCuratedWorldKnowledge } from "@/lib/graph/curated-knowledge-merger";
 import type { FragranceRecord } from "@/lib/domain/fragrance";
 import { buildGlobalIntelligenceGraph } from "@/lib/graph/graph-engine";
 import { calculateGlobalGraphMetrics } from "@/lib/graph/graph-metrics";
@@ -17,7 +18,9 @@ import {
 
 export function createGlobalIntelligenceService(catalog: FragranceRecord[]) {
   const registry = buildGlobalEntityRegistry(catalog);
-  const graph = buildGlobalIntelligenceGraph(catalog);
+  const graph = mergeCuratedWorldKnowledge(
+    buildGlobalIntelligenceGraph(catalog),
+  );
   const metrics = calculateGlobalGraphMetrics(graph);
 
   return {

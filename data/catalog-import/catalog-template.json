@@ -1,0 +1,28 @@
+[
+  {
+    "brand": "Example House",
+    "name": "Example Fragrance",
+    "aliases": [],
+    "releaseYear": 2026,
+    "concentration": "Eau de Parfum",
+    "genderPositioning": "Unisex",
+    "family": "Woody Aromatic",
+    "perfumers": [
+      "Example Perfumer"
+    ],
+    "notes": [
+      "Bergamot",
+      "Cedar",
+      "Musk"
+    ],
+    "accords": [
+      "Citrus",
+      "Woody"
+    ],
+    "collections": [
+      "Example Collection"
+    ],
+    "parentCompany": null,
+    "country": "France"
+  }
+]

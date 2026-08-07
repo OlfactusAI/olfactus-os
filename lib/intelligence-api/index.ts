@@ -1,3 +1,7 @@
+import { buildRecommendationExplanationV2 } from "@/lib/recommendation-v2/explanation-view-model";
+import { runNeuralRecommendationEngineV2 } from "@/lib/recommendation-v2/engine";
+import { buildGraphRecommendationContext } from "@/lib/graph/recommendation-context";
+import { calculateRelationshipCoverage } from "@/lib/graph/relationship-coverage";
 import { createGlobalIntelligenceService } from "@/lib/graph/global-intelligence-service";
 import type {
   FragranceRecord,
@@ -170,6 +174,87 @@ export function createIntelligenceApi({
 
     getGlobalGraphMetrics() {
       return globalIntelligence.metrics;
+    },
+
+    getNeuralRecommendationsV2({
+      budget,
+      season,
+      temperatureF,
+      limit,
+    }: {
+      budget?: number;
+      season?: import("@/lib/domain/fragrance").Season;
+      temperatureF?: number;
+      limit?: number;
+    } = {}) {
+      const collectorState =
+        this.getCollectorState();
+      const activeCatalog =
+        this.getCatalogContext();
+
+      return runNeuralRecommendationEngineV2({
+        catalog:
+          activeCatalog,
+        collection:
+          collectorState.collection,
+        budget,
+        season,
+        temperatureF,
+        limit,
+      });
+    },
+
+    getRecommendationExplanationV2({
+      candidateId,
+      budget,
+      season,
+      temperatureF,
+    }: {
+      candidateId?: string;
+      budget?: number;
+      season?: import("@/lib/domain/fragrance").Season;
+      temperatureF?: number;
+    } = {}) {
+      const run =
+        this.getNeuralRecommendationsV2({
+          budget,
+          season,
+          temperatureF,
+          limit: 20,
+        });
+
+      const candidate =
+        candidateId
+          ? run.candidates.find(
+              (item) =>
+                item.fragrance.id ===
+                candidateId,
+            )
+          : run.candidates[0];
+
+      if (!candidate) {
+        return null;
+      }
+
+      const collectorState =
+        this.getCollectorState();
+      const catalog =
+        this.getCatalogContext();
+
+      return buildRecommendationExplanationV2({
+        candidate,
+        collection:
+          collectorState.collection,
+        catalog,
+      });
+    },
+
+    getGlobalRelationshipCoverage() {
+      return calculateRelationshipCoverage(globalIntelligence.graph);
+    },
+
+    getGraphRecommendationContext(fragranceId: string) {
+      return buildGraphRecommendationContext({ service: globalIntelligence, fragranceId });
     },
 
     searchGlobalEntities(query: string) {

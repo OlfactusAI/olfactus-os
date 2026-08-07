@@ -186,11 +186,9 @@ export function GlobalOlfactusAnalyst() {
         registry,
       });
 
-    setResponse(
-      result.response,
-    );
+    setResponse(result.response as AnalystResponse);
     setPreview(
-      result.preview ??
+      ("preview" in result ? result.preview : undefined) ??
       null,
     );
     setInput("");
@@ -243,18 +241,18 @@ export function GlobalOlfactusAnalyst() {
     });
 
     if (
-      result.preview
+      ("preview" in result ? result.preview : undefined)
     ) {
       appendAnalystActivity({
         kind:
           "action-proposed",
         summary:
-          result.preview.summary,
+          ("preview" in result ? result.preview : undefined)?.summary,
         metadata: {
           action:
-            result.preview.action,
+            ("preview" in result ? result.preview : undefined)?.action,
           fragranceId:
-            result.preview.fragranceId,
+            ("preview" in result ? result.preview : undefined)?.fragranceId,
         },
       });
     }

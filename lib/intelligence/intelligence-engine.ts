@@ -1,3 +1,4 @@
+import type { Season } from "@/lib/domain/fragrance";
 import type { FragranceRecord } from "@/lib/domain/fragrance";
 import {
   analyzeCollectionIntelligence,
@@ -52,7 +53,7 @@ export interface NeuralCoreOutput {
   confidence: number;
   generatedAt: string;
   activeSources: string[];
-  context: { season: "summer"; temperatureF: number; humidity: number; desiredRole: "office" };
+  context: { season: Season; temperatureF: number; humidity: number; desiredRole: "office" };
   engineVersions: { neuralCore: "NC-1.0.0"; recommendation: "RE-2.0.0"; collection: "CIE-1.0.0"; rotation: "ROE-1.0.0" };
   collectionHealth: { score: number; status: string; summary: string };
   collectionIntelligence: CollectionIntelligenceOutput;

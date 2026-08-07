@@ -8,6 +8,7 @@ export interface CollectionItem {
   favorite?: boolean;
   purchasePrice?: number;
   purchaseCurrency?: string;
+  addedAt?: string;
 }
 
 export interface CollectorProfile {

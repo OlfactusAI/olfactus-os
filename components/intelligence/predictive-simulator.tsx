@@ -91,7 +91,7 @@ export function PredictiveSimulator() {
     );
   }
 
-  const metrics = result.metrics;
+  const metrics = result?.metrics;
 
   function saveScenario() {
     writePredictiveScenario({ fragranceId, horizonDays });
@@ -101,12 +101,12 @@ export function PredictiveSimulator() {
       entity: {
         type: "fragrance",
         id: fragranceId,
-        label: result.fragranceName,
+        label: result?.fragranceName,
       },
       confidence: metrics.confidence,
       metadata: {
         horizonDays,
-        verdict: result.verdict,
+        verdict: result?.verdict,
         neglectRisk: metrics.neglectRisk,
         signaturePotential: metrics.signaturePotential,
       },

@@ -9,32 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Global Intelligence Network release while retaining semantic intelligence", () => {
+  it("identifies the Global Fragrance Catalog Expansion Foundation release", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.3.0-alpha.1",
+      "4.4.2-alpha.1",
     );
+
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Global Intelligence Network Foundation",
+      "Global Fragrance Catalog Expansion Foundation",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Personal Fragrance Language",
+      "Neural Recommendation Engine 2.0",
     );
+
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Preference Embedding",
-    );
-    expect(
-      olfactusSystemManifest.engines,
-    ).toContain(
-      "Global Intelligence Network",
+      "Catalog V2 Ingestion",
     );
   });
 });
