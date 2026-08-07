@@ -9,29 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Catalog Intelligence Enrichment + Promotion Workflow", () => {
+  it("identifies the Reference Intelligence Laboratory data-model milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.6-alpha.1",
+      "4.4.6-alpha.2",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Catalog Intelligence Enrichment + Promotion Workflow",
+      "Reference Intelligence Laboratory — Data Model",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Catalog Enrichment Queue",
+      "Reference Intelligence Laboratory",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Intelligence Promotion Gate",
+      "Reference Calibration Versioning",
     );
   });
 });
