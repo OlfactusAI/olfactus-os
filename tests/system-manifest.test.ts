@@ -9,29 +9,35 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Source Adapters + Catalog Staging & Activation release", () => {
+  it("identifies the Shared Event Bus Foundation release", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.2-alpha.2",
+      "4.4.3-alpha.1",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Source Adapters + Catalog Staging & Activation",
+      "Shared Event Bus Foundation",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Catalog V2 Ingestion",
+      "Unified Registry",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Catalog Activation Gateway",
+      "Shared Event Bus",
+    );
+
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Typed Platform Events",
     );
   });
 });

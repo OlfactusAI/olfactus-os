@@ -13,22 +13,31 @@ import {
 import type {
   CatalogV2Record,
 } from "@/lib/catalog-v2/types";
+import type {
+  OlfactusEventBus,
+} from "@/lib/platform/event-bus";
 
 export async function runCatalogBatch({
   adapter,
   input,
   existing = [],
+  eventBus,
 }: {
   adapter:
     CatalogSourceAdapter;
   input: string;
   existing?:
     CatalogV2Record[];
+  eventBus?:
+    OlfactusEventBus;
 }) {
   const batch =
     await adapter.load(
       input,
     );
+
+  const batchId =
+    `${batch.source.sourceId}:${batch.source.importedAt}`;
 
   const preview =
     previewCatalogImport({
@@ -44,48 +53,114 @@ export async function runCatalogBatch({
 
   const staged =
     preview.accepted.map(
-      (record) =>
-        staging.stage({
-          record,
-        }),
+      (record) => {
+        const row =
+          staging.stage({
+            record,
+          });
+
+        eventBus?.publish(
+          "catalog.record.staged",
+          {
+            stagingId:
+              row.stagingId,
+            canonicalId:
+              record.canonicalId,
+            sourceId:
+              batch.source.sourceId,
+          },
+          {
+            source:
+              "catalog-v2",
+            correlationId:
+              batchId,
+          },
+        );
+
+        return row;
+      },
     );
 
   const activation =
     staged.map(
-      (row) => ({
-        stagingId:
-          row.stagingId,
-        decision:
+      (row) => {
+        const decision =
           evaluateCatalogActivation(
             row,
-          ),
-      }),
+          );
+
+        eventBus?.publish(
+          "catalog.record.activation-evaluated",
+          {
+            stagingId:
+              row.stagingId,
+            canonicalId:
+              row.record.canonicalId,
+            allowed:
+              decision.allowed,
+            confidence:
+              decision.confidence,
+            reasons: [
+              ...decision.reasons,
+            ],
+          },
+          {
+            source:
+              "catalog-v2",
+            correlationId:
+              batchId,
+          },
+        );
+
+        return {
+          stagingId:
+            row.stagingId,
+          decision,
+        };
+      },
     );
 
+  const metrics = {
+    incoming:
+      batch.rows.length,
+    accepted:
+      preview.accepted.length,
+    rejected:
+      preview.rejected.length,
+    duplicateCandidates:
+      preview.duplicateCandidates.length,
+    activationReady:
+      activation.filter(
+        (item) =>
+          item.decision.allowed,
+      ).length,
+  };
+
+  eventBus?.publish(
+    "catalog.batch.completed",
+    {
+      batchId,
+      sourceId:
+        batch.source.sourceId,
+      ...metrics,
+    },
+    {
+      source:
+        "catalog-v2",
+      correlationId:
+        batchId,
+    },
+  );
+
   return {
-    batchId:
-      `${batch.source.sourceId}:${batch.source.importedAt}`,
+    batchId,
     source:
       batch.source,
     preview,
     staging,
     staged,
     activation,
-    metrics: {
-      incoming:
-        batch.rows.length,
-      accepted:
-        preview.accepted.length,
-      rejected:
-        preview.rejected.length,
-      duplicateCandidates:
-        preview.duplicateCandidates.length,
-      activationReady:
-        activation.filter(
-          (item) =>
-            item.decision.allowed,
-        ).length,
-    },
+    metrics,
 
     rollback() {
       for (
@@ -97,9 +172,25 @@ export async function runCatalogBatch({
         );
       }
 
+      const rolledBack =
+        staged.length;
+
+      eventBus?.publish(
+        "catalog.batch.rolled-back",
+        {
+          batchId,
+          rolledBack,
+        },
+        {
+          source:
+            "catalog-v2",
+          correlationId:
+            batchId,
+        },
+      );
+
       return {
-        rolledBack:
-          staged.length,
+        rolledBack,
       };
     },
   };

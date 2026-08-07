@@ -4,37 +4,30 @@ import {
   it,
 } from "vitest";
 import {
-  readFileSync,
-} from "node:fs";
-import {
-  join,
-} from "node:path";
+  olfactusSystemManifest,
+} from "@/lib/os/system-manifest";
 
-describe("Catalog V2 release integration", () => {
-  it("registers the current Catalog V2 source-adapter and activation release", () => {
-    const source =
-      readFileSync(
-        join(
-          process.cwd(),
-          "lib/os/system-manifest.ts",
-        ),
-        "utf8",
-      );
-
-    expect(source).toContain(
-      'version: "4.4.2-alpha.2"',
+describe("Catalog V2 manifest integration", () => {
+  it("keeps Catalog V2 foundation capabilities registered across later releases", () => {
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Catalog V2 Ingestion",
     );
-
-    expect(source).toContain(
-      'release: "Source Adapters + Catalog Staging & Activation"',
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Catalog Provenance Ledger",
     );
-
-    expect(source).toContain(
-      "Catalog Source Adapters",
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Catalog Validation Pipeline",
     );
-
-    expect(source).toContain(
-      "Catalog Activation Gateway",
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Catalog Duplicate Detection",
     );
   });
 });

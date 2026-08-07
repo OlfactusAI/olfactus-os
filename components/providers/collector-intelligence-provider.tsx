@@ -37,11 +37,21 @@ import {
   createIntelligenceApi,
   type OlfactusIntelligenceApi,
 } from "@/lib/intelligence-api";
+import {
+  createUnifiedRegistry,
+  type OlfactusUnifiedRegistry,
+} from "@/lib/platform/unified-registry";
+import {
+  createPlatformEventBus,
+  type OlfactusEventBus,
+} from "@/lib/platform/event-bus";
 
 interface CollectorIntelligenceContextValue {
   hydrated: boolean;
   state: CanonicalCollectorState;
   graph: PersonalIntelligenceGraph;
+  registry: OlfactusUnifiedRegistry;
+  eventBus: OlfactusEventBus;
   api: OlfactusIntelligenceApi;
 }
 
@@ -96,6 +106,12 @@ export function CollectorIntelligenceProvider({
     ],
   );
 
+  const eventBus = useMemo(
+    () =>
+      createPlatformEventBus(),
+    [],
+  );
+
   const graph = useMemo(
     () =>
       buildPersonalIntelligenceGraph({
@@ -106,14 +122,26 @@ export function CollectorIntelligenceProvider({
     [state, catalog, events],
   );
 
+  const registry = useMemo(
+    () =>
+      createUnifiedRegistry({
+        state,
+        graph,
+        catalog,
+        eventBus,
+      }),
+    [state, graph, catalog, eventBus],
+  );
+
   const api = useMemo(
     () =>
       createIntelligenceApi({
         state,
         graph,
         catalog,
+        registry,
       }),
-    [state, graph, catalog],
+    [state, graph, catalog, registry],
   );
 
   const value = useMemo(
@@ -124,6 +152,8 @@ export function CollectorIntelligenceProvider({
         predictiveHydrated,
       state,
       graph,
+      registry,
+      eventBus,
       api,
     }),
     [
@@ -132,6 +162,8 @@ export function CollectorIntelligenceProvider({
       predictiveHydrated,
       state,
       graph,
+      registry,
+      eventBus,
       api,
     ],
   );

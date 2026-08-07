@@ -4,30 +4,29 @@ import {
   it,
 } from "vitest";
 import {
-  readFileSync,
-} from "node:fs";
-import {
-  join,
-} from "node:path";
+  olfactusSystemManifest,
+} from "@/lib/os/system-manifest";
 
-describe("Catalog v4.4.2 alpha.2 release integration", () => {
-  it("registers source adapters, staging, and activation", () => {
-    const source =
-      readFileSync(
-        join(
-          process.cwd(),
-          "lib/os/system-manifest.ts",
-        ),
-        "utf8",
-      );
-
-    expect(source).toContain(
-      'version: "4.4.2-alpha.2"',
-    );
-    expect(source).toContain(
+describe("Catalog source-adapter capability retention", () => {
+  it("keeps alpha.2 source-adapter and activation capabilities registered in later releases", () => {
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
       "Catalog Source Adapters",
     );
-    expect(source).toContain(
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Flanker-Aware Identity Resolver",
+    );
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
+      "Catalog Staging Ledger",
+    );
+    expect(
+      olfactusSystemManifest.engines,
+    ).toContain(
       "Catalog Activation Gateway",
     );
   });

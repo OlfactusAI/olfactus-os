@@ -1,8 +1,11 @@
+import {
+  createUnifiedRegistry,
+  type OlfactusUnifiedRegistry,
+} from "@/lib/platform/unified-registry";
 import { buildRecommendationExplanationV2 } from "@/lib/recommendation-v2/explanation-view-model";
 import { runNeuralRecommendationEngineV2 } from "@/lib/recommendation-v2/engine";
 import { buildGraphRecommendationContext } from "@/lib/graph/recommendation-context";
 import { calculateRelationshipCoverage } from "@/lib/graph/relationship-coverage";
-import { createGlobalIntelligenceService } from "@/lib/graph/global-intelligence-service";
 import type {
   FragranceRecord,
 } from "@/lib/domain/fragrance";
@@ -38,31 +41,41 @@ export interface IntelligenceApiContext {
   state: CanonicalCollectorState;
   graph: PersonalIntelligenceGraph;
   catalog: FragranceRecord[];
+  registry?: OlfactusUnifiedRegistry;
 }
 
 export function createIntelligenceApi({
   state,
   graph,
   catalog,
+  registry: providedRegistry,
 }: IntelligenceApiContext) {
-  const fragranceById = new Map(
-    catalog.map((fragrance) => [fragrance.id, fragrance]),
-  );
-  const graphNodeById = new Map(
-    graph.nodes.map((node) => [node.id, node]),
-  );
-  const globalIntelligence =
-    createGlobalIntelligenceService(
+  const registry =
+    providedRegistry ??
+    createUnifiedRegistry({
+      state,
+      graph,
       catalog,
-    );
+    });
+
+  const fragranceById =
+    registry.catalog.byId;
+  const graphNodeById =
+    registry.graph.personalNodeById;
+  const globalIntelligence =
+    registry.graph.global;
 
   return {
+    getRegistry() {
+      return registry;
+    },
+
     getCollectorState() {
-      return state;
+      return registry.collector.state;
     },
 
     getCatalogContext() {
-      return catalog;
+      return registry.catalog.records;
     },
 
     getCollectionHealthContext() {
@@ -165,7 +178,7 @@ export function createIntelligenceApi({
     },
 
     getGraphContext() {
-      return graph;
+      return registry.graph.personal;
     },
 
     getGlobalGraphContext() {
