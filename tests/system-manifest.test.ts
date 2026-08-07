@@ -9,23 +9,23 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Gold Standard Dataset Builder milestone", () => {
+  it("identifies the Integrated Two-Reviewer Authoring milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.5.0-alpha.1",
+      "4.5.0-alpha.2",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Gold Standard Dataset Builder",
+      "Integrated Two-Reviewer Authoring Workspace",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Gold Standard Dataset Builder",
+      "Reviewer Independence Guard",
     );
   });
 });
