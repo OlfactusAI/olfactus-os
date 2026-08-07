@@ -1,4 +1,17 @@
 export interface PlatformEventPayloads {
+  "platform.context.created": {
+    contextId: string;
+    contextVersion: string;
+    registryVersion: string;
+    collectorStateVersion: string;
+    catalogCount: number;
+  };
+
+  "platform.context.invalidated": {
+    contextId: string;
+    reason: string;
+  };
+
   "platform.registry.refreshed": {
     registryVersion: string;
     catalogCount: number;

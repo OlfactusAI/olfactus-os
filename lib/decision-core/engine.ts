@@ -42,10 +42,12 @@ export function evaluateCandidateDecision({
     string;
   price?: number;
 }): UnifiedDecision {
+  const intelligenceContext =
+    api.getIntelligenceContext();
   const state =
-    api.getCollectorState();
+    intelligenceContext.collector;
   const catalog =
-    api.getCatalogContext();
+    intelligenceContext.catalog;
   const candidate =
     catalog.find(
       (fragrance) =>
@@ -613,8 +615,10 @@ export function evaluateOwnedDecision({
     OlfactusIntelligenceApi;
   fragranceId: string;
 }): UnifiedDecision {
+  const intelligenceContext =
+    api.getIntelligenceContext();
   const state =
-    api.getCollectorState();
+    intelligenceContext.collector;
   const context =
     api.getFragranceState(
       fragranceId,

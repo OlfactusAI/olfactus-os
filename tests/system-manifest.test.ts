@@ -9,23 +9,17 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Shared Event Bus Foundation release", () => {
+  it("identifies the Unified Intelligence Context Foundation release", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.3-alpha.1",
+      "4.4.4-alpha.1",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Shared Event Bus Foundation",
-    );
-
-    expect(
-      olfactusSystemManifest.engines,
-    ).toContain(
-      "Unified Registry",
+      "Unified Intelligence Context Foundation",
     );
 
     expect(
@@ -37,7 +31,7 @@ describe("OLFACTUS OS manifest", () => {
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Typed Platform Events",
+      "Unified Intelligence Context",
     );
   });
 });

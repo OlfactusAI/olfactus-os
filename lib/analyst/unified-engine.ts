@@ -102,10 +102,12 @@ export function runUnifiedAnalystCommand({
     }
   }
 
+  const context =
+    api.getIntelligenceContext();
   const state =
-    api.getCollectorState();
+    context.collector;
   const catalog =
-    api.getCatalogContext();
+    context.catalog;
   const analysis =
     api.getCollectionHealthContext();
 

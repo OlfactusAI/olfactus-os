@@ -45,6 +45,9 @@ import {
   createPlatformEventBus,
   type OlfactusEventBus,
 } from "@/lib/platform/event-bus";
+import type {
+  UnifiedIntelligenceContext,
+} from "@/lib/platform/intelligence-context";
 
 interface CollectorIntelligenceContextValue {
   hydrated: boolean;
@@ -52,6 +55,7 @@ interface CollectorIntelligenceContextValue {
   graph: PersonalIntelligenceGraph;
   registry: OlfactusUnifiedRegistry;
   eventBus: OlfactusEventBus;
+  intelligenceContext: UnifiedIntelligenceContext;
   api: OlfactusIntelligenceApi;
 }
 
@@ -144,6 +148,13 @@ export function CollectorIntelligenceProvider({
     [state, graph, catalog, registry],
   );
 
+  const intelligenceContext =
+    useMemo(
+      () =>
+        api.getIntelligenceContext(),
+      [api],
+    );
+
   const value = useMemo(
     () => ({
       hydrated:
@@ -154,6 +165,7 @@ export function CollectorIntelligenceProvider({
       graph,
       registry,
       eventBus,
+      intelligenceContext,
       api,
     }),
     [
@@ -164,6 +176,7 @@ export function CollectorIntelligenceProvider({
       graph,
       registry,
       eventBus,
+      intelligenceContext,
       api,
     ],
   );

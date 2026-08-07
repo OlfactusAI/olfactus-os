@@ -1,4 +1,8 @@
 import {
+  createUnifiedIntelligenceContext,
+  type UnifiedIntelligenceContext,
+} from "@/lib/platform/intelligence-context";
+import {
   createUnifiedRegistry,
   type OlfactusUnifiedRegistry,
 } from "@/lib/platform/unified-registry";
@@ -64,27 +68,36 @@ export function createIntelligenceApi({
     registry.graph.personalNodeById;
   const globalIntelligence =
     registry.graph.global;
+  const intelligenceContext =
+    createUnifiedIntelligenceContext({
+      registry,
+    });
 
   return {
     getRegistry() {
       return registry;
     },
 
+    getIntelligenceContext(): UnifiedIntelligenceContext {
+      return intelligenceContext;
+    },
+
     getCollectorState() {
-      return registry.collector.state;
+      return intelligenceContext.collector;
     },
 
     getCatalogContext() {
-      return registry.catalog.records;
+      return intelligenceContext.catalog;
     },
 
     getCollectionHealthContext() {
       return analyzeCollectionHealth({
         collection:
-          state.collection,
-        catalog,
+          intelligenceContext.collection,
+        catalog:
+          intelligenceContext.catalog,
         profile:
-          state.profile,
+          intelligenceContext.collector.profile,
       });
     },
 
@@ -200,16 +213,14 @@ export function createIntelligenceApi({
       temperatureF?: number;
       limit?: number;
     } = {}) {
-      const collectorState =
-        this.getCollectorState();
-      const activeCatalog =
-        this.getCatalogContext();
+      const context =
+        this.getIntelligenceContext();
 
       return runNeuralRecommendationEngineV2({
         catalog:
-          activeCatalog,
+          context.catalog,
         collection:
-          collectorState.collection,
+          context.collection,
         budget,
         season,
         temperatureF,
