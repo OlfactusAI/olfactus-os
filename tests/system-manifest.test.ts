@@ -9,29 +9,29 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Production Activation Bridge milestone", () => {
+  it("identifies the first live Gold Standard reference milestone", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.7-alpha.3",
+      "4.4.8-alpha.1",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Production Activation Bridge",
+      "First Live Gold Standard Reference — Creed Aventus",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Production Activation Bridge",
+      "First Live Gold Standard Reference",
     );
 
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Runtime Reference Registry",
+      "Creed Aventus Reference Activation",
     );
   });
 });
