@@ -1,6 +1,5 @@
 import type {
   DnaDimension,
-  Mood,
   Season,
 } from "@/lib/domain/fragrance";
 import type {
@@ -251,11 +250,9 @@ export interface ReferenceIntelligenceProfileShape {
       >
     >;
   moods:
-    Partial<
-      Record<
-        Mood,
-        number
-      >
+    Record<
+      string,
+      number
     >;
   performance:
     Partial<

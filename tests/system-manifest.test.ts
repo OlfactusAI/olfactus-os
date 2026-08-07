@@ -9,17 +9,17 @@ import {
 } from "@/lib/os/system-manifest";
 
 describe("OLFACTUS OS manifest", () => {
-  it("identifies the Reference Intelligence Laboratory data-model milestone", () => {
+  it("identifies the Reference Intelligence Laboratory Calibration Workspace", () => {
     expect(
       olfactusSystemManifest.version,
     ).toBe(
-      "4.4.6-alpha.2",
+      "4.4.6-alpha.3",
     );
 
     expect(
       olfactusSystemManifest.release,
     ).toBe(
-      "Reference Intelligence Laboratory — Data Model",
+      "Reference Intelligence Laboratory — Calibration Workspace",
     );
 
     expect(
@@ -31,7 +31,7 @@ describe("OLFACTUS OS manifest", () => {
     expect(
       olfactusSystemManifest.engines,
     ).toContain(
-      "Reference Calibration Versioning",
+      "Reference Calibration Workspace",
     );
   });
 });

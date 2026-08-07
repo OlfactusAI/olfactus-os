@@ -204,8 +204,11 @@ export function createPlatformEventBus(
           publishOptions.causationId,
       } as PlatformEvent<typeof type>;
 
+      const runtimeEvent =
+        event as PlatformEvent;
+
       eventHistory.push(
-        event,
+        runtimeEvent,
       );
 
       if (
@@ -220,7 +223,7 @@ export function createPlatformEventBus(
       }
 
       queue.push(
-        event,
+        runtimeEvent,
       );
       dispatchQueue();
 

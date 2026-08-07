@@ -4,3 +4,7 @@ export * from "@/lib/reference-lab/versioning";
 export * from "@/lib/reference-lab/session";
 export * from "@/lib/reference-lab/repository";
 export * from "@/lib/reference-lab/certificate";
+export * from "@/lib/reference-lab/reference-targets";
+export * from "@/lib/reference-lab/workspace-schema";
+export * from "@/lib/reference-lab/workspace";
+export * from "@/lib/reference-lab/workspace-storage";

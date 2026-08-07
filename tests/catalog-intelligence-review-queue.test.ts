@@ -48,7 +48,12 @@ describe("Catalog intelligence review queue", () => {
           }),
         seasons:
           evidenceClaim({
-            value: [],
+            value: {
+              spring: 0,
+              summer: 0,
+              fall: 0,
+              winter: 0,
+            },
             confidence: 0,
             method:
               "curated-review",

@@ -1,6 +1,6 @@
 import type {
   DnaDimension,
-  Mood,
+  FragranceRole,
   Season,
 } from "@/lib/domain/fragrance";
 import type {
@@ -40,12 +40,12 @@ export interface CatalogIntelligenceDraft {
 
   roles:
     IntelligenceEvidenceClaim<
-      string[]
+      FragranceRole[]
     >;
 
   seasons:
     IntelligenceEvidenceClaim<
-      Season[]
+      Record<Season, number>
     >;
 
   dna:
@@ -58,7 +58,7 @@ export interface CatalogIntelligenceDraft {
 
   moods:
     IntelligenceEvidenceClaim<
-      Mood[]
+      string[]
     >;
 
   performance: {

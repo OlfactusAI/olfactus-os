@@ -41,7 +41,7 @@ describe("Catalog intelligence promotion gate", () => {
         roles:
           evidenceClaim({
             value: [
-              "Daily",
+              "casual",
             ],
             confidence: 90,
             method:
@@ -51,7 +51,12 @@ describe("Catalog intelligence promotion gate", () => {
           }),
         seasons:
           evidenceClaim({
-            value: [],
+            value: {
+              spring: 0,
+              summer: 0,
+              fall: 0,
+              winter: 0,
+            },
             confidence: 0,
             method:
               "curated-review",

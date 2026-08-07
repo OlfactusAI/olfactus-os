@@ -1,5 +1,6 @@
 import type {
   DnaDimension,
+  Season,
 } from "@/lib/domain/fragrance";
 import type {
   CatalogIntelligenceDraft,
@@ -8,7 +9,26 @@ import type {
 } from "@/lib/catalog-v2/enrichment/intelligence-types";
 
 const minimumConfidence = 70;
-const requiredDnaDimensions = 12;
+
+const requiredDnaDimensions:
+  DnaDimension[] = [
+  "fresh",
+  "green",
+  "woody",
+  "amber",
+  "sweet",
+  "dark",
+  "artistic",
+  "formal",
+];
+
+const requiredSeasons:
+  Season[] = [
+  "spring",
+  "summer",
+  "fall",
+  "winter",
+];
 
 export function evaluateIntelligencePromotion(
   draft:
@@ -19,27 +39,21 @@ export function evaluateIntelligencePromotion(
   const warnings:
     string[] = [];
 
-  const dnaClaims =
-    Object.entries(
-      draft.dna,
-    ) as Array<
-      [
-        DnaDimension,
-        IntelligenceEvidenceClaim<number>,
-      ]
-    >;
-
   const confidentDna =
-    dnaClaims.filter(
-      (
-        [
-          ,
-          claim,
-        ],
-      ) =>
-        isConfident(
-          claim,
-        ),
+    requiredDnaDimensions.filter(
+      (dimension) => {
+        const claim =
+          draft.dna[
+            dimension
+          ];
+
+        return Boolean(
+          claim &&
+          isConfident(
+            claim,
+          ),
+        );
+      },
     );
 
   const coverage = {
@@ -52,9 +66,15 @@ export function evaluateIntelligencePromotion(
       ),
 
     seasons:
-      draft.seasons.value
-        .length >
-        0 &&
+      requiredSeasons.every(
+        (season) =>
+          typeof draft
+            .seasons
+            .value[
+              season
+            ] ===
+            "number",
+      ) &&
       isConfident(
         draft.seasons,
       ),
@@ -79,7 +99,10 @@ export function evaluateIntelligencePromotion(
         draft.performance
           .sillage,
       ].every(
-        isConfident,
+        (claim) =>
+          isConfident(
+            claim,
+          ),
       ),
   };
 
@@ -95,16 +118,16 @@ export function evaluateIntelligencePromotion(
     !coverage.seasons
   ) {
     reasons.push(
-      "Season evidence is missing or below the confidence threshold.",
+      "Season evidence is incomplete or below the confidence threshold.",
     );
   }
 
   if (
     coverage.dna <
-    requiredDnaDimensions
+    requiredDnaDimensions.length
   ) {
     reasons.push(
-      `Only ${coverage.dna} DNA dimensions meet confidence requirements; ${requiredDnaDimensions} are required.`,
+      `Only ${coverage.dna} DNA dimensions meet confidence requirements; ${requiredDnaDimensions.length} are required by the current OLFACTUS fragrance domain.`,
     );
   }
 
@@ -220,13 +243,24 @@ function isConfident<T>(
 function collectClaims(
   draft:
     CatalogIntelligenceDraft,
-) {
+): IntelligenceEvidenceClaim<unknown>[] {
+  const dnaClaims =
+    Object.values(
+      draft.dna,
+    ).filter(
+      (
+        claim,
+      ): claim is
+        IntelligenceEvidenceClaim<number> =>
+        Boolean(
+          claim,
+        ),
+    );
+
   return [
     draft.roles,
     draft.seasons,
-    ...Object.values(
-      draft.dna,
-    ),
+    ...dnaClaims,
     draft.moods,
     draft.performance
       .longevity,
@@ -234,15 +268,7 @@ function collectClaims(
       .projection,
     draft.performance
       .sillage,
-  ].filter(
-    (
-      claim,
-    ): claim is
-      IntelligenceEvidenceClaim<unknown> =>
-      Boolean(
-        claim,
-      ),
-  );
+  ];
 }
 
 function sourceDiversity(

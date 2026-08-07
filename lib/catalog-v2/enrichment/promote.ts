@@ -32,28 +32,30 @@ export function promoteIntelligenceDraft(
     };
   }
 
+  const dna =
+    Object.fromEntries(
+      Object.entries(
+        draft.dna,
+      ).map(
+        (
+          [
+            key,
+            claim,
+          ],
+        ) => [
+          key,
+          claim!.value,
+        ],
+      ),
+    ) as CatalogV2IntelligenceProfile["dna"];
+
   return {
     profile: {
       roles:
         draft.roles.value,
       seasons:
         draft.seasons.value,
-      dna:
-        Object.fromEntries(
-          Object.entries(
-            draft.dna,
-          ).map(
-            (
-              [
-                key,
-                claim,
-              ],
-            ) => [
-              key,
-              claim!.value,
-            ],
-          ),
-        ) as CatalogV2IntelligenceProfile["dna"],
+      dna,
       moods:
         draft.moods.value,
       performance: {
