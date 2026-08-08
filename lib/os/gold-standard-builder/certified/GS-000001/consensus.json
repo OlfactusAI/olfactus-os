@@ -1,0 +1,213 @@
+{
+  "artifactType": "olfactus.consensus-record",
+  "artifactVersion": 1,
+  "consensusId": "consensus:creed:aventus:v1",
+  "referenceId": "GS-000001",
+  "fragranceId": "creed:aventus",
+  "date": "2026-08-07",
+  "inputs": {
+    "reviewerA": "reviewer-a:creed:aventus:v1",
+    "reviewerAValidation": "PASS / FROZEN",
+    "reviewerB": "reviewer:dataset-b",
+    "reviewerBValidation": "PASS",
+    "comparison": "comparison:creed:aventus:a-vs-b:v1.1",
+    "comparisonIntegrityHash": "sha256:0f48d33e3929b8d25e76f6c68adce088d9e78ca9e669558d9948da3bff38b256"
+  },
+  "policy": {
+    "evidenceFirst": true,
+    "reviewerMajorityIsNotSufficient": true,
+    "unsupportedCalibrationMayNotBeCertified": true,
+    "uncertaintyMustBePreserved": true,
+    "provenanceWarningsMustPropagate": true
+  },
+  "provenance": {
+    "status": "QUALIFIED",
+    "warnings": [
+      {
+        "code": "RESEARCH_PACK_ID_MISMATCH",
+        "status": "PRESERVED",
+        "detail": "Reviewer A declares research-pack:creed:aventus:v1. Reviewer B's supplied Research Pack declares research-pack:creed:aventus:2026-08-07 while its Evidence Digest declares research-pack:creed:aventus:v1."
+      },
+      {
+        "code": "DIGEST_BOUND_HASH_NOT_VERIFIABLE_AGAINST_ALPHA5_PACK",
+        "status": "PRESERVED",
+        "detail": "Reviewer B validation states the digest-bound researchPackIntegrityHash cannot be independently verified against the supplied alpha.5 Research Pack JSON."
+      }
+    ],
+    "consensusDisposition": "Warnings preserved. They do not invalidate the semantic comparison, but must be resolved or explicitly accepted by the certification gate before Gold Standard certification."
+  },
+  "domainConsensus": [
+    {
+      "domain": "identity-metadata",
+      "status": "CONSENSUS_SUPPORTED_WITH_QUALIFICATION",
+      "certifiable": [
+        "Creed Aventus current EDP identity",
+        "2010 release lineage"
+      ],
+      "qualified": [
+        "Perfumer attribution: Jean-Christophe Hérault is consistently supported; additional Erwin Creed credit remains source-dependent."
+      ],
+      "withheld": [],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "dna",
+      "status": "CONSENSUS_SUPPORTED_WITH_QUALIFICATION",
+      "certifiable": [
+        "Current official note presentation",
+        "Bright/luminous and smoky/leathery official character",
+        "Broad fresh/fruity/citrus/woody/smoky DNA descriptors as source-supported classifications"
+      ],
+      "qualified": [
+        "Recognizable/stable DNA may be retained as an interpretive synthesis, not proof of formula invariance."
+      ],
+      "withheld": [
+        "Formula-change claims",
+        "Identity-drift claims"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "performance",
+      "status": "CONSENSUS_VARIABLE",
+      "certifiable": [
+        "Parfumo frozen longevity and sillage aggregates as source aggregates",
+        "Material variability in individual community performance reports"
+      ],
+      "qualified": [
+        "Performance should be represented as a distribution/variable profile."
+      ],
+      "withheld": [
+        "Universal strong-opening projection profile",
+        "Universal extended-wear claim",
+        "Universal progressive performance curve",
+        "Universal drydown-presence calibration"
+      ],
+      "confidence": "MODERATELY_HIGH"
+    },
+    {
+      "domain": "wearability",
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certifiable": [],
+      "qualified": [
+        "Broad adaptability is plausible but not independently established by direct contextual-use evidence in the frozen boundary."
+      ],
+      "withheld": [
+        "High versatility calibration",
+        "Daily/professional/social/formal suitability calibration"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "seasonality",
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certifiable": [],
+      "qualified": [],
+      "withheld": [
+        "Spring strongly supported",
+        "Summer strongly supported",
+        "Autumn supported",
+        "Winter supported",
+        "Warm-weather high",
+        "Cold-weather moderate",
+        "Year-round suitability"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "roles",
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certifiable": [],
+      "qualified": [],
+      "withheld": [
+        "Daily wear",
+        "Business",
+        "Professional",
+        "Social",
+        "Evening",
+        "Formal-event role calibrations"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "formality",
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certifiable": [],
+      "qualified": [],
+      "withheld": [
+        "Casual",
+        "Smart-casual",
+        "Business",
+        "Formal dress-code calibrations"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "mood",
+      "status": "CONSENSUS_PARTIALLY_SUPPORTED",
+      "certifiable": [
+        "Bright/luminous",
+        "Refined/assertive"
+      ],
+      "qualified": [
+        "Confidence/refinement are reasonable semantic interpretations of the official character evidence."
+      ],
+      "withheld": [
+        "Optimism calibration",
+        "Energy calibration",
+        "Sophistication calibration",
+        "Darkness-not-supported calibration"
+      ],
+      "confidence": "MODERATELY_HIGH"
+    },
+    {
+      "domain": "collector",
+      "status": "CONSENSUS_CONTEXT_SUPPORTED_VALUE_CALIBRATION_WITHHELD",
+      "certifiable": [
+        "Large frozen community-rating participation",
+        "Documented similarity lineage provides reference-context evidence"
+      ],
+      "qualified": [
+        "Aventus has meaningful collector/reference context within the supplied evidence."
+      ],
+      "withheld": [
+        "Collection Value = High",
+        "Trend dependency = Not Supported",
+        "Strong historical relevance score",
+        "Long-term relevance calibration"
+      ],
+      "confidence": "MODERATELY_HIGH"
+    },
+    {
+      "domain": "time",
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certifiable": [],
+      "qualified": [],
+      "withheld": [
+        "Day/night suitability calibration"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "domain": "weather",
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certifiable": [],
+      "qualified": [],
+      "withheld": [
+        "Temperature suitability",
+        "Humidity suitability",
+        "Warm/cold weather calibration"
+      ],
+      "confidence": "HIGH"
+    }
+  ],
+  "consensusPrinciple": "Where Reviewer A supplied a contextual calibration but Reviewer B identified absence of direct supporting evidence, the calibration is withheld rather than averaged or forced. Direct frozen facts and explicitly supported source classifications remain certifiable; interpretive conclusions are qualified.",
+  "gate": {
+    "consensusComplete": true,
+    "readyForGoldStandardCertificationEvaluation": true,
+    "goldStandardCertified": false,
+    "blockingOrQualificationIssue": "Research Pack provenance mismatch/hash-binding warning must be resolved or explicitly accepted under certification policy.",
+    "status": "COMPLETE_READY_FOR_CERTIFICATION_GATE"
+  },
+  "artifactIntegrityHash": "sha256:97144dc66bb39aa36a1bdec2d1565d04e80982a792735a10e2b53c24a7aa568f"
+}

@@ -1,0 +1,14 @@
+{
+  "artifactType": "olfactus.production-fingerprint-bundle",
+  "artifactVersion": 1,
+  "fingerprintId": "production-fingerprint:GS-000001:v1",
+  "referenceId": "GS-000001",
+  "registryIntegrityHash": "sha256:0c6ba80feca5565252f099d0dd195d3b1d39b9faa7dc75a387a89f0ba2401c66",
+  "certificateIntegrityHash": "sha256:9be2ae23fa78824211aeec0b9d789ff97177d54848a2b9ad79f75c38a374a2f9",
+  "consensusIntegrityHash": "sha256:97144dc66bb39aa36a1bdec2d1565d04e80982a792735a10e2b53c24a7aa568f",
+  "researchPackIntegrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee",
+  "evidenceDigestIntegrityHash": "sha256:8d19feba421ce2e95f07007bf7f40cf0a84dfc71acbf66b7279d8f1c561e65c6",
+  "truthBoundaryFingerprint": "14f329e17ebb227111e0786c77d11bad6b3830f9c838fc7c58acd24d6f5a6653",
+  "status": "LOCKED",
+  "artifactIntegrityHash": "sha256:e0bd9a275d4de67c8c87bc66465eca9bca51d2a09ee1b70ab38deffc42034271"
+}

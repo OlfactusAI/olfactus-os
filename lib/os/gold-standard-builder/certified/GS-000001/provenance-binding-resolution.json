@@ -1,0 +1,40 @@
+{
+  "artifactType": "olfactus.provenance-binding-resolution",
+  "artifactVersion": 1,
+  "resolutionId": "provenance-resolution:creed:aventus:v1",
+  "referenceId": "GS-000001",
+  "fragranceId": "creed:aventus",
+  "date": "2026-08-07",
+  "canonicalResearchPack": {
+    "researchPackId": "research-pack:creed:aventus:v1",
+    "integrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee",
+    "source": "olfactus-v5.0.0-alpha.2-aventus-evidence-migration/lib/os/evidence/frozen-packs/aventus-v1.json"
+  },
+  "evidenceDigestBinding": {
+    "digestId": "evidence-digest:creed:aventus:v1",
+    "declaredResearchPackId": "research-pack:creed:aventus:v1",
+    "declaredResearchPackIntegrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee",
+    "digestIntegrityHash": "sha256:8d19feba421ce2e95f07007bf7f40cf0a84dfc71acbf66b7279d8f1c561e65c6"
+  },
+  "checks": {
+    "researchPackIdMatchesDigestBinding": true,
+    "researchPackIntegrityHashMatchesDigestBinding": true,
+    "bindingPass": true
+  },
+  "priorWarnings": [
+    {
+      "code": "RESEARCH_PACK_ID_MISMATCH",
+      "priorState": "WARNING",
+      "resolution": "RESOLVED_BY_CANONICAL_MIGRATED_PACK",
+      "explanation": "Reviewer B saw an alpha.5 supplied pack declaring research-pack:creed:aventus:2026-08-07. The canonical migrated frozen pack supplied for certification declares research-pack:creed:aventus:v1, matching the Evidence Digest."
+    },
+    {
+      "code": "DIGEST_BOUND_HASH_NOT_VERIFIABLE_AGAINST_ALPHA5_PACK",
+      "priorState": "WARNING",
+      "resolution": "RESOLVED_BY_CANONICAL_MIGRATED_PACK",
+      "explanation": "The canonical migrated frozen pack exposes integrityHash sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee, exactly matching the Evidence Digest binding."
+    }
+  ],
+  "status": "PASS",
+  "artifactIntegrityHash": "sha256:643c3d867cfffb2d835c5cf9e488117e10a6f597ff9d77be862d455aa0bbc1f0"
+}

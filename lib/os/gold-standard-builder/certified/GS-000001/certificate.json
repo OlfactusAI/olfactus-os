@@ -1,0 +1,256 @@
+{
+  "artifactType": "olfactus.gold-standard-certificate",
+  "artifactVersion": 1,
+  "certificateId": "gold-standard-certificate:GS-000001:v1",
+  "referenceId": "GS-000001",
+  "ordinal": 1,
+  "fragranceId": "creed:aventus",
+  "target": {
+    "brand": "Creed",
+    "name": "Aventus",
+    "edition": "Eau de Parfum"
+  },
+  "certificationDate": "2026-08-07",
+  "status": "CERTIFIED",
+  "goldStandardLevel": "EVIDENCE_BOUND_CONSENSUS",
+  "inputs": {
+    "researchPack": {
+      "id": "research-pack:creed:aventus:v1",
+      "integrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee"
+    },
+    "evidenceDigest": {
+      "id": "evidence-digest:creed:aventus:v1",
+      "integrityHash": "sha256:8d19feba421ce2e95f07007bf7f40cf0a84dfc71acbf66b7279d8f1c561e65c6",
+      "boundResearchPackId": "research-pack:creed:aventus:v1",
+      "boundResearchPackIntegrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee"
+    },
+    "reviewerA": {
+      "reviewId": "reviewer-a:creed:aventus:v1",
+      "validation": "PASS",
+      "state": "FROZEN"
+    },
+    "reviewerB": {
+      "reviewId": "reviewer:dataset-b",
+      "artifactIntegrityHash": "sha256:ff5ad5391426e994c7f664ed45a4d6ebc642aeca0757413992aadca53093f0b4",
+      "validation": "PASS",
+      "state": "COMPLETE_WITH_PROVENANCE_WARNINGS"
+    },
+    "comparison": {
+      "comparisonId": "comparison:creed:aventus:a-vs-b:v1.1",
+      "artifactIntegrityHash": "sha256:0f48d33e3929b8d25e76f6c68adce088d9e78ca9e669558d9948da3bff38b256",
+      "status": "COMPLETE_READY_FOR_CONSENSUS"
+    },
+    "consensus": {
+      "consensusId": "consensus:creed:aventus:v1",
+      "artifactIntegrityHash": "sha256:97144dc66bb39aa36a1bdec2d1565d04e80982a792735a10e2b53c24a7aa568f",
+      "status": "COMPLETE_READY_FOR_CERTIFICATION_GATE"
+    },
+    "provenanceResolution": {
+      "resolutionId": "provenance-resolution:creed:aventus:v1",
+      "artifactIntegrityHash": "sha256:643c3d867cfffb2d835c5cf9e488117e10a6f597ff9d77be862d455aa0bbc1f0",
+      "status": "PASS"
+    }
+  },
+  "certificationPolicy": {
+    "consensusTruthBoundaryIsControlling": true,
+    "withheldCalibrationsExcludedFromGoldStandard": true,
+    "qualifiedClaimsRemainQualified": true,
+    "reviewerDisagreementNotSilentlyAveraged": true,
+    "provenanceWarningsResolvedByEvidence": true
+  },
+  "certifiedTruthBoundary": {
+    "identity-metadata": {
+      "status": "CONSENSUS_SUPPORTED_WITH_QUALIFICATION",
+      "certified": [
+        "Creed Aventus current EDP identity",
+        "2010 release lineage"
+      ],
+      "qualified": [
+        "Perfumer attribution: Jean-Christophe Hérault is consistently supported; additional Erwin Creed credit remains source-dependent."
+      ],
+      "withheld": [],
+      "confidence": "HIGH"
+    },
+    "dna": {
+      "status": "CONSENSUS_SUPPORTED_WITH_QUALIFICATION",
+      "certified": [
+        "Current official note presentation",
+        "Bright/luminous and smoky/leathery official character",
+        "Broad fresh/fruity/citrus/woody/smoky DNA descriptors as source-supported classifications"
+      ],
+      "qualified": [
+        "Recognizable/stable DNA may be retained as an interpretive synthesis, not proof of formula invariance."
+      ],
+      "withheld": [
+        "Formula-change claims",
+        "Identity-drift claims"
+      ],
+      "confidence": "HIGH"
+    },
+    "performance": {
+      "status": "CONSENSUS_VARIABLE",
+      "certified": [
+        "Parfumo frozen longevity and sillage aggregates as source aggregates",
+        "Material variability in individual community performance reports"
+      ],
+      "qualified": [
+        "Performance should be represented as a distribution/variable profile."
+      ],
+      "withheld": [
+        "Universal strong-opening projection profile",
+        "Universal extended-wear claim",
+        "Universal progressive performance curve",
+        "Universal drydown-presence calibration"
+      ],
+      "confidence": "MODERATELY_HIGH"
+    },
+    "wearability": {
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certified": [],
+      "qualified": [
+        "Broad adaptability is plausible but not independently established by direct contextual-use evidence in the frozen boundary."
+      ],
+      "withheld": [
+        "High versatility calibration",
+        "Daily/professional/social/formal suitability calibration"
+      ],
+      "confidence": "HIGH"
+    },
+    "seasonality": {
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certified": [],
+      "qualified": [],
+      "withheld": [
+        "Spring strongly supported",
+        "Summer strongly supported",
+        "Autumn supported",
+        "Winter supported",
+        "Warm-weather high",
+        "Cold-weather moderate",
+        "Year-round suitability"
+      ],
+      "confidence": "HIGH"
+    },
+    "roles": {
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certified": [],
+      "qualified": [],
+      "withheld": [
+        "Daily wear",
+        "Business",
+        "Professional",
+        "Social",
+        "Evening",
+        "Formal-event role calibrations"
+      ],
+      "confidence": "HIGH"
+    },
+    "formality": {
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certified": [],
+      "qualified": [],
+      "withheld": [
+        "Casual",
+        "Smart-casual",
+        "Business",
+        "Formal dress-code calibrations"
+      ],
+      "confidence": "HIGH"
+    },
+    "mood": {
+      "status": "CONSENSUS_PARTIALLY_SUPPORTED",
+      "certified": [
+        "Bright/luminous",
+        "Refined/assertive"
+      ],
+      "qualified": [
+        "Confidence/refinement are reasonable semantic interpretations of the official character evidence."
+      ],
+      "withheld": [
+        "Optimism calibration",
+        "Energy calibration",
+        "Sophistication calibration",
+        "Darkness-not-supported calibration"
+      ],
+      "confidence": "MODERATELY_HIGH"
+    },
+    "collector": {
+      "status": "CONSENSUS_CONTEXT_SUPPORTED_VALUE_CALIBRATION_WITHHELD",
+      "certified": [
+        "Large frozen community-rating participation",
+        "Documented similarity lineage provides reference-context evidence"
+      ],
+      "qualified": [
+        "Aventus has meaningful collector/reference context within the supplied evidence."
+      ],
+      "withheld": [
+        "Collection Value = High",
+        "Trend dependency = Not Supported",
+        "Strong historical relevance score",
+        "Long-term relevance calibration"
+      ],
+      "confidence": "MODERATELY_HIGH"
+    },
+    "time": {
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certified": [],
+      "qualified": [],
+      "withheld": [
+        "Day/night suitability calibration"
+      ],
+      "confidence": "HIGH"
+    },
+    "weather": {
+      "status": "CONSENSUS_INSUFFICIENT_FOR_CALIBRATION",
+      "certified": [],
+      "qualified": [],
+      "withheld": [
+        "Temperature suitability",
+        "Humidity suitability",
+        "Warm/cold weather calibration"
+      ],
+      "confidence": "HIGH"
+    }
+  },
+  "certificateSummary": {
+    "certifiedCore": [
+      "Creed Aventus current Eau de Parfum identity",
+      "2010 release lineage",
+      "Current official note presentation",
+      "Official bright/luminous and smoky/leathery character",
+      "Source-reported accord classifications and frozen community aggregates",
+      "Performance variability as a supported evidence conclusion"
+    ],
+    "qualifiedCore": [
+      "Perfumer attribution retains the source-dependent Erwin Creed disagreement",
+      "Stable/recognizable DNA is interpretive rather than proof of formula invariance",
+      "Performance is represented as variable rather than a universal fixed profile",
+      "Collector/reference significance remains contextual where direct value metrics are absent"
+    ],
+    "withheldFromGoldStandardCalibration": [
+      "Universal performance curve / extended-wear calibration",
+      "High versatility / broad wearability calibration",
+      "Seasonal suitability calibration",
+      "Role/occasion calibration",
+      "Formality calibration",
+      "Time-of-day calibration",
+      "Weather suitability calibration",
+      "Unsupported mood extensions",
+      "Unsupported collection-value / trend-dependency calibration"
+    ]
+  },
+  "provenance": {
+    "bindingStatus": "VERIFIED",
+    "priorReviewerBWarnings": "RESOLVED_WITH_TRACEABILITY",
+    "resolutionArtifact": "provenance-resolution:creed:aventus:v1"
+  },
+  "downstream": {
+    "eligibleForRegistry": true,
+    "registered": false,
+    "productionFingerprintsGenerated": false,
+    "promotionPackageGenerated": false,
+    "activationPackageGenerated": false,
+    "runtimeActive": false
+  },
+  "certificateIntegrityHash": "sha256:9be2ae23fa78824211aeec0b9d789ff97177d54848a2b9ad79f75c38a374a2f9"
+}

@@ -1,0 +1,200 @@
+{
+  "artifactType": "olfactus.reviewer-comparison",
+  "artifactVersion": "1.1",
+  "comparisonId": "comparison:creed:aventus:a-vs-b:v1.1",
+  "referenceId": "GS-000001",
+  "fragranceId": "creed:aventus",
+  "createdDate": "2026-08-07",
+  "stage": "COMPARISON_ONLY",
+  "inputs": {
+    "reviewerA": {
+      "reviewId": "reviewer-a:creed:aventus:v1",
+      "status": "COMPLETE",
+      "frozen": true,
+      "researchPackId": "research-pack:creed:aventus:v1",
+      "evidenceDigestId": "evidence-digest:creed:aventus:v1",
+      "validation": {
+        "status": "PASS",
+        "referenceId": "GS-000001",
+        "reviewVersion": "v1",
+        "reviewState": "FROZEN",
+        "frozenResearchPackVerified": true,
+        "evidenceDigestVerified": true,
+        "independentReviewVerified": true,
+        "reviewerBVisible": false,
+        "consensusVisible": false,
+        "goldStandardVisible": false,
+        "completedDomains": 9,
+        "eligibleForReviewerComparisonAtValidation": true,
+        "eligibleForConsensusAtValidation": false,
+        "historicalReason": "Independent Reviewer B had not yet been completed at the time Reviewer A validation was issued."
+      }
+    },
+    "reviewerB": {
+      "artifactType": "olfactus.reviewer-b-independent-review",
+      "artifactVersion": 1,
+      "reviewerId": "reviewer:dataset-b",
+      "status": "COMPLETE_WITH_PROVENANCE_WARNINGS",
+      "validation": "PASS",
+      "artifactIntegrityHash": "sha256:ff5ad5391426e994c7f664ed45a4d6ebc642aeca0757413992aadca53093f0b4"
+    }
+  },
+  "comparisonPolicy": {
+    "noConsensusResolution": true,
+    "noGoldStandardCertification": true,
+    "noRegistryPromotion": true,
+    "noRuntimeActivation": true,
+    "preserveReviewerIndependence": true,
+    "schemaDifferencePreserved": true,
+    "note": "Reviewer A is primarily domain-level; Reviewer B contains claim-level and section-level judgments. Comparison therefore aligns semantically without converting one schema into the other."
+  },
+  "provenanceWarnings": [
+    {
+      "code": "RESEARCH_PACK_ID_MISMATCH",
+      "status": "PRESERVED",
+      "detail": "Reviewer A declares research-pack:creed:aventus:v1. Reviewer B's supplied Research Pack declares research-pack:creed:aventus:2026-08-07 while its Evidence Digest declares research-pack:creed:aventus:v1."
+    },
+    {
+      "code": "DIGEST_BOUND_HASH_NOT_VERIFIABLE_AGAINST_ALPHA5_PACK",
+      "status": "PRESERVED",
+      "detail": "Reviewer B validation states the digest-bound researchPackIntegrityHash cannot be independently verified against the supplied alpha.5 Research Pack JSON."
+    }
+  ],
+  "domainComparisons": [
+    {
+      "domain": "identity-metadata",
+      "classification": "AGREEMENT_WITH_SHARED_CAUTION",
+      "reviewerA": "Core identity and release lineage verified; perfumer attribution disagreement preserved.",
+      "reviewerB": "Identity-current and launch-2010 supported directly; Jean-Christophe Hérault consistently attributed, with disagreement over additional Erwin Creed credit preserved.",
+      "comparison": "Strong substantive agreement on identity/release and on preserving attribution disagreement.",
+      "consensusRequired": true,
+      "consensusQuestion": "Certify the stable identity/release facts while carrying the perfumer-attribution disagreement as a qualified field."
+    },
+    {
+      "domain": "dna",
+      "classification": "PARTIAL_AGREEMENT_WITH_SCOPE_DIFFERENCE",
+      "reviewerA": "Stable recognizable DNA; documented variation does not redefine identity; identity drift not supported.",
+      "reviewerB": "Official character and community accord classifications support broad DNA; note-list disagreement is descriptive and does not prove formula change.",
+      "comparison": "Both reject unsupported formula-change/identity-drift conclusions. Reviewer A goes further by asserting stable DNA recognition; Reviewer B supports DNA broadly but frames source differences more cautiously.",
+      "consensusRequired": true,
+      "consensusQuestion": "Determine whether 'stable recognizable DNA' is directly supportable or should remain a qualified interpretive conclusion."
+    },
+    {
+      "domain": "performance",
+      "classification": "MATERIAL_DISAGREEMENT",
+      "reviewerA": "Strong opening projection, progressive decline, extended wear, drydown presence, with variation.",
+      "reviewerB": "Direct Parfumo aggregates exist, but individual reports vary materially; a single universal performance value/profile is not defensible.",
+      "comparison": "Agreement exists that performance varies, but Reviewer A asserts a specific performance curve and extended wear that Reviewer B does not certify from the frozen evidence boundary.",
+      "consensusRequired": true,
+      "consensusQuestion": "Decide whether the evidence supports a specific strong-opening/extended-wear profile or only a variable performance distribution."
+    },
+    {
+      "domain": "wearability",
+      "classification": "A_ONLY_CALIBRATION",
+      "reviewerA": "High versatility; daily, professional, social, and formal use supported.",
+      "reviewerB": "No standalone wearability section. Related roles/formality sections state the supplied evidence is insufficient for numeric/contextual calibration.",
+      "comparison": "Reviewer A makes broad contextual-use determinations not independently affirmed by Reviewer B.",
+      "consensusRequired": true,
+      "consensusQuestion": "Require explicit evidence for broad versatility and contextual wearability before certification."
+    },
+    {
+      "domain": "seasonality",
+      "classification": "DIRECT_DISAGREEMENT_ON_EVIDENTIARY_SUFFICIENCY",
+      "reviewerA": "Spring/summer strongly supported, autumn/winter supported; warm-weather high, cold-weather moderate; year-round usable.",
+      "reviewerB": "Season evidence consists of notes/accords and is insufficient for numeric calibration; frozen caution prohibits inferring seasons solely from note pyramids.",
+      "comparison": "Reviewer A certifies seasonal suitability; Reviewer B explicitly declines seasonal calibration from the same frozen boundary.",
+      "consensusRequired": true,
+      "consensusQuestion": "Resolve whether direct environmental-wear evidence exists; absent such evidence, seasonal calibration should remain uncertified."
+    },
+    {
+      "domain": "roles",
+      "classification": "DIRECT_DISAGREEMENT_ON_EVIDENTIARY SUFFICIENCY",
+      "reviewerA": "Broad role coverage: daily, business, professional, social, evening, formal.",
+      "reviewerB": "Character, popularity, and similarity lineage do not directly measure role suitability; insufficient for numeric calibration.",
+      "comparison": "Reviewer A makes role claims that Reviewer B explicitly considers insufficiently evidenced.",
+      "consensusRequired": true,
+      "consensusQuestion": "Identify any direct contextual-use evidence; otherwise withhold role calibration."
+    },
+    {
+      "domain": "formality",
+      "classification": "DIRECT_DISAGREEMENT_ON_EVIDENTIARY SUFFICIENCY",
+      "reviewerA": "Casual through formal supported, strongest in smart-casual/business.",
+      "reviewerB": "Character and accord evidence do not directly measure formal-vs-casual suitability; insufficient for numeric calibration.",
+      "comparison": "Reviewer A makes dress-code suitability determinations that Reviewer B declines to make.",
+      "consensusRequired": true,
+      "consensusQuestion": "Require direct formality/context evidence before certifying dress-code suitability."
+    },
+    {
+      "domain": "mood",
+      "classification": "PARTIAL_AGREEMENT",
+      "reviewerA": "Confidence, refinement, optimism, energy, sophistication; darkness not supported.",
+      "reviewerB": "Official bright/luminous and refined/assertive language supports broad mood descriptors, but numeric mood calibration remains inferential.",
+      "comparison": "Confidence/refinement are substantially aligned with official character language. Reviewer A's additional optimism, energy, sophistication and negative darkness claim extend beyond Reviewer B's narrower support.",
+      "consensusRequired": true,
+      "consensusQuestion": "Certify only mood descriptors traceable to supplied character evidence, or explicitly label broader descriptors as inference."
+    },
+    {
+      "domain": "collector",
+      "classification": "PARTIAL_AGREEMENT_WITH_EVIDENCE_GAP",
+      "reviewerA": "Historical relevance strongly supported; collection value high; reference status and long-term relevance supported; not trend-dependent.",
+      "reviewerB": "Large community samples, similarity lineage and variability provide collector context, but no primary source or direct collector-value metric exists.",
+      "comparison": "Both recognize collector relevance/context, but Reviewer A assigns stronger historical/value/reference conclusions than Reviewer B finds directly measurable.",
+      "consensusRequired": true,
+      "consensusQuestion": "Separate historically observable/reference-context claims from unsupported collection-value scoring."
+    },
+    {
+      "domain": "time",
+      "classification": "B_ONLY_UNCERTAINTY",
+      "reviewerA": "No dedicated time-of-day domain.",
+      "reviewerB": "No direct day-vs-night evidence; insufficient for numeric calibration.",
+      "comparison": "No direct A/B conflict because Reviewer A does not separately score time; Reviewer B establishes an uncertainty boundary.",
+      "consensusRequired": true,
+      "consensusQuestion": "Do not infer time-of-day suitability unless direct evidence is identified."
+    },
+    {
+      "domain": "weather",
+      "classification": "OVERLAPS_SEASONALITY_DISAGREEMENT",
+      "reviewerA": "Warm-weather high, cold-weather moderate.",
+      "reviewerB": "Notes and general performance aggregates do not establish temperature/humidity/weather suitability.",
+      "comparison": "Reviewer A assigns weather suitability; Reviewer B finds the evidence insufficient.",
+      "consensusRequired": true,
+      "consensusQuestion": "Withhold weather calibration unless direct weather-specific wear evidence exists."
+    }
+  ],
+  "claimLevelNotes": {
+    "reviewerBDirectlySupported": [
+      "current EDP identity and official character",
+      "2010 release",
+      "current official head/heart/base note presentation",
+      "Parfumo and Fragrantica accord classifications as source classifications",
+      "frozen Parfumo and Fragrantica rating aggregates",
+      "frozen Parfumo longevity/sillage aggregates",
+      "Creed batch-process statement"
+    ],
+    "reviewerBQualifiedOrUnresolved": [
+      "performance variability",
+      "similarity-lineage/reference-DNA inference",
+      "perfumer attribution disagreement",
+      "official-vs-community note-list disagreement",
+      "batch variation beyond Creed's process statement"
+    ]
+  },
+  "summary": {
+    "clearAgreementDomains": 1,
+    "partialAgreementDomains": 3,
+    "materialOrEvidentiaryDisagreementDomains": 6,
+    "uncertaintyBoundaryOnlyDomains": 1,
+    "primaryComparisonFinding": "Reviewer A is materially more permissive in converting descriptive evidence into contextual calibrations (performance profile, wearability, seasonality, roles, formality, weather and some collector/mood judgments). Reviewer B is more conservative and repeatedly withholds calibration where direct evidence is absent.",
+    "readyForConsensus": true,
+    "consensusMustNotTreatReviewerAOrBAsAutomaticallyControlling": true
+  },
+  "completion": {
+    "comparisonComplete": true,
+    "consensusStarted": false,
+    "certificationStarted": false,
+    "registryStarted": false,
+    "runtimeActivationStarted": false,
+    "status": "COMPLETE_READY_FOR_CONSENSUS"
+  },
+  "artifactIntegrityHash": "sha256:0f48d33e3929b8d25e76f6c68adce088d9e78ca9e669558d9948da3bff38b256"
+}

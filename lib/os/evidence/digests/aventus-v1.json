@@ -1,0 +1,654 @@
+{
+  "digestId": "evidence-digest:creed:aventus:v1",
+  "digestVersion": 1,
+  "fragranceId": "creed:aventus",
+  "researchPackId": "research-pack:creed:aventus:v1",
+  "researchPackIntegrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee",
+  "generatedAt": "2026-08-07",
+  "policy": {
+    "scoresIncluded": false,
+    "reviewerConclusionsIncluded": false,
+    "deterministic": true,
+    "purpose": "Organize frozen evidence for independent calibration without interpreting or scoring it."
+  },
+  "reviewerCautions": [
+    "Do not convert community ratings directly into OLFACTUS 0–100 metric scores.",
+    "Do not infer season, weather, role or formality values solely from note pyramids.",
+    "Use official Creed material for current identity/notes, but retain community sources for perception and wear behavior.",
+    "Where sources disagree, record the disagreement in rationale rather than silently choosing one source.",
+    "Performance should be calibrated as a distribution/consensus judgment because community reports vary.",
+    "Reviewer A and Reviewer B must score independently even though they share this evidence pack."
+  ],
+  "sections": [
+    {
+      "sectionId": "collector",
+      "coverage": "supported",
+      "evidenceCount": 4,
+      "sourceCount": 2,
+      "primarySourceCount": 0,
+      "meanEvidenceConfidence": 92.5,
+      "minimumEvidenceConfidence": 80,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:fragrantica-rating:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "community",
+          "claim": "Fragrantica reports 4.32/5 from 27,819 votes.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:fragrantica-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-rating:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "community",
+          "claim": "Parfumo reports 8.4/10 from 8,463 ratings.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:performance-variance:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "performance",
+          "claim": "Individual community reports vary materially: some describe strong attention and 6–8 hour wear, while other reports describe weak projection or short wear. Treat performance as variable rather than universally fixed.",
+          "confidence": 80,
+          "sourceIds": [
+            "source:fragrantica-aventus:v1",
+            "source:parfumo-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:similarity-lineage:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "similarity",
+          "claim": "Parfumo's similarity section prominently associates Aventus with Club de Nuit Intense Man, L'Aventure, Aventus Cologne and Montblanc Explorer, supporting its role as a major reference DNA.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:fragrantica-aventus:v1",
+          "publisher": "Fragrantica",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": [
+        {
+          "code": "NO_PRIMARY_SOURCE",
+          "message": "No linked evidence resolves to a primary-weight source."
+        }
+      ]
+    },
+    {
+      "sectionId": "dna",
+      "coverage": "broad",
+      "evidenceCount": 4,
+      "sourceCount": 4,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 93.75,
+      "minimumEvidenceConfidence": 90,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:fragrantica-main-accords:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Fragrantica's current main accords emphasize fruity, sweet, woody, leather, citrus, smoky, musky, fresh, tropical and mossy facets.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:fragrantica-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:official-character:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Parfumo classifies the principal accords as fresh, fruity, citrus, woody and smoky.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:note-list-disagreement:v1",
+          "version": 1,
+          "relationship": "cautions",
+          "category": "caution",
+          "claim": "Current official Creed notes differ from older/community pyramids that include apple, oakmoss, ambergris, vanilla, rose or cedarwood. This is a source-description difference and should not by itself be treated as proof of a formula change.",
+          "confidence": 95,
+          "sourceIds": [
+            "source:basenotes-aventus:v1",
+            "source:creed-official-aventus:v1",
+            "source:fragrantica-aventus:v1",
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:basenotes-aventus:v1",
+          "publisher": "Basenotes",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:fragrantica-aventus:v1",
+          "publisher": "Fragrantica",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "formality",
+      "coverage": "supported",
+      "evidenceCount": 2,
+      "sourceCount": 2,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 95.0,
+      "minimumEvidenceConfidence": 90,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:official-character:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Parfumo classifies the principal accords as fresh, fruity, citrus, woody and smoky.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "mood",
+      "coverage": "supported",
+      "evidenceCount": 2,
+      "sourceCount": 2,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 95.0,
+      "minimumEvidenceConfidence": 90,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:fragrantica-main-accords:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Fragrantica's current main accords emphasize fruity, sweet, woody, leather, citrus, smoky, musky, fresh, tropical and mossy facets.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:fragrantica-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:official-character:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:fragrantica-aventus:v1",
+          "publisher": "Fragrantica",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "performance",
+      "coverage": "supported",
+      "evidenceCount": 3,
+      "sourceCount": 3,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 93.33,
+      "minimumEvidenceConfidence": 80,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-performance:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "performance",
+          "claim": "Parfumo reports longevity 7.3/10 from 7,797 ratings and sillage 7.3/10 from 7,725 ratings.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:performance-variance:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "performance",
+          "claim": "Individual community reports vary materially: some describe strong attention and 6–8 hour wear, while other reports describe weak projection or short wear. Treat performance as variable rather than universally fixed.",
+          "confidence": 80,
+          "sourceIds": [
+            "source:fragrantica-aventus:v1",
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:batch-process:v1",
+          "version": 1,
+          "relationship": "cautions",
+          "category": "caution",
+          "claim": "Creed states that each batch is hand-mixed, macerated and matured at its Ury, France facilities and describes the process as preserving consistency and integrity. Reviewer claims about batch variation should therefore be evidenced separately rather than assumed.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        }
+      ],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:fragrantica-aventus:v1",
+          "publisher": "Fragrantica",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "roles",
+      "coverage": "supported",
+      "evidenceCount": 3,
+      "sourceCount": 2,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 96.67,
+      "minimumEvidenceConfidence": 90,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:official-character:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-rating:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "community",
+          "claim": "Parfumo reports 8.4/10 from 8,463 ratings.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:similarity-lineage:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "similarity",
+          "claim": "Parfumo's similarity section prominently associates Aventus with Club de Nuit Intense Man, L'Aventure, Aventus Cologne and Montblanc Explorer, supporting its role as a major reference DNA.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "seasons",
+      "coverage": "supported",
+      "evidenceCount": 4,
+      "sourceCount": 2,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 97.5,
+      "minimumEvidenceConfidence": 90,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:official-current-base:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "notes",
+          "claim": "Creed's current official base notes are birch, patchouli and musk accord.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:official-current-head:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "notes",
+          "claim": "Creed's current official head notes are Calabrian bergamot, Sicilian lemon and blackcurrant leaf accord.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:official-current-heart:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "notes",
+          "claim": "Creed's current official heart notes are pineapple accord, pink pepper and jasmine accord.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Parfumo classifies the principal accords as fresh, fruity, citrus, woody and smoky.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "time",
+      "coverage": "supported",
+      "evidenceCount": 2,
+      "sourceCount": 2,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 95.0,
+      "minimumEvidenceConfidence": 90,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:official-character:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "dna",
+          "claim": "Parfumo classifies the principal accords as fresh, fruity, citrus, woody and smoky.",
+          "confidence": 90,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    },
+    {
+      "sectionId": "weather",
+      "coverage": "supported",
+      "evidenceCount": 4,
+      "sourceCount": 2,
+      "primarySourceCount": 1,
+      "meanEvidenceConfidence": 100.0,
+      "minimumEvidenceConfidence": 100,
+      "supportingEvidence": [
+        {
+          "evidenceId": "evidence:creed:aventus:official-current-base:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "notes",
+          "claim": "Creed's current official base notes are birch, patchouli and musk accord.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:official-current-head:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "notes",
+          "claim": "Creed's current official head notes are Calabrian bergamot, Sicilian lemon and blackcurrant leaf accord.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:official-current-heart:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "notes",
+          "claim": "Creed's current official heart notes are pineapple accord, pink pepper and jasmine accord.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:creed-official-aventus:v1"
+          ]
+        },
+        {
+          "evidenceId": "evidence:creed:aventus:parfumo-performance:v1",
+          "version": 1,
+          "relationship": "supports",
+          "category": "performance",
+          "claim": "Parfumo reports longevity 7.3/10 from 7,797 ratings and sillage 7.3/10 from 7,725 ratings.",
+          "confidence": 100,
+          "sourceIds": [
+            "source:parfumo-aventus:v1"
+          ]
+        }
+      ],
+      "contextualEvidence": [],
+      "cautionEvidence": [],
+      "contradictingEvidence": [],
+      "sourceRefs": [
+        {
+          "sourceId": "source:creed-official-aventus:v1",
+          "publisher": "The House of Creed",
+          "sourceType": "official-brand",
+          "weight": "primary",
+          "version": 1
+        },
+        {
+          "sourceId": "source:parfumo-aventus:v1",
+          "publisher": "Parfumo",
+          "sourceType": "community-database",
+          "weight": "secondary",
+          "version": 1
+        }
+      ],
+      "gaps": []
+    }
+  ],
+  "totals": {
+    "sectionCount": 9,
+    "evidenceLinkCount": 28,
+    "distinctEvidenceCount": 13,
+    "distinctSourceCount": 4,
+    "cautionLinkCount": 2,
+    "contradictionLinkCount": 0,
+    "contextualLinkCount": 0
+  },
+  "integrityHash": "sha256:6299c5ecebce5d784c902c630b117117b5129db298d4f2e11ce338a0ecae0b97"
+}

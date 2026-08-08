@@ -1,0 +1,20 @@
+{
+  "artifactType": "olfactus.reference-registry-record",
+  "artifactVersion": 1,
+  "registryId": "reference-registry:GS-000001:v1",
+  "referenceId": "GS-000001",
+  "ordinal": 1,
+  "fragranceId": "creed:aventus",
+  "brand": "Creed",
+  "name": "Aventus",
+  "edition": "Eau de Parfum",
+  "certificateId": "gold-standard-certificate:GS-000001:v1",
+  "certificateIntegrityHash": "sha256:9be2ae23fa78824211aeec0b9d789ff97177d54848a2b9ad79f75c38a374a2f9",
+  "consensusId": "consensus:creed:aventus:v1",
+  "consensusIntegrityHash": "sha256:97144dc66bb39aa36a1bdec2d1565d04e80982a792735a10e2b53c24a7aa568f",
+  "status": "REGISTERED",
+  "registeredDate": "2026-08-07",
+  "truthBoundary": "CERTIFIED_CONSENSUS_ONLY",
+  "runtimeState": "NOT_YET_ACTIVE",
+  "artifactIntegrityHash": "sha256:0c6ba80feca5565252f099d0dd195d3b1d39b9faa7dc75a387a89f0ba2401c66"
+}

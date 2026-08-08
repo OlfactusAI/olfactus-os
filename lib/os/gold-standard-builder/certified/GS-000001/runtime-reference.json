@@ -1,0 +1,16 @@
+{
+  "artifactType": "olfactus.runtime-reference-record",
+  "artifactVersion": 1,
+  "runtimeReferenceId": "runtime-reference:GS-000001:v1",
+  "referenceId": "GS-000001",
+  "fragranceId": "creed:aventus",
+  "displayName": "Creed Aventus",
+  "registryId": "reference-registry:GS-000001:v1",
+  "certificateId": "gold-standard-certificate:GS-000001:v1",
+  "activationPackageId": "activation-package:GS-000001:v1",
+  "truthBoundary": "CERTIFIED_CONSENSUS_ONLY",
+  "state": "ACTIVE",
+  "activatedDate": "2026-08-07",
+  "goldStandardReferenceNumber": 1,
+  "artifactIntegrityHash": "sha256:5e7a7bde1e1b1e458c85b4b6b2dee0b149368b57f8aae585eb82a4e3bbe77170"
+}

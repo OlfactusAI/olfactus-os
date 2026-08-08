@@ -1,0 +1,17 @@
+{
+  "artifactType": "olfactus.activation-package",
+  "artifactVersion": 1,
+  "activationPackageId": "activation-package:GS-000001:v1",
+  "referenceId": "GS-000001",
+  "promotionId": "promotion:GS-000001:v1",
+  "promotionIntegrityHash": "sha256:d321f001bc859a5955de359b00c5dc121fbaee1f0beccc5cbded31cc559ed0cf",
+  "registryId": "reference-registry:GS-000001:v1",
+  "registryIntegrityHash": "sha256:0c6ba80feca5565252f099d0dd195d3b1d39b9faa7dc75a387a89f0ba2401c66",
+  "fingerprintId": "production-fingerprint:GS-000001:v1",
+  "fingerprintIntegrityHash": "sha256:e0bd9a275d4de67c8c87bc66465eca9bca51d2a09ee1b70ab38deffc42034271",
+  "certificateId": "gold-standard-certificate:GS-000001:v1",
+  "certificateIntegrityHash": "sha256:9be2ae23fa78824211aeec0b9d789ff97177d54848a2b9ad79f75c38a374a2f9",
+  "activationDecision": "APPROVED",
+  "status": "READY_FOR_RUNTIME_ACTIVATION",
+  "artifactIntegrityHash": "sha256:d9b8fff207bd8a0ad532b7cca93aca4fa58b8b61bb6d4639ff6eac26b8aaae80"
+}

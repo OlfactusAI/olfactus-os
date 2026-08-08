@@ -480,7 +480,7 @@ export function GoldStandardDatasetBuilder() {
                   {referenceCalibrationSections.map(
                     (section) => {
                       const reviewerProgress =
-                        readiness.reviewers.find(
+                        readiness?.reviewers.find(
                           (reviewer) =>
                             reviewer.reviewerId ===
                             activeDraft.reviewerId,

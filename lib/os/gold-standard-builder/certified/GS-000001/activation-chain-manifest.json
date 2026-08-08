@@ -1,0 +1,40 @@
+{
+  "artifactType": "olfactus.activation-chain-manifest",
+  "artifactVersion": 1,
+  "referenceId": "GS-000001",
+  "goldStandardReferenceNumber": 1,
+  "chain": [
+    {
+      "stage": "certificate",
+      "id": "gold-standard-certificate:GS-000001:v1",
+      "status": "CERTIFIED"
+    },
+    {
+      "stage": "registry",
+      "id": "reference-registry:GS-000001:v1",
+      "status": "REGISTERED"
+    },
+    {
+      "stage": "fingerprints",
+      "id": "production-fingerprint:GS-000001:v1",
+      "status": "LOCKED"
+    },
+    {
+      "stage": "promotion",
+      "id": "promotion:GS-000001:v1",
+      "status": "APPROVED"
+    },
+    {
+      "stage": "activation-package",
+      "id": "activation-package:GS-000001:v1",
+      "status": "APPROVED"
+    },
+    {
+      "stage": "runtime",
+      "id": "runtime-reference:GS-000001:v1",
+      "status": "ACTIVE"
+    }
+  ],
+  "overallStatus": "GOLD_STANDARD_REFERENCE_001_ACTIVE",
+  "artifactIntegrityHash": "sha256:24e9b4cd30b216b6118d872acc71ccc99b928e46f74d85922ffc2ee2ec78f6bb"
+}

@@ -1,0 +1,9 @@
+{
+  "referenceId": "GS-000001",
+  "fragranceId": "creed:aventus",
+  "certificateId": "gold-standard-certificate:GS-000001:v1",
+  "registryId": "reference-registry:GS-000001:v1",
+  "runtimeReferenceId": "runtime-reference:GS-000001:v1",
+  "state": "ACTIVE",
+  "truthBoundary": "CERTIFIED_CONSENSUS_ONLY"
+}

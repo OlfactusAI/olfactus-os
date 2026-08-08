@@ -1,0 +1,16 @@
+{
+  "artifactType": "olfactus.production-promotion-package",
+  "artifactVersion": 1,
+  "promotionId": "promotion:GS-000001:v1",
+  "referenceId": "GS-000001",
+  "registryId": "reference-registry:GS-000001:v1",
+  "fingerprintId": "production-fingerprint:GS-000001:v1",
+  "certificateId": "gold-standard-certificate:GS-000001:v1",
+  "eligibility": {
+    "certificateCertified": true,
+    "registryRegistered": true,
+    "fingerprintsLocked": true
+  },
+  "status": "APPROVED_FOR_ACTIVATION_PACKAGE",
+  "artifactIntegrityHash": "sha256:d321f001bc859a5955de359b00c5dc121fbaee1f0beccc5cbded31cc559ed0cf"
+}
