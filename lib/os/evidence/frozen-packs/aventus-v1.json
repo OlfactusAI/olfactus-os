@@ -1,0 +1,246 @@
+{
+  "researchPackId": "research-pack:creed:aventus:v1",
+  "fragranceId": "creed:aventus",
+  "researchPackVersion": 1,
+  "generatedAt": "2026-08-07",
+  "frozenAt": "2026-08-07",
+  "evidenceRefs": [
+    {
+      "evidenceId": "evidence:creed:aventus:identity-current:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:launch-2010:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-head:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-heart:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-base:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-main-accords:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-rating:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-performance:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-rating:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:performance-variance:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:similarity-lineage:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:perfumer-attribution:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:note-list-disagreement:v1",
+      "version": 1
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:batch-process:v1",
+      "version": 1
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "source:creed-official-aventus:v1",
+      "version": 1
+    },
+    {
+      "sourceId": "source:parfumo-aventus:v1",
+      "version": 1
+    },
+    {
+      "sourceId": "source:fragrantica-aventus:v1",
+      "version": 1
+    },
+    {
+      "sourceId": "source:basenotes-aventus:v1",
+      "version": 1
+    }
+  ],
+  "sectionLinks": [
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "sectionId": "dna",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "sectionId": "dna",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-main-accords:v1",
+      "sectionId": "dna",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:note-list-disagreement:v1",
+      "sectionId": "dna",
+      "relationship": "cautions"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-performance:v1",
+      "sectionId": "performance",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:performance-variance:v1",
+      "sectionId": "performance",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:batch-process:v1",
+      "sectionId": "performance",
+      "relationship": "cautions"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "sectionId": "roles",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-rating:v1",
+      "sectionId": "roles",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:similarity-lineage:v1",
+      "sectionId": "roles",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-head:v1",
+      "sectionId": "seasons",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-heart:v1",
+      "sectionId": "seasons",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-base:v1",
+      "sectionId": "seasons",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "sectionId": "seasons",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-head:v1",
+      "sectionId": "weather",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-heart:v1",
+      "sectionId": "weather",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-base:v1",
+      "sectionId": "weather",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-performance:v1",
+      "sectionId": "weather",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "sectionId": "time",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "sectionId": "time",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "sectionId": "formality",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "sectionId": "formality",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "sectionId": "mood",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-main-accords:v1",
+      "sectionId": "mood",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-rating:v1",
+      "sectionId": "collector",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-rating:v1",
+      "sectionId": "collector",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:similarity-lineage:v1",
+      "sectionId": "collector",
+      "relationship": "supports"
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:performance-variance:v1",
+      "sectionId": "collector",
+      "relationship": "supports"
+    }
+  ],
+  "reviewerCautions": [
+    "Do not convert community ratings directly into OLFACTUS 0–100 metric scores.",
+    "Do not infer season, weather, role or formality values solely from note pyramids.",
+    "Use official Creed material for current identity/notes, but retain community sources for perception and wear behavior.",
+    "Where sources disagree, record the disagreement in rationale rather than silently choosing one source.",
+    "Performance should be calibrated as a distribution/consensus judgment because community reports vary.",
+    "Reviewer A and Reviewer B must score independently even though they share this evidence pack."
+  ],
+  "policy": {
+    "scoresIncluded": false,
+    "purpose": "Shared evidence base for independent reviewer calibration."
+  },
+  "integrityHash": "sha256:1157258490b2c3d4a5a6b9e13a372d7a3c03ac45dfc636318d5530772c002cee"
+}

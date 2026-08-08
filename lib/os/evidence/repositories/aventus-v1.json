@@ -1,0 +1,340 @@
+{
+  "repositoryId": "evidence-repository:creed:aventus:v1",
+  "fragranceId": "creed:aventus",
+  "repositoryVersion": 1,
+  "migratedFrom": "research-pack:creed:aventus:2026-08-07",
+  "migratedAt": "2026-08-07",
+  "sources": [
+    {
+      "sourceId": "source:creed-official-aventus:v1",
+      "publisher": "The House of Creed",
+      "sourceType": "official-brand",
+      "locator": "https://creedboutique.com/products/aventus",
+      "accessedAt": "2026-08-07",
+      "weight": "primary",
+      "status": "reviewed",
+      "version": 1
+    },
+    {
+      "sourceId": "source:parfumo-aventus:v1",
+      "publisher": "Parfumo",
+      "sourceType": "community-database",
+      "locator": "https://www.parfumo.com/Perfumes/Creed/aventus",
+      "accessedAt": "2026-08-07",
+      "weight": "secondary",
+      "status": "reviewed",
+      "version": 1
+    },
+    {
+      "sourceId": "source:fragrantica-aventus:v1",
+      "publisher": "Fragrantica",
+      "sourceType": "community-database",
+      "locator": "https://www.fragrantica.com/perfume/Creed/Aventus-9828.html",
+      "accessedAt": "2026-08-07",
+      "weight": "secondary",
+      "status": "reviewed",
+      "version": 1
+    },
+    {
+      "sourceId": "source:basenotes-aventus:v1",
+      "publisher": "Basenotes",
+      "sourceType": "community-database",
+      "locator": "https://basenotes.com/fragrances/aventus-by-creed.26131702",
+      "accessedAt": "2026-08-07",
+      "weight": "secondary",
+      "status": "reviewed",
+      "version": 1
+    }
+  ],
+  "evidence": [
+    {
+      "evidenceId": "evidence:creed:aventus:identity-current:v1",
+      "fragranceId": "creed:aventus",
+      "category": "identity",
+      "claim": "Aventus is currently sold by Creed as an Eau de Parfum and described as dry woods, fresh, citrus and fruity.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:launch-2010:v1",
+      "fragranceId": "creed:aventus",
+      "category": "identity",
+      "claim": "Creed states that Aventus has endured since 2010; major fragrance databases also list a 2010 release.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1",
+        "source:parfumo-aventus:v1",
+        "source:fragrantica-aventus:v1"
+      ],
+      "confidence": 99,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-head:v1",
+      "fragranceId": "creed:aventus",
+      "category": "notes",
+      "claim": "Creed's current official head notes are Calabrian bergamot, Sicilian lemon and blackcurrant leaf accord.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-heart:v1",
+      "fragranceId": "creed:aventus",
+      "category": "notes",
+      "claim": "Creed's current official heart notes are pineapple accord, pink pepper and jasmine accord.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-current-base:v1",
+      "fragranceId": "creed:aventus",
+      "category": "notes",
+      "claim": "Creed's current official base notes are birch, patchouli and musk accord.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:official-character:v1",
+      "fragranceId": "creed:aventus",
+      "category": "dna",
+      "claim": "Creed explicitly characterizes the opening as bright and luminous and the birch as smoky and leathery, with a refined yet assertive impression.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "fragranceId": "creed:aventus",
+      "category": "dna",
+      "claim": "Parfumo classifies the principal accords as fresh, fruity, citrus, woody and smoky.",
+      "sourceIds": [
+        "source:parfumo-aventus:v1"
+      ],
+      "confidence": 90,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-main-accords:v1",
+      "fragranceId": "creed:aventus",
+      "category": "dna",
+      "claim": "Fragrantica's current main accords emphasize fruity, sweet, woody, leather, citrus, smoky, musky, fresh, tropical and mossy facets.",
+      "sourceIds": [
+        "source:fragrantica-aventus:v1"
+      ],
+      "confidence": 90,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-rating:v1",
+      "fragranceId": "creed:aventus",
+      "category": "community",
+      "claim": "Parfumo reports 8.4/10 from 8,463 ratings.",
+      "sourceIds": [
+        "source:parfumo-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:parfumo-performance:v1",
+      "fragranceId": "creed:aventus",
+      "category": "performance",
+      "claim": "Parfumo reports longevity 7.3/10 from 7,797 ratings and sillage 7.3/10 from 7,725 ratings.",
+      "sourceIds": [
+        "source:parfumo-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:fragrantica-rating:v1",
+      "fragranceId": "creed:aventus",
+      "category": "community",
+      "claim": "Fragrantica reports 4.32/5 from 27,819 votes.",
+      "sourceIds": [
+        "source:fragrantica-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:performance-variance:v1",
+      "fragranceId": "creed:aventus",
+      "category": "performance",
+      "claim": "Individual community reports vary materially: some describe strong attention and 6–8 hour wear, while other reports describe weak projection or short wear. Treat performance as variable rather than universally fixed.",
+      "sourceIds": [
+        "source:parfumo-aventus:v1",
+        "source:fragrantica-aventus:v1"
+      ],
+      "confidence": 80,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:similarity-lineage:v1",
+      "fragranceId": "creed:aventus",
+      "category": "similarity",
+      "claim": "Parfumo's similarity section prominently associates Aventus with Club de Nuit Intense Man, L'Aventure, Aventus Cologne and Montblanc Explorer, supporting its role as a major reference DNA.",
+      "sourceIds": [
+        "source:parfumo-aventus:v1"
+      ],
+      "confidence": 90,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:perfumer-attribution:v1",
+      "fragranceId": "creed:aventus",
+      "category": "attribution",
+      "claim": "Jean-Christophe Hérault is consistently attributed as a perfumer. Fragrantica also credits Erwin Creed, while Parfumo lists Jean-Christophe Hérault alone.",
+      "sourceIds": [
+        "source:parfumo-aventus:v1",
+        "source:fragrantica-aventus:v1"
+      ],
+      "confidence": 95,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:note-list-disagreement:v1",
+      "fragranceId": "creed:aventus",
+      "category": "caution",
+      "claim": "Current official Creed notes differ from older/community pyramids that include apple, oakmoss, ambergris, vanilla, rose or cedarwood. This is a source-description difference and should not by itself be treated as proof of a formula change.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1",
+        "source:parfumo-aventus:v1",
+        "source:fragrantica-aventus:v1",
+        "source:basenotes-aventus:v1"
+      ],
+      "confidence": 95,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    },
+    {
+      "evidenceId": "evidence:creed:aventus:batch-process:v1",
+      "fragranceId": "creed:aventus",
+      "category": "caution",
+      "claim": "Creed states that each batch is hand-mixed, macerated and matured at its Ury, France facilities and describes the process as preserving consistency and integrity. Reviewer claims about batch variation should therefore be evidenced separately rather than assumed.",
+      "sourceIds": [
+        "source:creed-official-aventus:v1"
+      ],
+      "confidence": 100,
+      "status": "reviewed",
+      "version": 1,
+      "createdAt": "2026-08-07",
+      "scope": {
+        "edition": "Eau de Parfum"
+      }
+    }
+  ],
+  "legacyIdMap": {
+    "sources": {
+      "creed-official-aventus": "source:creed-official-aventus:v1",
+      "parfumo-aventus": "source:parfumo-aventus:v1",
+      "fragrantica-aventus": "source:fragrantica-aventus:v1",
+      "basenotes-aventus": "source:basenotes-aventus:v1"
+    },
+    "facts": {
+      "identity-current": "evidence:creed:aventus:identity-current:v1",
+      "launch-2010": "evidence:creed:aventus:launch-2010:v1",
+      "official-current-head": "evidence:creed:aventus:official-current-head:v1",
+      "official-current-heart": "evidence:creed:aventus:official-current-heart:v1",
+      "official-current-base": "evidence:creed:aventus:official-current-base:v1",
+      "official-character": "evidence:creed:aventus:official-character:v1",
+      "parfumo-main-accords": "evidence:creed:aventus:parfumo-main-accords:v1",
+      "fragrantica-main-accords": "evidence:creed:aventus:fragrantica-main-accords:v1",
+      "parfumo-rating": "evidence:creed:aventus:parfumo-rating:v1",
+      "parfumo-performance": "evidence:creed:aventus:parfumo-performance:v1",
+      "fragrantica-rating": "evidence:creed:aventus:fragrantica-rating:v1",
+      "performance-variance": "evidence:creed:aventus:performance-variance:v1",
+      "similarity-lineage": "evidence:creed:aventus:similarity-lineage:v1",
+      "perfumer-attribution": "evidence:creed:aventus:perfumer-attribution:v1",
+      "note-list-disagreement": "evidence:creed:aventus:note-list-disagreement:v1",
+      "batch-process": "evidence:creed:aventus:batch-process:v1"
+    }
+  }
+}
